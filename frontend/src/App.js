@@ -7,6 +7,7 @@ import Student from "./components/students";
 import StudentsList from "./components/students-list";
 import Login from "./components/login";
 
+
 function App() {
   const [user, setUser] = React.useState(null)
 
@@ -47,24 +48,20 @@ function App() {
 
     <div className="container mt-3">
       <Routes>
-        <Route exact path={["/", "/students"]} element={<StudentsList/>} />
+        <Route
+          path="/"
+          element={<StudentsList/>} />
         <Route 
           path="/students/:id/review"
-          render={(props) => (
-            <AddStudent {...props} user={user} />
-          )}
+          element = { <AddStudent user={user} /> }
         />
         <Route 
           path="/students/:id"
-          render={(props) => (
-            <Student {...props} user={user} />
-          )}
+          element = { <Student user={user} /> }
         />
         <Route 
           path="/login"
-          render={(props) => (
-            <Login {...props} login={login} />
-          )}
+          element = { <Login login={login} /> }
         />
       </Routes>
     </div>
