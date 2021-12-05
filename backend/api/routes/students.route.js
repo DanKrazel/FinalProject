@@ -5,5 +5,6 @@ const router = express.Router()
 
 router.route("/").get(StudentsCtrl.apiGetStudents)
                  .post(StudentsCtrl.apiPostStudent)
+router.route("/names").get(StudentsCtrl.apiGetStudentName)
 
 export default router

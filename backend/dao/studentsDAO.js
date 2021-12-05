@@ -24,7 +24,7 @@ export default class StudentsDAO {
     let query
     if (filters) {
       if ("student_id" in filters) {
-        query = { "name": { $eq: filters["student_id"] } }
+        query = { "student_id": { $eq: filters["student_id"] } }
       } else if ("name" in filters) {
         query = { "name": { $eq: filters["name"] } }
       } else if ("units" in filters) {
@@ -74,7 +74,7 @@ export default class StudentsDAO {
                           {
                               $match: {
                                   $expr: {
-                                      $eq: ["$restaurant_id", "$$id"],
+                                      $eq: ["$student_id", "$$id"],
                                   },
                               },
                           },
@@ -101,13 +101,13 @@ export default class StudentsDAO {
   }
 
   static async getNames() {
-    let cuisines = []
+    let names = []
     try {
-      courses = await restaurants.distinct("courses")
-      return courses
+      names = await students.distinct("name")
+      return names
     } catch (e) {
-      console.error(`Unable to get courses, ${e}`)
-      return courses
+      console.error(`Unable to get names, ${e}`)
+      return names
     }
   }
 
