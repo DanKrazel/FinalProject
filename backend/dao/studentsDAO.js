@@ -23,7 +23,9 @@ export default class StudentsDAO {
   } = {}) {
     let query
     if (filters) {
-      if ("student_id" in filters) {
+      if ("_id" in filters) {
+        query = { "_id": { $eq: filters["_id"] } }
+      } else if ("student_id" in filters) {
         query = { "student_id": { $eq: filters["student_id"] } }
       } else if ("name" in filters) {
         query = { "name": { $eq: filters["name"] } }
@@ -64,38 +66,10 @@ export default class StudentsDAO {
                 _id: new ObjectId(id),
             },
         },
-              {
-                  $lookup: {
-                      from: "reviews",
-                      let: {
-                          id: "$_id",
-                      },
-                      pipeline: [
-                          {
-                              $match: {
-                                  $expr: {
-                                      $eq: ["$student_id", "$$id"],
-                                  },
-                              },
-                          },
-                          {
-                              $sort: {
-                                  date: -1,
-                              },
-                          },
-                      ],
-                      as: "reviews",
-                  },
-              },
-              {
-                  $addFields: {
-                      reviews: "$reviews",
-                  },
-              },
           ]
       return await students.aggregate(pipeline).next()
     } catch (e) {
-      console.error(`Something went wrong in getRestaurantByID: ${e}`)
+      console.error(`Something went wrong in getStudentByID: ${e}`)
       throw e
     }
   }
@@ -126,4 +100,17 @@ export default class StudentsDAO {
       return { error: e }
     }
   }
+
+  static async getStudentByID(studentID){
+;
+    try{
+        let student = await students.findOne(
+                 { "_id" : ObjectId(studentID) }
+        );
+        return student
+      }
+      catch (e) {
+        console.error(`Unable to get student, ${e}`)
+      }
+    }
 }

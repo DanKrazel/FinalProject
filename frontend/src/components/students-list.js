@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import StudentDataService from "../services/student";
+import StudentDataService from "../services/studentService";
 import { Link } from "react-router-dom";
 
 const StudentsList = props => {
@@ -158,7 +158,7 @@ const StudentsList = props => {
                     <strong>Units: </strong>{student.units}
                   </p>
                   <div className="row">
-                  <Link to={"/student/"+student._id} className="btn btn-primary col-lg-5 mx-1 mb-1">
+                  <Link to={"/students/"+student._id} className="btn btn-primary col-lg-5 mx-1 mb-1">
                     View Students
                   </Link>
                   </div>

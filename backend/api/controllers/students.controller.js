@@ -4,9 +4,10 @@ export default class  StudentsController {
   static async apiGetStudents(req, res, next) {
     const studentsPerPage = req.query.studentsPerPage ? parseInt(req.query.studentsPerPage, 10) : 20
     const page = req.query.page ? parseInt(req.query.page, 10) : 0
-
     let filters = {}
-    if (req.query.student_id) {
+    if (req.query._id) {
+      filters._id = req.query._id
+    }else if (req.query.student_id) {
       filters.student_id = req.query.student_id
     } else if (req.query.name) {
       filters.name = req.query.name
@@ -29,7 +30,7 @@ export default class  StudentsController {
     }
     res.json(response)
   }
-  static async apiGetStudentById(req, res, next) {
+  /*static async apiGetStudentById(req, res, next) {
     try {
       let id = req.params.id || {}
       let student = await StudentsDAO.getStudentsByID(id)
@@ -42,12 +43,12 @@ export default class  StudentsController {
       console.log(`api, ${e}`)
       res.status(500).json({ error: e })
     }
-  }
+  }*/
 
   static async apiGetStudentName(req, res, next) {
     try {
-      let cuisines = await StudentsDAO.getNames()
-      res.json(cuisines)
+      let names = await StudentsDAO.getNames()
+      res.json(names)
     } catch (e) {
       console.log(`api, ${e}`)
       res.status(500).json({ error: e })
@@ -76,4 +77,21 @@ export default class  StudentsController {
       res.status(500).json({ error: e.message })
     }
   }
+
+  static async apiGetStudentByID(req, res, next){
+    try {
+      let id = req.params.id || {}
+      console.log('id',id)
+      let student = await StudentsDAO.getStudentsByID(id)
+      if (!student) {
+        res.status(404).json({ error: "Not found" })
+        return
+      }
+      res.json(student)
+    } catch (e) {
+      console.log(`api, ${e}`)
+      res.status(500).json({ error: e })
+    }
+  }
+
 }
