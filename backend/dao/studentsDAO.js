@@ -101,16 +101,49 @@ export default class StudentsDAO {
     }
   }
 
-  static async getStudentByID(studentID){
-;
-    try{
-        let student = await students.findOne(
-                 { "_id" : ObjectId(studentID) }
-        );
-        return student
-      }
-      catch (e) {
-        console.error(`Unable to get student, ${e}`)
+
+    static async getStudentByID(id) {
+      try {
+        const pipeline = [
+          {
+              $match: {
+                  _id: new ObjectId(id),
+              },
+          },
+          {
+            $lookup: {
+                from: "courses",
+                let: {
+                    id: "$_id",
+                },
+                pipeline: [
+                    {
+                        $match: {
+                            $expr: {
+                                $eq: ["$studentID", "$$id"],
+                            },
+                        },
+                    },
+                    {
+                        $sort: {
+                            date: -1,
+                        },
+                    },
+                ],
+                as: "courses",
+            },
+        },
+        {
+            $addFields: {
+                courses: "$courses",
+            },
+        },
+            ]
+          console.log(pipeline)
+        return await students.aggregate(pipeline).next()
+      } catch (e) {
+        console.error(`Something went wrong in getCoursesByStudentID: ${e}`)
+        throw e
       }
     }
 }

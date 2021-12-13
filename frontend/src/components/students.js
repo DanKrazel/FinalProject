@@ -1,6 +1,8 @@
 import React, { useState, useEffect} from "react";
 import StudentDataService from "../services/studentService";
 import { Link,  useParams  } from "react-router-dom";
+import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
+
 
 const Student = props => {
   const params = useParams();
@@ -55,24 +57,38 @@ const Student = props => {
             <strong>ID: </strong>{student.student_id}<br/>
             <strong>Name: </strong>{student.name}<br/>
             <strong>Average: </strong>{student.average}<br/>
-            <strong>unit: </strong>{student.units}<br/>
-              <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">course_id</th>
-                  <th scope="col">course name</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th scope="row">1</th>
-                  <td>{student.courses.course_id}</td>
-                  <td>{student.courses.name}</td>
-                </tr>
-              </tbody>
-            </table>               
+            <strong>unit: </strong>{student.units}<br/>           
           </p>
+          <h4> Courses </h4>
+          <div className="row">
+            {student.courses.length > 0 ? (
+             student.courses.map((course, index) => {
+               return (
+                 <div className="col-lg-4 pb-1" key={index}>
+                   <div className="card">
+                     <div className="card-body">
+                       <p className="card-text">
+                         <strong>Course Name: </strong>{course.name}<br/>
+                         <strong>Grade: </strong>{course.grade}<br/>
+                         <strong>Year: </strong>{course.yearOfLearning}<br/>
+                         <strong>Units: </strong>{course.units}<br/>
+                         <strong>Start: </strong>{course.programStartDate}<br/>
+                         <strong>End: </strong>{course.programEndDate}<br/>
+                         <strong>Type: </strong>{course.typeOfCourse}<br/>
+                         <strong>courseBefore: </strong>{course.courseBefore}
+                       </p>
+                     </div>
+                   </div>
+                 </div>
+               );
+             })
+            ) : (
+            <div className="col-sm-4">
+              <p>No courses yet.</p>
+            </div>
+            )}
+
+          </div>
         </div>
         ) : (
         <div>

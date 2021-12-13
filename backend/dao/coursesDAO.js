@@ -15,11 +15,12 @@ export default class CoursesDAO {
     }
   }
 
-  static async addCourse(courseName, grade, yearOfLearning ,units, programStartDate, programEndDate, typeOfCourse, courseBefore, studentID) {
+  static async addCourse(courseName, grade, semesterOfLearning, yearOfLearning ,units, programStartDate, programEndDate, typeOfCourse, courseBefore, studentID) {
     try {
       const courseDoc = { 
           courseName: courseName,
           grade: grade,
+          semesterOfLearning: semesterOfLearning,
           yearOfLearning: yearOfLearning,
           units: units,
           programStartDate: programStartDate,
@@ -49,12 +50,11 @@ export default class CoursesDAO {
     }
   }
 
-  static async deleteCourse(courseID, userId) {
+  static async deleteCourse(courseID) {
 
     try {
       const deleteResponse = await courses.deleteOne({
         _id: ObjectId(courseID),
-        user_id: userId,
       })
 
       return deleteResponse

@@ -61,16 +61,11 @@ export default class  StudentsController {
       const name = req.body.name
       const average = req.body.average
       const units = req.body.units
-      const courses = {
-        name: req.body.courses.name,
-        course_id: req.body.courses.course_id
-      }
       const StudentResponse = await StudentsDAO.addStudent(
         studentID,
         name,
         average,
         units,
-        courses,
       )
       res.json({ status: "success" })
     } catch (e) {
@@ -82,7 +77,7 @@ export default class  StudentsController {
     try {
       let id = req.params.id || {}
       console.log('id',id)
-      let student = await StudentsDAO.getStudentsByID(id)
+      let student = await StudentsDAO.getStudentByID(id)
       if (!student) {
         res.status(404).json({ error: "Not found" })
         return
@@ -93,5 +88,6 @@ export default class  StudentsController {
       res.status(500).json({ error: e })
     }
   }
+
 
 }

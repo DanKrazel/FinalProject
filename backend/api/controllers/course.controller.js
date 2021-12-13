@@ -5,6 +5,7 @@ export default class CoursesController {
     try {
       const courseName = req.body.courseName
       const grade = req.body.grade
+      const semesterOfLearning = req.body.semesterOfLearning
       const yearOfLearning = req.body.yearOfLearning
       const units = req.body.units
       const programStartDate = req.body.programStartDate
@@ -16,6 +17,7 @@ export default class CoursesController {
       const CourseResponse = await CoursesDAO.addCourse(
         courseName,
         grade,
+        semesterOfLearning,
         yearOfLearning,
         units,
         programStartDate,
@@ -67,16 +69,30 @@ export default class CoursesController {
 
   static async apiDeleteCourse(req, res, next) {
     try {
-      const courseID = req.query.id
-      const userId = req.body.user_id
+        
       console.log(courseID)
       const courseResponse = await CoursesDAO.deleteCourse(
         courseID,
-        userId,
       )
       res.json({ status: "success" })
     } catch (e) {
       res.status(500).json({ error: e.message })
+    }
+  }
+
+  static async apiGetCoursesByStudentID(req, res, next){
+    try {
+      let id = req.params.id || {}
+      console.log('id',id)
+      let courses = await CoursesDAO.getCoursesByStudentID(id)
+      if (!courses) {
+        res.status(404).json({ error: "Not found" })
+        return
+      }
+      res.json(courses)
+    } catch (e) {
+      console.log(`api, ${e}`)
+      res.status(500).json({ error: e })
     }
   }
 
