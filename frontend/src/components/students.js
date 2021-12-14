@@ -68,7 +68,7 @@ const Student = props => {
                    <div className="card">
                      <div className="card-body">
                        <p className="card-text">
-                         <strong>Course Name: </strong>{course.name}<br/>
+                         <strong>Course Name: </strong>{course.courseName}<br/>
                          <strong>Grade: </strong>{course.grade}<br/>
                          <strong>Year: </strong>{course.yearOfLearning}<br/>
                          <strong>Units: </strong>{course.units}<br/>
