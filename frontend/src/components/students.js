@@ -1,9 +1,8 @@
 import React, { useState, useEffect} from "react";
 import StudentDataService from "../services/studentService";
-import { Link,  useParams  } from "react-router-dom";
-import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
-
-
+import { useParams  } from "react-router-dom";
+/**import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';*/
+import { PDFExport, savePDF } from "@progress/kendo-react-pdf";
 const Student = props => {
   const params = useParams();
   console.log(params.id)
@@ -17,7 +16,6 @@ const Student = props => {
   };
   const [students, setStudents] = useState([]);
   const [student, setStudent] = useState(initialRestaurantState);
-
 
   const getStudent = (id) => {
     StudentDataService.findStudent(id)
@@ -47,9 +45,36 @@ const Student = props => {
       });
   };
 
-
+    const container = React.useRef(null);
+    const pdfExportComponent = React.useRef(null);
+  
+    const exportPDFWithMethod = () => {
+      let element = container.current || document.body;
+      savePDF(element, {
+        paperSize: "auto",
+        margin: 40,
+        fileName: `Report for ${new Date().getFullYear()}`
+      });
+    };
+  
+    const exportPDFWithComponent = () => {
+      if (pdfExportComponent.current) {
+        pdfExportComponent.current.save();
+      }
+    };
   return (
     <div>
+    <div className="example-config">
+      <button className="k-button" onClick={exportPDFWithComponent}>
+        Export with component
+      </button>
+      &nbsp;
+      <button className="k-button" onClick={exportPDFWithMethod}>
+        Export with method
+      </button>
+    </div>
+    <div className="border rounded p-2">
+    <PDFExport ref={pdfExportComponent} paperSize="auto" margin={40} fileName={`Report for ${new Date().getFullYear()}`} author="KendoReact Team">
       {student ? (
         <div>
           <h5>{student.name}</h5>
@@ -79,7 +104,10 @@ const Student = props => {
                        </p>
                      </div>
                    </div>
+                   <div className="row">              
+                  </div>
                  </div>
+                 
                );
              })
             ) : (
@@ -96,7 +124,9 @@ const Student = props => {
           <p>No student selected.</p>
         </div>
       )}
-    </div>
+      </PDFExport>
+      </div>
+  </div>
   );
 };
 

@@ -1,13 +1,10 @@
 import React from "react";
-import ReactPDF from '@react-pdf/renderer';
 import { Routes, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-
 import AddStudent from "./components/add-student";
 import Student from "./components/students";
 import StudentsList from "./components/students-list";
 import Login from "./components/login";
-import MyDocument from "./components/MyDocument";
 import student from "./services/studentService";
 
 
@@ -65,10 +62,6 @@ function App() {
         <Route 
           path="/login"
           element = { <Login login={login} /> }
-        />
-        <Route 
-          path="/MyDocument"
-          element = { <MyDocument user={user} /> }
         />
       </Routes>
     </div>
