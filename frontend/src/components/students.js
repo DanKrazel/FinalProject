@@ -3,20 +3,29 @@ import StudentDataService from "../services/studentService";
 import { useParams  } from "react-router-dom";
 /**import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';*/
 import { PDFExport, savePDF } from "@progress/kendo-react-pdf";
+import { ArcherContainer, ArcherElement } from 'react-archer';
 const Student = props => {
   const params = useParams();
   console.log(params.id)
-
+  var myState = {
+    pdf: null,
+    currentPage: 1,
+    zoom: 1
+}
   const initialRestaurantState = {
     student_id: null,
     name: "",
     average: "",
     units: "",
+    semester:"",
+    years:"",
     courses: []
   };
+  const rootStyle = { display: 'flex', justifyContent: 'center' };
+  const rowStyle = { margin: '200px 0', display: 'flex', justifyContent: 'space-between' };
+  const boxStyle = { padding: '10px', border: '1px solid black' };
   const [students, setStudents] = useState([]);
   const [student, setStudent] = useState(initialRestaurantState);
-
   const getStudent = (id) => {
     StudentDataService.findStudent(id)
       .then(response => {
@@ -27,13 +36,10 @@ const Student = props => {
         console.log(e);
       });
   };
-
   useEffect(() => {
     getStudent(params.id)
     retrieveStudents()
   }, []);
-
-
   const retrieveStudents = () => {
     StudentDataService.getAll()
       .then(response => {
@@ -45,32 +51,27 @@ const Student = props => {
       });
   };
 
-    const container = React.useRef(null);
-    const pdfExportComponent = React.useRef(null);
+  const container = React.useRef(null);
+  const pdfExportComponent = React.useRef(null);
   
-    const exportPDFWithMethod = () => {
-      let element = container.current || document.body;
-      savePDF(element, {
-        paperSize: "auto",
-        margin: 40,
-        fileName: `Report for ${new Date().getFullYear()}`
-      });
-    };
-  
-    const exportPDFWithComponent = () => {
+  const exportPDFWithComponent = () => {
       if (pdfExportComponent.current) {
         pdfExportComponent.current.save();
       }
-    };
+    }
+
   return (
     <div>
-    <div className="example-config">
-      <button className="k-button" onClick={exportPDFWithComponent}>
-        Export with component
-      </button>
+      <div className="example-config">
+        <button className="k-button" onClick={exportPDFWithComponent}>
+         Export PDF
+        </button>
       &nbsp;
-      <button className="k-button" onClick={exportPDFWithMethod}>
-        Export with method
+      <button className="k-button" onClick={exportPDFWithComponent}>
+        Send PDF to verification 
+      </button>
+      <button className="k-button" onClick={exportPDFWithComponent}>
+        Save PDF to Blockain
       </button>
     </div>
     <div className="border rounded p-2">
@@ -79,36 +80,119 @@ const Student = props => {
         <div>
           <h5>{student.name}</h5>
           <p>
+          <div className="col-sm text-white bg-secondary w-40 l-20">
             <strong>ID: </strong>{student.student_id}<br/>
             <strong>Name: </strong>{student.name}<br/>
             <strong>Average: </strong>{student.average}<br/>
-            <strong>unit: </strong>{student.units}<br/>           
-          </p>
-          <h4> Courses </h4>
+            <strong>Years: </strong>{student.years}<br/>
+            <strong>Semester: </strong>{student.semester}<br/>
+            <strong>unit: </strong>{student.units}<br/>   
+            </div>        
+          </p>   
           <div className="row">
+            Semester 1            
             {student.courses.length > 0 ? (
-             student.courses.map((course, index) => {
+             student.courses.map((course, index) => {      
+              if (course.grade>55 && course.semesterOfLearning=='1'){
                return (
-                 <div className="col-lg-4 pb-1" key={index}>
-                   <div className="card">
-                     <div className="card-body">
-                       <p className="card-text">
+                 <div className="col-sm text-white "  key={index} >      
+                   <div className="card">    
+                     <p className='bg-success text-white '>
+                       <h11>
                          <strong>Course Name: </strong>{course.courseName}<br/>
                          <strong>Grade: </strong>{course.grade}<br/>
-                         <strong>Year: </strong>{course.yearOfLearning}<br/>
-                         <strong>Units: </strong>{course.units}<br/>
-                         <strong>Start: </strong>{course.programStartDate}<br/>
-                         <strong>End: </strong>{course.programEndDate}<br/>
-                         <strong>Type: </strong>{course.typeOfCourse}<br/>
                          <strong>courseBefore: </strong>{course.courseBefore}
+                         </h11>
+                     </p>
+                   </div>
+                  
+                 </div> 
+               );}
+               else if (course.grade<56 && course.semesterOfLearning=='1'){
+                return ( 
+                  
+                   <div className="col-sm text-white "  key={index} >      
+                     <div className="card">    
+                       <p className='bg-danger text-white '>
+                         <h11>
+                           <strong>Course Name: </strong>{course.courseName}<br/>
+                           <strong>Grade: </strong>{course.grade}<br/>
+                           <strong>courseBefore: </strong>{course.courseBefore}
+                           </h11>
                        </p>
                      </div>
+                    
+                   </div> 
+                );}
+                else if (course.semesterOfLearning=='1'){
+                  return ( 
+                    <div className="col-sm text-white "  key={index} >      
+                      <div className="card">    
+                        <p className='bg-secondary text-white '>
+                          <h11>
+                            <strong>Course Name: </strong>{course.courseName}<br/>
+                            <strong>Grade: </strong>{course.grade}<br/>
+                            <strong>courseBefore: </strong>{course.courseBefore}
+                            </h11>
+                            </p>    
+                       </div>
+                    </div>         
+                  );}
+             }) 
+            ) : (
+            <div className="col-sm-4">
+              <p>No courses yet.</p>
+            </div>
+            )}
+
+            </div>
+            <div className="row">
+            Semester 2          
+            {student.courses.length > 0 ? (
+             student.courses.map((course, index) => {      
+              if (course.grade>55 && course.semesterOfLearning=='2'){
+               return (
+                 <div className="col-sm text-white "  key={index} >      
+                   <div className="card">    
+                     <p className='bg-success text-white '>
+                       <h11>
+                         <strong>Course Name: </strong>{course.courseName}<br/>
+                         <strong>Grade: </strong>{course.grade}<br/>
+                         <strong>courseBefore: </strong>{course.courseBefore}
+                         </h11>
+                     </p>
                    </div>
-                   <div className="row">              
-                  </div>
-                 </div>
-                 
-               );
+                  
+                 </div> 
+               );}
+               else if (course.grade<56 && course.semesterOfLearning=='2'){
+                return ( 
+                   <div className="col-sm text-white "  key={index} >     
+                     <div className="card">    
+                       <p className='bg-danger text-white '>
+                         <h11>
+                           <strong>Course Name: </strong>{course.courseName}<br/>
+                           <strong>Grade: </strong>{course.grade}<br/>
+                           <strong>courseBefore: </strong>{course.courseBefore}
+                           </h11>
+                       </p>
+                     </div>
+                   </div> 
+                );}
+                else if (course.semesterOfLearning=='2'){
+                  return ( 
+                    <div className="col-sm text-white "  key={index} >      
+                      <div className="card">    
+                        <p className='bg-secondary text-white '>
+                          <h11>
+                            <strong>Course Name: </strong>{course.courseName}<br/>
+                            <strong>Grade: </strong>{course.grade}<br/>
+                            <strong>courseBefore: </strong>{course.courseBefore}
+                            </h11>
+                            </p>    
+                      </div>
+                    </div>
+                  );}
              })
             ) : (
             <div className="col-sm-4">
@@ -117,7 +201,13 @@ const Student = props => {
             )}
 
           </div>
-        </div>
+        
+          </div>
+          
+          
+          
+
+        
         ) : (
         <div>
           <br />
@@ -131,3 +221,4 @@ const Student = props => {
 };
 
 export default Student;
+
