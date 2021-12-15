@@ -13,7 +13,10 @@ export default class  StudentsController {
       filters.name = req.query.name
     } else if (req.query.units) {
       filters.units = req.query.units
+    } else if (req.query.yearsOfLearning) {
+      filters.yearsOfLearning = req.query.yearsOfLearning
     }
+
 
     const { studentsList, totalNumStudents } = await StudentsDAO.getStudents({
       filters,

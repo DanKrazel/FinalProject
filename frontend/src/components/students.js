@@ -4,6 +4,7 @@ import { useParams  } from "react-router-dom";
 /**import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';*/
 import { PDFExport, savePDF } from "@progress/kendo-react-pdf";
 import { ArcherContainer, ArcherElement } from 'react-archer';
+
 const Student = props => {
   const params = useParams();
   console.log(params.id)
@@ -12,7 +13,7 @@ const Student = props => {
     currentPage: 1,
     zoom: 1
 }
-  const initialRestaurantState = {
+  const initialStudentState = {
     student_id: null,
     name: "",
     average: "",
@@ -25,7 +26,8 @@ const Student = props => {
   const rowStyle = { margin: '200px 0', display: 'flex', justifyContent: 'space-between' };
   const boxStyle = { padding: '10px', border: '1px solid black' };
   const [students, setStudents] = useState([]);
-  const [student, setStudent] = useState(initialRestaurantState);
+  const [student, setStudent] = useState(initialStudentState);
+
   const getStudent = (id) => {
     StudentDataService.findStudent(id)
       .then(response => {
@@ -101,7 +103,8 @@ const Student = props => {
                        <h11>
                          <strong>Course Name: </strong>{course.courseName}<br/>
                          <strong>Grade: </strong>{course.grade}<br/>
-                         <strong>courseBefore: </strong>{course.courseBefore}
+                         <strong>courseBefore: </strong>{course.courseBefore}<br/>
+                         <strong>unit: </strong>{course.units}
                          </h11>
                      </p>
                    </div>
@@ -117,7 +120,8 @@ const Student = props => {
                          <h11>
                            <strong>Course Name: </strong>{course.courseName}<br/>
                            <strong>Grade: </strong>{course.grade}<br/>
-                           <strong>courseBefore: </strong>{course.courseBefore}
+                           <strong>courseBefore: </strong>{course.courseBefore}<br/>
+                           <strong>unit: </strong>{course.units}
                            </h11>
                        </p>
                      </div>
@@ -132,7 +136,8 @@ const Student = props => {
                           <h11>
                             <strong>Course Name: </strong>{course.courseName}<br/>
                             <strong>Grade: </strong>{course.grade}<br/>
-                            <strong>courseBefore: </strong>{course.courseBefore}
+                            <strong>courseBefore: </strong>{course.courseBefore}<br/>
+                            <strong>unit: </strong>{course.units}
                             </h11>
                             </p>    
                        </div>
@@ -158,7 +163,8 @@ const Student = props => {
                        <h11>
                          <strong>Course Name: </strong>{course.courseName}<br/>
                          <strong>Grade: </strong>{course.grade}<br/>
-                         <strong>courseBefore: </strong>{course.courseBefore}
+                         <strong>courseBefore: </strong>{course.courseBefore}<br/>
+                         <strong>unit: </strong>{course.units}
                          </h11>
                      </p>
                    </div>
@@ -173,7 +179,8 @@ const Student = props => {
                          <h11>
                            <strong>Course Name: </strong>{course.courseName}<br/>
                            <strong>Grade: </strong>{course.grade}<br/>
-                           <strong>courseBefore: </strong>{course.courseBefore}
+                           <strong>courseBefore: </strong>{course.courseBefore}<br/>
+                           <strong>unit: </strong>{course.units}
                            </h11>
                        </p>
                      </div>
@@ -187,7 +194,8 @@ const Student = props => {
                           <h11>
                             <strong>Course Name: </strong>{course.courseName}<br/>
                             <strong>Grade: </strong>{course.grade}<br/>
-                            <strong>courseBefore: </strong>{course.courseBefore}
+                            <strong>courseBefore: </strong>{course.courseBefore}<br/>
+                            <strong>unit: </strong>{course.units}
                             </h11>
                             </p>    
                       </div>
