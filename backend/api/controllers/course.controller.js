@@ -1,6 +1,50 @@
 import CoursesDAO from "../../dao/coursesDAO.js"
 
 export default class CoursesController {
+  static async apiGetCourses(req, res, next) {
+    const coursesPerPage = req.query.coursesPerPage ? parseInt(req.query.coursesPerPage, 10) : 20
+    const page = req.query.page ? parseInt(req.query.page, 10) : 0
+    let filters = {}
+    if (req.query._id) {
+      filters._id = req.query._id
+    }else if (req.query.courseName) {
+      filters.courseName = req.query.courseName
+    } else if (req.query.grade) {
+      filters.grade = req.query.grade
+    } else if (req.query.semesterOfLearning) {
+        filters.semesterOfLearning = req.query.semesterOfLearning
+    } else if (req.query.yearsOfLearning) {
+      filters.yearsOfLearning = req.query.yearsOfLearning
+    } else if (req.query.units) {
+      filters.units = req.query.units
+    } else if (req.query.programStartDate) {
+      filters.programStartDate = req.query.programStartDate
+    } else if (req.query.programEndDate) {
+      filters.programEndDate = req.query.programEndDate
+    } else if (req.query.typeOfCourse) {
+        filters.typeOfCourse = req.query.typeOfCourse
+    } else if (req.query.courseBefore) {
+        filters.courseBefore = req.query.courseBefore
+    } else if (req.query.studentID) {
+        filters.studentID = req.query.studentID
+    }
+
+
+    const { coursesList, totalNumCourses} = await CoursesDAO.getCourses({
+      filters,
+      page,
+      coursesPerPage,
+    })
+
+    let response = {
+      courses: coursesList,
+      page: page,
+      filters: filters,
+      entries_per_page: coursesPerPage,
+      total_results: totalNumCourses,
+    }
+    res.json(response)
+  }
   static async apiPostCourse(req, res, next) {
     try {
       const courseName = req.body.courseName

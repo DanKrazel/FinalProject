@@ -15,6 +15,9 @@ router.route("/:id").get(StudentsCtrl.apiGetStudentByID)
 router.route("/course").post(CoursesCtrl.apiPostCourse)
                        .put(CoursesCtrl.apiUpdateCourse)
                        .delete(CoursesCtrl.apiDeleteCourse)
+                       .get(CoursesCtrl.apiGetCourses)
+                       .getbyID(CoursesCtrl.apiGetCoursesByStudentID)
+                       
 
 
 export default router

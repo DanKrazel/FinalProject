@@ -63,5 +63,62 @@ export default class CoursesDAO {
       return { error: e }
     }
   }
+  static async getCourses({
+    filters = null,
+    page = 0,
+    coursesPerPage = 20,
+  } = {}) {
+    let query
+    if (filters) {
+      if ("_id" in filters) {
+        query = { "_id": { $eq: filters["_id"] } }
+      } else if ("courseName" in filters) {
+        query = { "courseName": { $eq: filters["courseName"] } }
+      } else if ("grade" in filters) {
+        query = { "grade": { $eq: filters["grade"] } }
+      } else if ("semesterOfLearning" in filters) {
+        query = { "semesterOfLearning": { $eq: filters["semesterOfLearning"] } }
+      } else if ("yearsOfLearning" in filters) {
+        query = { "yearsOfLearning": { $eq: filters["yearsOfLearning"] } }
+      } else if ("units" in filters) {
+        query = { "units": { $eq: filters["units"] } }
+      } else if ("programStartDate" in filters) {
+        query = { "programStartDate": { $eq: filters["programStartDate"] } }
+      } else if ("programEndDate" in filters) {
+        query = { "programEndDate": { $eq: filters["unprogramEndDateits"] } }
+      } else if ("typeOfCourse" in filters) {
+        query = { "typeOfCourse": { $eq: filters["typeOfCourse"] } }
+      } else if ("courseBefore" in filters) {
+        query = { "courseBefore": { $eq: filters["courseBefore"] } }
+      } else if ("studentID" in filters) {
+        query = { "studentID": { $eq: filters["studentID"] } }
+      }
+    }
+
+    let cursor
+    
+    try {
+      cursor = await courses
+        .find(query)
+    } catch (e) {
+      console.error(`Unable to issue find command, ${e}`)
+      return { coursesList: [], totalNumCoursesList: 0 }
+    }
+
+    const displayCursor = cursor.limit(coursesPerPage).skip(coursesPerPage * page)
+
+    try {
+      const coursesList = await displayCursor.toArray()
+      const totalNumCourses = await courses.countDocuments(query)
+
+      return { coursesList, totalNumCourses }
+    } catch (e) {
+      console.error(
+        `Unable to convert cursor to array or problem counting documents, ${e}`,
+      )
+      return { coursesList: [], totalNumCourses: 0 }
+    }
+  }
+
 
 }
