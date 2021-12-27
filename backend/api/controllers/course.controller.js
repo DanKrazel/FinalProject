@@ -13,8 +13,8 @@ export default class CoursesController {
       filters.grade = req.query.grade
     } else if (req.query.semesterOfLearning) {
         filters.semesterOfLearning = req.query.semesterOfLearning
-    } else if (req.query.yearsOfLearning) {
-      filters.yearsOfLearning = req.query.yearsOfLearning
+    } else if (req.query.yearOfLearning) {
+      filters.yearOfLearning = req.query.yearOfLearning
     } else if (req.query.units) {
       filters.units = req.query.units
     } else if (req.query.programStartDate) {

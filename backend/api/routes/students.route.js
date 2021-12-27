@@ -16,7 +16,7 @@ router.route("/course").post(CoursesCtrl.apiPostCourse)
                        .put(CoursesCtrl.apiUpdateCourse)
                        .delete(CoursesCtrl.apiDeleteCourse)
                        .get(CoursesCtrl.apiGetCourses)
-                       .getbyID(CoursesCtrl.apiGetCoursesByStudentID)
+                       .get(CoursesCtrl.apiGetCoursesByStudentID)
                        
 
 

@@ -32,6 +32,8 @@ class CourseDataService {
     getNames(id) {
         return http.get(`/names`);
     }
+
+    
     
 }
     

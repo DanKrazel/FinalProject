@@ -78,8 +78,8 @@ export default class CoursesDAO {
         query = { "grade": { $eq: filters["grade"] } }
       } else if ("semesterOfLearning" in filters) {
         query = { "semesterOfLearning": { $eq: filters["semesterOfLearning"] } }
-      } else if ("yearsOfLearning" in filters) {
-        query = { "yearsOfLearning": { $eq: filters["yearsOfLearning"] } }
+      } else if ("yearOfLearning" in filters) {
+        query = { "yearOfLearning": { $eq: filters["yearOfLearning"] } }
       } else if ("units" in filters) {
         query = { "units": { $eq: filters["units"] } }
       } else if ("programStartDate" in filters) {
@@ -117,6 +117,51 @@ export default class CoursesDAO {
         `Unable to convert cursor to array or problem counting documents, ${e}`,
       )
       return { coursesList: [], totalNumCourses: 0 }
+    }
+  }
+
+  static async getCoursesByStudentID(id) {
+    try {
+      const pipeline = [
+        {
+            $match: {
+                _id: new ObjectId(id),
+            },
+        },
+        {
+          $lookup: {
+              from: "courses",
+              let: {
+                  id: "$_id",
+              },
+              pipeline: [
+                  {
+                      $match: {
+                          $expr: {
+                              $eq: ["$studentID", "$$id"],
+                          },
+                      },
+                  },
+                  {
+                      $sort: {
+                          date: -1,
+                      },
+                  },
+              ],
+              as: "courses",
+          },
+      },
+      {
+          $addFields: {
+              courses: "$courses",
+          },
+      },
+          ]
+        console.log(pipeline)
+      return await students.aggregate(pipeline).next()
+    } catch (e) {
+      console.error(`Something went wrong in getCoursesByStudentID: ${e}`)
+      throw e
     }
   }
 
