@@ -6,6 +6,8 @@ import { PDFExport, savePDF } from "@progress/kendo-react-pdf";
 import { ArcherContainer, ArcherElement } from 'react-archer';
 
 
+
+
 const Student = props => {
   const params = useParams();
   console.log(params.id)
@@ -92,36 +94,38 @@ const Student = props => {
             <strong> | נק״ז : </strong>{student.units}<br/>   
             </div>        
           </p>   
-          <div className="col-sm text-center bg-info" >    
+          <div className="card text-center " >     
             Year 1     
           </div>  
+          
            <div className="row">
-            <div className="col-sm">
+            <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
               Semester 1  
-            </div>           
+            </div>  
             {student.courses.length > 0 ? (
-             student.courses.map((course, index) => {   
+             student.courses.map((course, index) => {  
               if (course.yearOfLearning =='1'){
                 if ((course.grade>55 && course.semesterOfLearning=='1' )){
                return (
-                 <div className="col-sm text-white "  key={index} >      
-                   <div className="card">       
-                     <p className='bg-success text-white text-center  '>
+                 <div className="col-sm text-black "  key={index} >
+           
+                  
+                  <div className="card my-3 " >     
+                  <p className='bg-danger text-white text-center  rounded-circle h-90 my-3'>
                        <h11>
                          {course.courseName}<br/>
                          {course.grade}<br/>
                          {course.units}
                        </h11>
                      </p>
-                   </div>
-                  
+                     </div> 
                  </div> 
                 );}
                  else if (course.grade<56 && course.semesterOfLearning=='1' ){
                 return (      
                    <div className="col-sm text-white "  key={index} >      
-                     <div className="card">    
-                      <p className='bg-success text-white text-center  '>
+                     <div className="card my-3">    
+                     <p className='bg-danger text-white text-center  rounded-circle h-90 my-3'>
                        <h11>
                          {course.courseName}<br/>
                          {course.grade}<br/>
@@ -136,7 +140,7 @@ const Student = props => {
                   return ( 
                     <div className="col-sm text-white "  key={index} >      
                       <div className="card">    
-                         <p className='bg-success text-white text-center  '>
+                      <p className='bg-secondary text-white text-center  rounded-circle h-90 my-3'>
                           <h11>
                             {course.courseName}<br/>
                             {course.grade}<br/>
@@ -155,7 +159,7 @@ const Student = props => {
             )}
           </div>
           <div className="row">
-            <div className="col-sm">
+          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
               Semester 2  
             </div>    
             {student.courses.length > 0 ? (
@@ -164,14 +168,14 @@ const Student = props => {
                 if (course.grade>55 && course.semesterOfLearning=='2'){
                return (
                  <div className="col-sm text-white "  key={index} >      
-                   <div className="card">    
-                     <p className='bg-success text-white '>
+                   <div className="card my-3">    
+                   <p className='bg-success text-white text-center  rounded-circle h-90 my-3'>
                        <h11>
-                         <strong>Course Name: </strong>{course.courseName}<br/>
-                         <strong>Grade: </strong>{course.grade}<br/>
-                         <strong>courseBefore: </strong>{course.courseBefore}<br/>
-                         <strong>unit: </strong>{course.units}
-                         </h11>
+                         {course.courseName}<br/>
+                         {course.grade}<br/>
+                         {course.units}
+                         
+                       </h11>
                      </p>
                    </div>
                   
@@ -180,30 +184,28 @@ const Student = props => {
                 else if (course.grade<56 && course.semesterOfLearning=='2'){
                 return ( 
                    <div className="col-sm text-white "  key={index} >     
-                     <div className="card">    
-                       <p className='bg-danger text-white '>
-                         <h11>
-                           <strong>Course Name: </strong>{course.courseName}<br/>
-                           <strong>Grade: </strong>{course.grade}<br/>
-                           <strong>courseBefore: </strong>{course.courseBefore}<br/>
-                           <strong>unit: </strong>{course.units}
-                           </h11>
-                       </p>
+                     <div className="card my-3">    
+                     <p className='bg-danger text-white text-center  rounded-circle h-90 my-3'>
+                       <h11>
+                         {course.courseName}<br/>
+                         {course.grade}<br/>
+                         {course.units}
+                       </h11>
+                     </p>
                      </div>
                    </div> 
                 );}
                 else if (course.semesterOfLearning=='2'){
                   return ( 
                     <div className="col-sm text-white "  key={index} >      
-                      <div className="card">    
-                        <p className='bg-secondary text-white '>
-                          <h11>
-                            <strong>Course Name: </strong>{course.courseName}<br/>
-                            <strong>Grade: </strong>{course.grade}<br/>
-                            <strong>courseBefore: </strong>{course.courseBefore}<br/>
-                            <strong>unit: </strong>{course.units}
-                            </h11>
-                            </p>    
+                      <div className="card my-3">    
+                      <p className='bg-secondary text-white text-center  rounded-circle h-90 my-3'>
+                       <h11>
+                         {course.courseName}<br/>
+                         {course.grade}<br/>
+                         {course.units}
+                       </h11>
+                     </p>   
                       </div>
                     </div>
                 );}
@@ -215,11 +217,11 @@ const Student = props => {
             </div>
             )}
           </div>
-          <div className="col-sm text-center bg-info" >    
+          <div className="card text-center " >    
             Year 2    
           </div>  
           <div className="row">    
-            <div className="col-sm">
+          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
               Semester 1  
             </div>            
             {student.courses.length > 0 ? (
@@ -228,8 +230,8 @@ const Student = props => {
                 if (course.grade>55 && course.semesterOfLearning=='1'){
                 return (
                  <div className="col-sm text-white "  key={index} >      
-                   <div className="card">    
-                        <p className='bg-success text-white text-center  '>
+                   <div className="card my-3">    
+                        <p className='bg-success text-white text-center rounded-circle h-90 my-3'>
                           <h11>
                             {course.courseName}<br/>
                             {course.grade}<br/>
@@ -243,8 +245,8 @@ const Student = props => {
                 else if (course.grade<56 && course.semesterOfLearning=='1'){
                 return ( 
                    <div className="col-sm text-white "  key={index} >     
-                     <div className="card">    
-                     <p className='bg-success text-white text-center  '>
+                       <div className="card my-3">    
+                      <p className='bg-danger text-white text-center  rounded-circle h-90 my-3'>
                           <h11>
                             {course.courseName}<br/>
                             {course.grade}<br/>
@@ -257,8 +259,8 @@ const Student = props => {
                 else if (course.semesterOfLearning=='1'){
                   return ( 
                     <div className="col-sm text-white "  key={index} >      
-                      <div className="card">    
-                      <p className='bg-success text-white text-center  '>
+                        <div className="card my-3">    
+                      <p className='bg-secondary text-white text-center  rounded-circle h-90 my-3'>
                           <h11>
                             {course.courseName}<br/>
                             {course.grade}<br/>
@@ -277,7 +279,7 @@ const Student = props => {
             )}
           </div>
           <div className="row">
-            <div className="col-sm">
+          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
               Semester 2  
             </div>      
             {student.courses.length > 0  ? (
@@ -286,8 +288,8 @@ const Student = props => {
                 if (course.grade>55 && course.semesterOfLearning=='2'){
                return (
                  <div className="col-sm text-white "  key={index} >      
-                   <div className="card">    
-                        <p className='bg-success text-white text-center  '>
+                     <div className="card my-3">    
+                      <p className='bg-success text-white text-center  rounded-circle h-90 my-3'>
                           <h11>
                             {course.courseName}<br/>
                             {course.grade}<br/>
@@ -301,8 +303,8 @@ const Student = props => {
                 else if (course.grade<56 && course.semesterOfLearning=='2'){
                 return ( 
                    <div className="col-sm text-white "  key={index} >     
-                     <div className="card">    
-                     <p className='bg-success text-white text-center  '>
+                       <div className="card my-3">    
+                      <p className='bg-danger text-white text-center  rounded-circle h-90 my-3'>
                           <h11>
                             {course.courseName}<br/>
                             {course.grade}<br/>
@@ -315,8 +317,8 @@ const Student = props => {
                 else if (course.semesterOfLearning=='2'){
                   return ( 
                     <div className="col-sm text-white "  key={index} >      
-                      <div className="card">    
-                        <p className='bg-success text-white text-center  '>
+                        <div className="card my-3">    
+                      <p className='bg-secondary text-white text-center  rounded-circle h-90 my-3'>
                           <h11>
                             {course.courseName}<br/>
                             {course.grade}<br/>
@@ -335,11 +337,11 @@ const Student = props => {
             )}
             
           </div> 
-          <div className="col-sm text-center bg-info" >    
+          <div className="card text-center " >    
             Year 3    
           </div>  
           <div className="row">    
-          <div className="col-sm">
+          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
               Semester 1  
             </div>
             {student.courses.length > 0 ? (
@@ -348,15 +350,14 @@ const Student = props => {
                 if (course.grade>55 && course.semesterOfLearning=='1'){
                 return (
                  <div className="col-sm text-white "  key={index} >      
-                   <div className="card">    
-                     <p className='bg-success text-white '>
-                       <h11>
-                         <strong>Course Name: </strong>{course.courseName}<br/>
-                         <strong>Grade: </strong>{course.grade}<br/>
-                         <strong>courseBefore: </strong>{course.courseBefore}<br/>
-                         <strong>unit: </strong>{course.units}
-                         </h11>
-                     </p>
+                     <div className="card my-3">    
+                      <p className='bg-success text-white text-center  rounded-circle h-90 my-3'>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>  
                    </div>
                   
                  </div> 
@@ -364,30 +365,28 @@ const Student = props => {
                 else if (course.grade<56 && course.semesterOfLearning=='1'){
                 return ( 
                    <div className="col-sm text-white "  key={index} >     
-                     <div className="card">    
-                       <p className='bg-danger text-white '>
-                         <h11>
-                           <strong>Course Name: </strong>{course.courseName}<br/>
-                           <strong>Grade: </strong>{course.grade}<br/>
-                           <strong>courseBefore: </strong>{course.courseBefore}<br/>
-                           <strong>unit: </strong>{course.units}
-                           </h11>
-                       </p>
+                       <div className="card my-3">    
+                      <p className='bg-danger text-white text-center  rounded-circle h-90 my-3'>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>  
                      </div>
                    </div> 
                 );}
                 else if (course.semesterOfLearning=='1'){
                   return ( 
                     <div className="col-sm text-white "  key={index} >      
-                      <div className="card">    
-                        <p className='bg-secondary text-white '>
+                        <div className="card my-3">    
+                      <p className='bg-secondary text-white text-center  rounded-circle h-90 my-3'>
                           <h11>
-                            <strong>Course Name: </strong>{course.courseName}<br/>
-                            <strong>Grade: </strong>{course.grade}<br/>
-                            <strong>courseBefore: </strong>{course.courseBefore}<br/>
-                            <strong>unit: </strong>{course.units}
-                            </h11>
-                            </p>    
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>     
                       </div>
                     </div>
                 );}
@@ -400,7 +399,7 @@ const Student = props => {
             )}
           </div>
           <div className="row">
-          <div className="col-sm">
+          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
               Semester 2 
             </div> 
             {student.courses.length > 0  ? (
@@ -410,14 +409,13 @@ const Student = props => {
                return (
                  <div className="col-sm text-white "  key={index} >      
                    <div className="card">    
-                     <p className='bg-success text-white '>
-                       <h11>
-                         <strong>Course Name: </strong>{course.courseName}<br/>
-                         <strong>Grade: </strong>{course.grade}<br/>
-                         <strong>courseBefore: </strong>{course.courseBefore}<br/>
-                         <strong>unit: </strong>{course.units}
-                         </h11>
-                     </p>
+                   <p className='bg-success text-white text-center  '>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>  
                    </div>
                   
                  </div> 
@@ -426,14 +424,13 @@ const Student = props => {
                 return ( 
                    <div className="col-sm text-white "  key={index} >     
                      <div className="card">    
-                       <p className='bg-danger text-white '>
-                         <h11>
-                           <strong>Course Name: </strong>{course.courseName}<br/>
-                           <strong>Grade: </strong>{course.grade}<br/>
-                           <strong>courseBefore: </strong>{course.courseBefore}<br/>
-                           <strong>unit: </strong>{course.units}
-                           </h11>
-                       </p>
+                     <p className='bg-success text-white text-center  '>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>  
                      </div>
                    </div> 
                 );}
@@ -441,14 +438,13 @@ const Student = props => {
                   return ( 
                     <div className="col-sm text-white "  key={index} >      
                       <div className="card">    
-                        <p className='bg-secondary text-white '>
+                      <p className='bg-success text-white text-center  '>
                           <h11>
-                            <strong>Course Name: </strong>{course.courseName}<br/>
-                            <strong>Grade: </strong>{course.grade}<br/>
-                            <strong>courseBefore: </strong>{course.courseBefore}<br/>
-                            <strong>unit: </strong>{course.units}
-                            </h11>
-                            </p>    
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>      
                       </div>
                     </div>
                 );}
@@ -461,11 +457,12 @@ const Student = props => {
             )}
             
           </div> 
-          <div className="col-sm text-center bg-info" >    
+          <div className="card text-center " >      
             Year 4    
           </div>  
           <div className="row">    
-          <div className="col-sm">
+          
+          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
               Semester 1  
             </div>          
             {student.courses.length > 0 ? (
@@ -523,7 +520,7 @@ const Student = props => {
             )}
           </div>
           <div className="row">
-          <div className="col-sm">
+          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
               Semester 2 
             </div>        
             {student.courses.length > 0  ? (
@@ -532,7 +529,7 @@ const Student = props => {
                 if (course.grade>55 && course.semesterOfLearning=='2'){
                return (
                  <div className="col-sm text-white "  key={index} >      
-                   <div className="card">    
+                   <div className="card " >    
                    <p className='bg-success text-white text-center  '>
                           <h11>
                             {course.courseName}<br/>
