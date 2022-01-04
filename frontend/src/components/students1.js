@@ -4,8 +4,7 @@ import { useParams  } from "react-router-dom";
 /**import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';*/
 import { PDFExport, savePDF } from "@progress/kendo-react-pdf";
 import { ArcherContainer, ArcherElement } from 'react-archer';
-import styled from 'styled-components'
-import { useTable, useBlockLayout, useResizeColumns } from 'react-table'
+
 
 
 
@@ -66,75 +65,6 @@ const Student = props => {
       }
     }
 
-    export const columns = [
-      {
-          Header: "Date",
-          accessor: "date",
-        },
-
-      {
-          Header: "Name",
-          accessor: "user",
-      },
-
-      {
-          Header: "Amount",
-          accessor: "amount",
-      },
-
-      {
-          Header: "Category",
-          accessor: "category",
-      },
-
-      {
-          Header: "Status",
-          accessor: "status",
-          }
-      }
-  ]
-  
-  function Table({ columns, data }) {
-      // Use the state and functions returned from useTable to build your UI
-      const {
-          getTableProps,
-          getTableBodyProps,
-          headerGroups,
-          rows,
-          prepareRow,
-      } = useTable({
-          columns,
-          data,
-      })
-  
-      // Render the UI for your table
-      return (
-          <table {...getTableProps()}>
-  
-              <thead>
-                  {headerGroups[1].headers.map(column => (
-                      <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-                  ))}
-              </thead>
-              <tbody {...getTableBodyProps()}>
-                  {rows.map(
-                      (row, i) => {
-                          prepareRow(row);
-                          return (
-                              <tr {...row.getRowProps()}>
-                                  {row.cells.map(cell => {
-                                      return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                                  })}
-                              </tr>
-                          )
-                      }
-                  )}
-              </tbody>
-          </table>
-      )
-  }
-  
-
   return (
     <div>
       <div className="example-config">
@@ -164,26 +94,487 @@ const Student = props => {
             <strong> | נק״ז : </strong>{student.units}<br/>   
             </div>        
           </p>   
-          <div className="col-sm text-center bg-white" >    
+          <div className="card text-center " >     
             Year 1     
           </div>  
-           <div className="row">
+            <div className="row">
+            <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
+              Semester 1  
+            </div>  
             {student.courses.length > 0 ? (
-             student.courses.map((course) => {  
-              return (
-                <Styles>
-                    <Table columns={[1,2,3,4,5,6]} data={course} />
-                </Styles>
-            )
-        
-      }) 
+             student.courses.map((course, index) => {  
+              if (course.yearOfLearning =='1'){
+                if ((course.grade>55 && course.semesterOfLearning=='1' )){
+                return (
+                 <div className="col-sm text-black "  key={index} >
+                  <div className="card my-3 " >     
+                  <p className='bg-success text-white text-center  rounded-circle h-90 my-3'>
+                       <h11>
+                         {course.courseName}<br/>
+                         {course.grade}<br/>
+                         {course.units}
+                       </h11>
+                     </p>
+                     </div> 
+                 </div> 
+                );}
+                else if (course.grade<56 && course.semesterOfLearning=='1' ){
+                return (      
+                   <div className="col-sm text-white "  key={index} >      
+                     <div className="card my-3">    
+                     <p className='bg-danger text-white text-center  rounded-circle h-90 my-3'>
+                       <h11>
+                         {course.courseName}<br/>
+                         {course.grade}<br/>
+                         {course.units}
+                       </h11>
+                      </p>
+                     </div>
+                    
+                   </div> 
+                );}
+                else if (course.semesterOfLearning=='1' ){
+                  return ( 
+                    <div className="col-sm text-white "  key={index} >      
+                      <div className="card">    
+                      <p className='bg-secondary text-white text-center  rounded-circle h-90 my-3'>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>
+                       </div>
+                    </div>         
+                );}
+              }
+             }) 
             ) : (
             <div className="col-sm-4">
               <p>No courses yet.</p>
             </div>
             )}
           </div>
-              
+          <div className="row">
+          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
+              Semester 2  
+            </div>    
+            {student.courses.length > 0 ? (
+             student.courses.map((course, index) => {     
+              if (course.yearOfLearning =='1'){ 
+                if (course.grade>55 && course.semesterOfLearning=='2'){
+               return (
+                 <div className="col-sm text-white "  key={index} >      
+                   <div className="card my-3">    
+                   <p className='bg-success text-white text-center  rounded-circle h-90 my-3'>
+                       <h11>
+                         {course.courseName}<br/>
+                         {course.grade}<br/>
+                         {course.units}
+                         
+                       </h11>
+                     </p>
+                   </div>
+                  
+                 </div> 
+                );}
+                else if (course.grade<56 && course.semesterOfLearning=='2'){
+                return ( 
+                   <div className="col-sm text-white "  key={index} >     
+                     <div className="card my-3">    
+                     <p className='bg-danger text-white text-center  rounded-circle h-90 my-3'>
+                       <h11>
+                         {course.courseName}<br/>
+                         {course.grade}<br/>
+                         {course.units}
+                       </h11>
+                     </p>
+                     </div>
+                   </div> 
+                );}
+                else if (course.semesterOfLearning=='2'){
+                  return ( 
+                    <div className="col-sm text-white "  key={index} >      
+                      <div className="card my-3">    
+                      <p className='bg-secondary text-white text-center  rounded-circle h-90 my-3'>
+                       <h11>
+                         {course.courseName}<br/>
+                         {course.grade}<br/>
+                         {course.units}
+                       </h11>
+                     </p>   
+                      </div>
+                    </div>
+                );}
+              }
+            })
+            ) : (
+            <div className="col-sm-4">
+              <p>No courses yet.</p>
+            </div>
+            )}
+          </div>
+          <div className="card text-center " >    
+            Year 2    
+          </div>  
+          <div className="row">    
+          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
+              Semester 1  
+            </div>            
+            {student.courses.length > 0 ? (
+             student.courses.map((course, index) => {   
+              if (course.yearOfLearning =='2'){   
+                if (course.grade>55 && course.semesterOfLearning=='1'){
+                return (
+                 <div className="col-sm text-white "  key={index} >      
+                   <div className="card my-3">    
+                        <p className='bg-success text-white text-center rounded-circle h-90 my-3'>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>
+                   </div>
+                  
+                 </div> 
+                );}
+                else if (course.grade<56 && course.semesterOfLearning=='1'){
+                return ( 
+                   <div className="col-sm text-white "  key={index} >     
+                       <div className="card my-3">    
+                      <p className='bg-danger text-white text-center  rounded-circle h-90 my-3'>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>
+                     </div>
+                   </div> 
+                );}
+                else if (course.semesterOfLearning=='1'){
+                  return ( 
+                    <div className="col-sm text-white "  key={index} >      
+                        <div className="card my-3">    
+                      <p className='bg-secondary text-white text-center  rounded-circle h-90 my-3'>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>    
+                      </div>
+                    </div>
+                );}
+             }
+            })
+            ) : (
+            <div className="col-sm-4">
+              <p>No courses yet.</p>
+            </div>
+            )}
+          </div>
+          <div className="row">
+          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
+              Semester 2  
+            </div>      
+            {student.courses.length > 0  ? (
+             student.courses.map((course, index) => {
+              if (course.yearOfLearning =='2'){      
+                if (course.grade>55 && course.semesterOfLearning=='2'){
+               return (
+                 <div className="col-sm text-white "  key={index} >      
+                     <div className="card my-3">    
+                      <p className='bg-success text-white text-center  rounded-circle h-90 my-3'>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>
+                   </div>
+                  
+                 </div> 
+                );}
+                else if (course.grade<56 && course.semesterOfLearning=='2'){
+                return ( 
+                   <div className="col-sm text-white "  key={index} >     
+                       <div className="card my-3">    
+                      <p className='bg-danger text-white text-center  rounded-circle h-90 my-3'>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>
+                     </div>
+                   </div> 
+                );}
+                else if (course.semesterOfLearning=='2'){
+                  return ( 
+                    <div className="col-sm text-white "  key={index} >      
+                        <div className="card my-3">    
+                      <p className='bg-secondary text-white text-center  rounded-circle h-90 my-3'>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>   
+                      </div>
+                    </div>
+                );}
+              }
+             })
+            ) : (
+            <div className="col-sm-4">
+              <p>No courses yet.</p>
+            </div>
+            )}
+            
+          </div> 
+          <div className="card text-center " >    
+            Year 3    
+          </div>  
+          <div className="row">    
+          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
+              Semester 1  
+            </div>
+            {student.courses.length > 0 ? (
+             student.courses.map((course, index) => {   
+              if (course.yearOfLearning =='3'){   
+                if (course.grade>55 && course.semesterOfLearning=='1'){
+                return (
+                 <div className="col-sm text-white "  key={index} >      
+                     <div className="card my-3">    
+                      <p className='bg-success text-white text-center  rounded-circle h-90 my-3'>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>  
+                   </div>
+                  
+                 </div> 
+                );}
+                else if (course.grade<56 && course.semesterOfLearning=='1'){
+                return ( 
+                   <div className="col-sm text-white "  key={index} >     
+                       <div className="card my-3">    
+                      <p className='bg-danger text-white text-center  rounded-circle h-90 my-3'>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>  
+                     </div>
+                   </div> 
+                );}
+                else if (course.semesterOfLearning=='1'){
+                  return ( 
+                    <div className="col-sm text-white "  key={index} >      
+                        <div className="card my-3">    
+                      <p className='bg-secondary text-white text-center  rounded-circle h-90 my-3'>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>     
+                      </div>
+                    </div>
+                );}
+             }
+            })
+            ) : (
+            <div className="col-sm-4">
+              <p>No courses yet.</p>
+            </div>
+            )}
+          </div>
+          <div className="row">
+          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
+              Semester 2 
+            </div> 
+            {student.courses.length > 0  ? (
+             student.courses.map((course, index) => {
+              if (course.yearOfLearning =='3'){      
+                if (course.grade>55 && course.semesterOfLearning=='2'){
+               return (
+                 <div className="col-sm text-white "  key={index} >      
+                   <div className="card">    
+                   <p className='bg-success text-white text-center  '>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>  
+                   </div>
+                  
+                 </div> 
+                );}
+                else if (course.grade<56 && course.semesterOfLearning=='2'){
+                return ( 
+                   <div className="col-sm text-white "  key={index} >     
+                     <div className="card">    
+                     <p className='bg-success text-white text-center  '>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>  
+                     </div>
+                   </div> 
+                );}
+                else if (course.semesterOfLearning=='2'){
+                  return ( 
+                    <div className="col-sm text-white "  key={index} >      
+                      <div className="card">    
+                      <p className='bg-success text-white text-center  '>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>      
+                      </div>
+                    </div>
+                );}
+              }
+             })
+            ) : (
+            <div className="col-sm-4">
+              <p>No courses yet.</p>
+            </div>
+            )}
+            
+          </div> 
+          <div className="card text-center " >      
+            Year 4    
+          </div>  
+          <div className="row">    
+          
+          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
+              Semester 1  
+            </div>          
+            {student.courses.length > 0 ? (
+             student.courses.map((course, index) => {   
+              if (course.yearOfLearning =='4'){   
+                if (course.grade>55 && course.semesterOfLearning=='1'){
+                return (
+                 <div className="col-sm text-white "  key={index} >      
+                   <div className="card">    
+                   <p className='bg-success text-white text-center  '>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>
+                   </div>
+                  
+                 </div> 
+                );}
+                else if (course.grade<56 && course.semesterOfLearning=='1'){
+                return ( 
+                   <div className="col-sm text-white "  key={index} >     
+                     <div className="card">    
+                     <p className='bg-success text-white text-center  '>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>
+                     </div>
+                   </div> 
+                );}
+                else if (course.semesterOfLearning=='1'){
+                  return ( 
+                    <div className="col-sm text-white "  key={index} >      
+                      <div className="card">    
+                      <p className='bg-success text-white text-center  '>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>    
+                      </div>
+                    </div>
+                );}
+             }
+            })
+            ) : (
+            <div className="col-sm-4">
+              <p>No courses yet.</p>
+            </div>
+            )}
+          </div>
+          <div className="row">
+          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
+              Semester 2 
+            </div>        
+            {student.courses.length > 0  ? (
+             student.courses.map((course, index) => {
+              if (course.yearOfLearning =='4'){      
+                if (course.grade>55 && course.semesterOfLearning=='2'){
+               return (
+                 <div className="col-sm text-white "  key={index} >      
+                   <div className="card " >    
+                   <p className='bg-success text-white text-center  '>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>
+                   </div>
+                  
+                 </div> 
+                );}
+                else if (course.grade<56 && course.semesterOfLearning=='2'){
+                return ( 
+                   <div className="col-sm text-white "  key={index} >     
+                     <div className="card">    
+                     <p className='bg-success text-white text-center  '>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>
+                     </div>
+                   </div> 
+                );}
+                else if (course.semesterOfLearning=='2'){
+                  return ( 
+                    <div className="col-sm text-white "  key={index} >      
+                      <div className="card">    
+                      <p className='bg-success text-white text-center  '>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>   
+                      </div>
+                    </div>
+                );}
+              }
+             })
+            ) : (
+            <div className="col-sm-4">
+              <p>No courses yet.</p>
+            </div>
+            )}
+            
+          </div>            
           </div>        
         ) : (
         <div>

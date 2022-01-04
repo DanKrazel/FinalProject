@@ -5,9 +5,6 @@ import { useParams  } from "react-router-dom";
 import { PDFExport, savePDF } from "@progress/kendo-react-pdf";
 import { ArcherContainer, ArcherElement } from 'react-archer';
 
-
-
-
 const Student = props => {
   const params = useParams();
   console.log(params.id)
@@ -97,8 +94,7 @@ const Student = props => {
           <div className="card text-center " >     
             Year 1     
           </div>  
-          
-           <div className="row">
+            <div className="row">
             <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
               Semester 1  
             </div>  
@@ -106,12 +102,10 @@ const Student = props => {
              student.courses.map((course, index) => {  
               if (course.yearOfLearning =='1'){
                 if ((course.grade>55 && course.semesterOfLearning=='1' )){
-               return (
+                return (
                  <div className="col-sm text-black "  key={index} >
-           
-                  
                   <div className="card my-3 " >     
-                  <p className='bg-danger text-white text-center  rounded-circle h-90 my-3'>
+                  <p className='bg-success text-white text-center  rounded-circle h-90 my-3'>
                        <h11>
                          {course.courseName}<br/>
                          {course.grade}<br/>
@@ -121,7 +115,7 @@ const Student = props => {
                      </div> 
                  </div> 
                 );}
-                 else if (course.grade<56 && course.semesterOfLearning=='1' ){
+                else if (course.grade<56 && course.semesterOfLearning=='1' ){
                 return (      
                    <div className="col-sm text-white "  key={index} >      
                      <div className="card my-3">    

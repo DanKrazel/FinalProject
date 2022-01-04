@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import AddStudent from "./components/add-student";
 import Student from "./components/students";
 import StudentsList from "./components/students-list";
+import Downloadcsv from "./components/downloadcsv";
 import Login from "./components/login";
 import student from "./services/studentService";
 
@@ -58,7 +59,10 @@ function App() {
           path="/login"
           element = { <Login login={login} /> }
         />
-      </Routes>
+         <Route 
+          path="/Downloadcsv"
+          element = { <Downloadcsv/> } />
+          </Routes>
     </div>
   </div>
   );
