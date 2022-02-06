@@ -85,14 +85,14 @@ export default class StudentsDAO {
     }
   }
 
-  static async addStudent (studentID, name, average, units, courses) {
+  static async addStudent (studentID, name, average, units, years) {
     try {
       const studentDoc = { 
           student_id: studentID,
           name: name,
           average: average,
           units: units,
-          courses: courses}
+          years: years}
 
       return await students.insertOne(studentDoc)
     } catch (e) {

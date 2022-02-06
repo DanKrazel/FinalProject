@@ -158,7 +158,7 @@ const StudentsList = props => {
                     <strong>Units: </strong>{student.units}
                   </p>
                   <div className="row">
-                  <Link to={"/Downloadcsv/"} className="btn btn-primary col-lg-5 mx-1 mb-1">
+                  <Link to={"/Downloadcsv/"+student._id} className="btn btn-primary col-lg-5 mx-1 mb-1">
                     View Students
                   </Link>
                   </div>

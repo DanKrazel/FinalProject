@@ -60,8 +60,8 @@ function App() {
           element = { <Login login={login} /> }
         />
          <Route 
-          path="/Downloadcsv"
-          element = { <Downloadcsv/> } />
+          path="/Downloadcsv/:id"
+          element = { <Downloadcsv user={user}/> } />
           </Routes>
     </div>
   </div>

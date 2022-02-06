@@ -64,11 +64,13 @@ export default class  StudentsController {
       const name = req.body.name
       const average = req.body.average
       const units = req.body.units
+      const years = req.body.years
       const StudentResponse = await StudentsDAO.addStudent(
         studentID,
         name,
         average,
         units,
+        years,
       )
       res.json({ status: "success" })
     } catch (e) {

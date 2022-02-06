@@ -1,4 +1,5 @@
 import mongodb from "mongodb"
+import csvtojson from "csvtojson"
 const ObjectId = mongodb.ObjectId
 
 let courses
@@ -15,13 +16,15 @@ export default class CoursesDAO {
     }
   }
 
-  static async addCourse(courseName, grade, semesterOfLearning, yearOfLearning ,units, programStartDate, programEndDate, typeOfCourse, courseBefore, studentID) {
+  static async addCourse(codeCourse, courseName, grade, semesterOfLearning, yearOfLearning ,units, programStartDate, programEndDate, typeOfCourse, courseBefore, studentID) {
     try {
-      const courseDoc = { 
-          courseName: courseName,
+      const courseDoc = {
+          codeCourse : codeCourse,
+          courseName : courseName,
           grade: grade,
           semesterOfLearning: semesterOfLearning,
           yearOfLearning: yearOfLearning,
+          englishUnits : englishUnits,
           units: units,
           programStartDate: programStartDate,
           programEndDate: programEndDate,
@@ -51,7 +54,6 @@ export default class CoursesDAO {
   }
 
   static async deleteCourse(courseID) {
-
     try {
       const deleteResponse = await courses.deleteOne({
         _id: ObjectId(courseID),
@@ -63,6 +65,20 @@ export default class CoursesDAO {
       return { error: e }
     }
   }
+
+  static async deleteCoursesByStudentID(studentID) {
+    try {
+      const deleteResponse = await courses.deleteMany({
+        studentID: ObjectId(studentID),
+      })
+
+      return deleteResponse
+    } catch (e) {
+      console.error(`Unable to delete course: ${e}`)
+      return { error: e }
+    }
+  }
+
   static async getCourses({
     filters = null,
     page = 0,
@@ -72,6 +88,8 @@ export default class CoursesDAO {
     if (filters) {
       if ("_id" in filters) {
         query = { "_id": { $eq: filters["_id"] } }
+      } else if ("codeCourse" in filters) {
+        query = { "codeCourse": { $eq: filters["codeCourse"] } }
       } else if ("courseName" in filters) {
         query = { "courseName": { $eq: filters["courseName"] } }
       } else if ("grade" in filters) {
@@ -80,6 +98,8 @@ export default class CoursesDAO {
         query = { "semesterOfLearning": { $eq: filters["semesterOfLearning"] } }
       } else if ("yearOfLearning" in filters) {
         query = { "yearOfLearning": { $eq: filters["yearOfLearning"] } }
+      } else if ("englishUnits" in filters) {
+        query = { "englishUnits": { $eq: filters["englishUnits"] } }
       } else if ("units" in filters) {
         query = { "units": { $eq: filters["units"] } }
       } else if ("programStartDate" in filters) {
@@ -165,5 +185,43 @@ export default class CoursesDAO {
     }
   }
 
+  static async uploadCSVtoDB (fileName, studentID) {
+    // CSV file name
+      //const fileName = "sample.csv";
+      var arrayToInsert = [];
+      console.log(fileName)
+      csvtojson().fromFile(fileName).then(source => {
+      // Fetching the all data from each row
+      for (var i = 0; i < source.length; i++) {
+        var oneRow = {
+          codeCourse: source[i]["קוד קורס"],
+          semesterOfLearning: source[i]["סמס"],
+          courseName: source[i]["שם קורס"],
+          typeOfCourse: source[i]["סוג"],
+          englishUnits: source[i]["שס"],
+          units: source[i]["נזיכוי"],
+          grade: source[i]["ציון"],
+          studentID: ObjectId(studentID)
+        };
+        arrayToInsert.push(oneRow);
+      }
+      courses.insertMany(arrayToInsert, (err, result) => {
+        if (err)
+          console.log(err);
+        if(result){
+            console.log("Import CSV into database successfully.");
+        }
+       //inserting into the table "courses"    
+    });
+  });
+}
 
+  static async uploadFiletoDB (file) {
+    try {
+      courses.insertOne(file)
+  } catch (e) {
+    console.log(`api, ${e}`)
+    res.status(500).json({ error: e })
+  }
+  }
 }

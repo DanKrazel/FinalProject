@@ -42,6 +42,7 @@ const Student = props => {
     getStudent(params.id)
     retrieveStudents()
   }, []);
+
   const retrieveStudents = () => {
     StudentDataService.getAll()
       .then(response => {
@@ -73,7 +74,7 @@ const Student = props => {
         Send PDF to verification 
       </button>
       <button className="k-button" onClick={exportPDFWithComponent}>
-        Save PDF to Blockain
+        Save PDF to Blockchain
       </button>
     </div>
     

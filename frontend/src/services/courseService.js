@@ -14,13 +14,17 @@ class CourseDataService {
     } 
 
     createCourse(data) {
-        return http.post("/course-new", data);
+        return http.post("/course", data);
     }
 
     findCourse(id){
         return http.get(`/${id}`);
     }
     
+    uploadCourse(data){
+        return http.post("/uploadCourses", data);
+    }
+
     updateCourse(data) {
         return http.put("/course-edit", data);
     }

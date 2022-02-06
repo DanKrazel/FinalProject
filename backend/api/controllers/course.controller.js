@@ -7,6 +7,8 @@ export default class CoursesController {
     let filters = {}
     if (req.query._id) {
       filters._id = req.query._id
+    }else if (req.query.codeCourse) {
+      filters.codeCourse = req.query.codeCourse
     }else if (req.query.courseName) {
       filters.courseName = req.query.courseName
     } else if (req.query.grade) {
@@ -15,6 +17,8 @@ export default class CoursesController {
         filters.semesterOfLearning = req.query.semesterOfLearning
     } else if (req.query.yearOfLearning) {
       filters.yearOfLearning = req.query.yearOfLearning
+    } else if (req.query.englishUnits) {
+      filters.englishUnits = req.query.englishUnits
     } else if (req.query.units) {
       filters.units = req.query.units
     } else if (req.query.programStartDate) {
@@ -47,10 +51,12 @@ export default class CoursesController {
   }
   static async apiPostCourse(req, res, next) {
     try {
+      const codeCourse = req.body.codeCourse
       const courseName = req.body.courseName
       const grade = req.body.grade
       const semesterOfLearning = req.body.semesterOfLearning
       const yearOfLearning = req.body.yearOfLearning
+      const englishUnits = req.body.englishUnits
       const units = req.body.units
       const programStartDate = req.body.programStartDate
       const programEndDate = req.body.programEndDate
@@ -59,10 +65,12 @@ export default class CoursesController {
       const studentID = req.body.studentID
 
       const CourseResponse = await CoursesDAO.addCourse(
+        codeCourse,
         courseName,
         grade,
         semesterOfLearning,
         yearOfLearning,
+        englishUnits,
         units,
         programStartDate,
         programEndDate,
@@ -113,10 +121,23 @@ export default class CoursesController {
 
   static async apiDeleteCourse(req, res, next) {
     try {
-        
+      const courseID = req.query.courseID
       console.log(courseID)
       const courseResponse = await CoursesDAO.deleteCourse(
         courseID,
+      )
+      res.json({ status: "success" })
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  }
+
+  static async apiDeleteCourseBystudentID(req, res, next) {
+    try {
+      const studentID = req.params.id || {}
+      console.log(studentID)
+      const courseResponse = await CoursesDAO.deleteCoursesByStudentID(
+        studentID
       )
       res.json({ status: "success" })
     } catch (e) {
@@ -134,6 +155,30 @@ export default class CoursesController {
         return
       }
       res.json(courses)
+    } catch (e) {
+      console.log(`api, ${e}`)
+      res.status(500).json({ error: e })
+    }
+  }
+
+  static async apiUploadCoursesToDB(req, res, next){
+    try {
+      //const filename = "C:/Users/dankr/OneDrive/Documents/GitHub/FinalProject/backend/csvFile/newTestCSV.csv"
+      //console.log(filename)
+      let file = req.body.filename
+      let studentID = req.body.studentID
+      console.log(file)
+      console.log(studentID)
+      //console.log('id',studentID)
+      const CourseResponse = await CoursesDAO.uploadCSVtoDB(
+        file, 
+        studentID
+        )
+      if(CourseResponse)
+        res.json({ status: "success" })
+      else
+        res.json({ status: "failed" })
+      //res.json(CourseResponse)
     } catch (e) {
       console.log(`api, ${e}`)
       res.status(500).json({ error: e })

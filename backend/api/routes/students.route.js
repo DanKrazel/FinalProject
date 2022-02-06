@@ -17,6 +17,8 @@ router.route("/course").post(CoursesCtrl.apiPostCourse)
                        .delete(CoursesCtrl.apiDeleteCourse)
                        .get(CoursesCtrl.apiGetCourses)
                        .get(CoursesCtrl.apiGetCoursesByStudentID)
+router.route("/course/:id").delete(CoursesCtrl.apiDeleteCourseBystudentID)
+router.route("/uploadCourses").post(CoursesCtrl.apiUploadCoursesToDB)
                        
 
 
