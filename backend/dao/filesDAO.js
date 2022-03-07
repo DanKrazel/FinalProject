@@ -1,16 +1,26 @@
-import mongodb from "mongodb"
+
 import csvtojson from "csvtojson"
 import multer from "multer"
-import utils from "utils"
-import crypto from 'crypto';
-import multer from 'multer';
+import path from "path"
+//import files from "multer-gridfs-storage"
 import GridFsStorage from 'multer-gridfs-storage'
 import Grid from "gridfs-stream"
 import methodOverride from "method-override";
+import mongodb from "mongodb"
+const ObjectId = mongodb.ObjectId
+
+
+/*const files = require('multer-gridfs-storage')({
+  db: connection.db,
+  file: (req, file) => {
+    return {
+      filename: file.originalname
+    }
+  }
+});*/
 
 
 let files
-
 export default class filesDAO {
   static async injectDB(conn) {
     if (files) {
@@ -25,46 +35,88 @@ export default class filesDAO {
 
   
 
-  static async addFile (file) {
-    try {
-      const fileDoc = {
-        file : file
+    static async uploadFiletoDB (filename) {
+      try {
+        const fileDoc = {
+            file : filename
+        }
+        console.log(fileDoc)
+        return await files.insertOne(fileDoc)
+      } catch (e) {
+        console.error(`Unable to post file: ${e}`)
+        return { error: e }
       }
-      courses.insertOne(fileDoc)
-  } catch (e) {
-    console.log(`api, ${e}`)
-    res.status(500).json({ error: e })
-  }
-  }
-
-  conn.once('open', () => {
-    // Init stream
-    files = Grid(conn.db, mongoose.mongo);
-  });
-
-// Create storage engine
-  static async postFile() {
-    const storage = new GridFsStorage({
-    url: mongoURI,
-    file: (req, file) => {
-      return new Promise((resolve, reject) => {
-        crypto.randomBytes(16, (err, buf) => {
-          if (err) {
-            return reject(err);
-          }
-          const filename = buf.toString('hex') + path.extname(file.originalname);
-          const fileInfo = {
-            filename: filename,
-            bucketName: 'files'
-          };
-          resolve(fileInfo);
-        });
-      });
     }
-  });
+
+    static async getFiles({
+      filters = null,
+      page = 0,
+      filesPerPage = 20,
+    } = {}) {
+      let query
+      if (filters) {
+        if ("_id" in filters) {
+          query = { "_id": { $eq: filters["_id"] } }
+        } else if ("file" in filters) {
+          query = { "file": { $eq: filters["file"] } }
+      }
+  
+      let cursor
+      
+      try {
+        cursor = await files
+          .find(query)
+      } catch (e) {
+        console.error(`Unable to issue find command, ${e}`)
+        return { fileList: [], totalNumFilesList: 0 }
+      }
+  
+      const displayCursor = cursor.limit(filesPerPage).skip(filesPerPage * page)
+  
+      try {
+        const filesList = await displayCursor.toArray()
+        const totalNumFiles = await files.countDocuments(query)
+  
+        return { filesList, totalNumFiles }
+      } catch (e) {
+        console.error(
+          `Unable to convert cursor to array or problem counting documents, ${e}`,
+        )
+        return { filesList: [], totalNumFiles: 0 }
+      }
+    }
   }
-const upload = multer({ storage });
 
 
- 
+    static async uploadCSVtoDB (data) {
+    // CSV file name
+      //const fileName = "sample.csv";
+      var arrayToInsert = [];
+      // Fetching the all data from each row
+      for (var i = 0; i < data.length; i++) {
+        var oneRow = {
+          codeCourse: source[i]["קוד קורס"],
+          semesterOfLearning: source[i]["סמס"],
+          courseName: source[i]["שם קורס"],
+          typeOfCourse: source[i]["סוג"],
+          englishUnits: source[i]["שס"],
+          units: source[i]["נזיכוי"],
+          grade: source[i]["ציון"],
+          studentID: ObjectId(studentID)
+        };
+        arrayToInsert.push(oneRow);
+      }
+      console.log("arrayToInsert : ")
+      console.log(arrayToInsert)
+      courses.insertMany(arrayToInsert, (err, result) => {
+        if (err)
+          console.log(err);
+        if(result){
+            console.log("Import CSV into database successfully.");
+        }
+       //inserting into the table "courses"    
+    });
 }
+
+}
+ 

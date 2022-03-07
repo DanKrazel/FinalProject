@@ -21,8 +21,8 @@ class CourseDataService {
         return http.get(`/${id}`);
     }
     
-    uploadCourse(data){
-        return http.post("/uploadCourses", data);
+    uploadCourse(data, id){
+        return http.post(`/uploadCourses/${id}`, data);
     }
 
     updateCourse(data) {

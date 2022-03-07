@@ -148,7 +148,7 @@ export default class CoursesController {
   static async apiGetCoursesByStudentID(req, res, next){
     try {
       let id = req.params.id || {}
-      console.log('id',id)
+      console.log('idss',id)
       let courses = await CoursesDAO.getCoursesByStudentID(id)
       if (!courses) {
         res.status(404).json({ error: "Not found" })
@@ -156,17 +156,19 @@ export default class CoursesController {
       }
       res.json(courses)
     } catch (e) {
+      console.log('idss')
       console.log(`api, ${e}`)
       res.status(500).json({ error: e })
     }
   }
 
   static async apiUploadCoursesToDB(req, res, next){
+    console.log("heybackend")
     try {
       //const filename = "C:/Users/dankr/OneDrive/Documents/GitHub/FinalProject/backend/csvFile/newTestCSV.csv"
       //console.log(filename)
       let file = req.body.filename
-      let studentID = req.body.studentID
+      let studentID = req.params.id || {}
       console.log(file)
       console.log(studentID)
       //console.log('id',studentID)
@@ -174,12 +176,12 @@ export default class CoursesController {
         file, 
         studentID
         )
-      if(CourseResponse)
-        res.json({ status: "success" })
-      else
-        res.json({ status: "failed" })
+
       //res.json(CourseResponse)
+      res.json({ status: "success" })
+        
     } catch (e) {
+      console.log("heybackend")
       console.log(`api, ${e}`)
       res.status(500).json({ error: e })
     }

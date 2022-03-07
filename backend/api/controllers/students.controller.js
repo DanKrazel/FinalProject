@@ -1,4 +1,6 @@
 import StudentsDAO from "../../dao/studentsDAO.js"
+import mongodb from "mongodb"
+const ObjectId = mongodb.ObjectId
 
 export default class  StudentsController {
   static async apiGetStudents(req, res, next) {
@@ -6,7 +8,7 @@ export default class  StudentsController {
     const page = req.query.page ? parseInt(req.query.page, 10) : 0
     let filters = {}
     if (req.query._id) {
-      filters._id = req.query._id
+      filters._id = ObjectId(req.query._id)
     }else if (req.query.student_id) {
       filters.student_id = req.query.student_id
     } else if (req.query.name) {

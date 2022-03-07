@@ -2,8 +2,7 @@ import UsersDAO from "../../dao/usersDAO.js"
 import jwt from"jsonwebtoken"
 
 export default class  UsersController {
-  
-  const 
+ 
 
   static async apiGetUsers(req, res, next) {
     const usersPerPage = req.query.usersPerPage ? parseInt(req.query.usersPerPage, 10) : 20

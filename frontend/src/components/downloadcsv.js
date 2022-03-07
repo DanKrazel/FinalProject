@@ -3,9 +3,11 @@ import { useParams  } from "react-router-dom";
 import DataTable from 'react-data-table-component';
 import * as XLSX from 'xlsx';
 import CourseDataService from "../services/courseService"
+import FileDataService from "../services/fileService"
 import { Link } from "react-router-dom";
 import { fileURLToPath } from "url";
 import axios from 'axios';
+import Papa from "papaparse"
 
 
 const Downloadcsv = props => {
@@ -16,6 +18,9 @@ const Downloadcsv = props => {
   let initialFileState = ""
   const [selectedFile, setSelectedFile] = useState(initialFileState);
   const [submitted, setSubmitted] = useState(false);
+  const [selectFile, setSelectFile] = useState([])
+  const [dataCSV, setDataCSV] = useState([]);
+  const [IDfile, setIDfile] = useState("")
 
   const params = useParams();
 
@@ -74,6 +79,7 @@ const Downloadcsv = props => {
       /* Convert array of arrays */
       const data = XLSX.utils.sheet_to_csv(ws, { header: 1 });
       processData(data);
+      //console.log(data)
     };
     reader.readAsBinaryString(file);
   }
@@ -87,32 +93,71 @@ const Downloadcsv = props => {
   // handle click event of the upload button
   const handleOnSubmit = e => {
     e.preventDefault();
+    const formData = new FormData()
+    formData.append('file',fileInput.current.files[0])
     alert(
       `Selected file - ${fileInput.current.files[0].name}`
     );
     setSelectedFile(fileInput.current.files[0])
     var data = {
-      filename: fileInput.current.files[0],
+      file: fileInput.current.files[0],
       studentID: params.id,
     };
     console.log(fileInput.current.files[0].length)
-    console.log(fileInput.current.files[0].siz)
-    console.log(data.filename)
+    console.log(fileInput.current.files[0].size)
+    console.log(data.file)
     console.log(data.studentID);
-    CourseDataService.uploadCourse(data)
+    console.log(formData.get('file'))
+  
+    FileDataService.uploadFile(formData, data.studentID)
+      .then(response => {
+        setSubmitted(true);
+        setDataCSV(response.data)
+        console.log(response.data);
+      })
+
+    // fileID = getFile()
+    console.log("dataCSV :")
+    console.log(dataCSV)
+    console.log("uploads/" + data.file.name)
+    /*CourseDataService.uploadCourse("uploads/" +data.file.name, data.studentID)
       .then(response => {
         setSubmitted(true);
         console.log(response.data);
       })
       .catch(e => {
+        console.log("hey")
         console.log(e);
-      });
-  }
+      });*/
+    }
 
-  
+    const handleSubmitTest = event => {
+      var fileInput = document.getElementById('csv');
+      fileInput.addEventListener('change', function (event) {
+      var csvInput = event.target;
+      var file = csvInput.files[0];
+      Papa.parse(file, {
+        complete: function (results) {
+          console.log(results.data); 
+          // process the JSON
+        }
+      });
+    });
+    }
+
+    const getFile = id => {
+      FileDataService.get(id)
+        .then(response => {
+          setSelectFile(response.data);
+          console.log(response.data);
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    };
 
   return (
-    <form onSubmit={handleOnSubmit}>
+    <form onSubmit={handleOnSubmit} encType='multipart/form-data'>
     <div>
       <h3>Upload grades student - SEC </h3>
       <input
@@ -139,6 +184,5 @@ const Downloadcsv = props => {
     </div>
     </form>     
   );
-}
- 
+};
 export default Downloadcsv;

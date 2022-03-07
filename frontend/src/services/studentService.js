@@ -18,7 +18,7 @@ class StudentDataService {
     }
 
     findStudent(id){
-        return http.get(`/${id}`);
+        return http.get(`getCoursesStudent/${id}`);
     }
     
     updateStudent(data) {

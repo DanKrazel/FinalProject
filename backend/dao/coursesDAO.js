@@ -1,5 +1,6 @@
 import mongodb from "mongodb"
 import csvtojson from "csvtojson"
+import multer from "multer"
 const ObjectId = mongodb.ObjectId
 
 let courses
@@ -12,7 +13,7 @@ export default class CoursesDAO {
     try {
         courses = await conn.db(process.env.RESTREVIEWS_NS).collection("courses")
     } catch (e) {
-      console.error(`Unable to establish collection handles in userDAO: ${e}`)
+      console.error(`Unable to establish collection handles in courseDAO: ${e}`)
     }
   }
 
@@ -42,7 +43,7 @@ export default class CoursesDAO {
   static async updateCourse(courseID, userId, text, date) {
     try {
       const updateResponse = await courses.updateOne(
-        { user_id: userId, _id: ObjectId(courseID)},
+        { _id: ObjectId(courseID)},
         { $set: { text: text, date: date  } },
       )
 
@@ -180,6 +181,7 @@ export default class CoursesDAO {
         console.log(pipeline)
       return await students.aggregate(pipeline).next()
     } catch (e) {
+      console.log("test")
       console.error(`Something went wrong in getCoursesByStudentID: ${e}`)
       throw e
     }
@@ -191,6 +193,8 @@ export default class CoursesDAO {
       var arrayToInsert = [];
       console.log(fileName)
       csvtojson().fromFile(fileName).then(source => {
+      console.log("source:")
+      //console.log(source)
       // Fetching the all data from each row
       for (var i = 0; i < source.length; i++) {
         var oneRow = {
@@ -205,6 +209,8 @@ export default class CoursesDAO {
         };
         arrayToInsert.push(oneRow);
       }
+      console.log("arrayToInsert : ")
+      //console.log(arrayToInsert)
       courses.insertMany(arrayToInsert, (err, result) => {
         if (err)
           console.log(err);
@@ -216,12 +222,34 @@ export default class CoursesDAO {
   });
 }
 
-  static async uploadFiletoDB (file) {
-    try {
-      courses.insertOne(file)
-  } catch (e) {
-    console.log(`api, ${e}`)
-    res.status(500).json({ error: e })
-  }
+  static async uploadLineCSVtoDB (data, studentID) {
+  // CSV file name
+    //const fileName = "sample.csv";
+    var arrayToInsert = [];
+    // Fetching the all data from each row
+    for (var i = 0; i < data.length; i++) {
+      var oneRow = {
+        codeCourse: data[i]["קוד קורס"],
+        semesterOfLearning: data[i]["סמס"],
+        courseName: data[i]["שם קורס"],
+        typeOfCourse: data[i]["סוג"],
+        englishUnits: data[i]["שס"],
+        units: data[i]["נזיכוי"],
+        grade: data[i]["ציון"],
+        studentID: ObjectId(studentID)
+      };
+      arrayToInsert.push(oneRow);
+      console.log(oneRow)
+    }
+    console.log("arrayToInsert : ")
+    console.log(arrayToInsert)
+    courses.insertMany(arrayToInsert, (err, result) => {
+      if (err)
+        console.log(err);
+      if(result){
+          console.log("Import CSV into database successfully.");
+      }
+     //inserting into the table "courses"    
+  });
   }
 }
