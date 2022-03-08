@@ -95,13 +95,16 @@ export default class FilesController {
           req.file.path, 
           studentID
           )
-          res.json({ status: "success" })
-          //fs.unlinkSync(req.file.path); 
+        console.log(CourseResponse)
+        //console.log("fs:")
+        //fs.unlinkSync(req.file.path); 
+        res.json({ status: "success" })       
       } catch (e) {
         console.log("heybackend")
         console.log(`api, ${e}`)
         res.status(500).json({ error: e })
       }
+      //fs.unlinkSync(req.file.path); 
 
     
     }

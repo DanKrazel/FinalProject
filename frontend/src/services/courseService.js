@@ -32,6 +32,10 @@ class CourseDataService {
     deleteCourse(id, userId) {
         return http.delete(`/course-delete?id=${id}`, {data:{user_id: userId}});
     }
+
+    deleteCourseByStudentID(id) {
+        return http.delete(`/course/${id}`)
+    }
     
     getNames(id) {
         return http.get(`/names`);

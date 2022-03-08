@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useParams  } from "react-router-dom";
+import { useParams, useNavigate  } from "react-router-dom";
+import { Redirect, useLocation } from 'react-router'
 import DataTable from 'react-data-table-component';
 import * as XLSX from 'xlsx';
 import CourseDataService from "../services/courseService"
 import FileDataService from "../services/fileService"
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { fileURLToPath } from "url";
 import axios from 'axios';
 import Papa from "papaparse"
@@ -23,6 +24,7 @@ const Downloadcsv = props => {
   const [IDfile, setIDfile] = useState("")
 
   const params = useParams();
+
 
   // process CSV data
   const processData = dataString => {
@@ -95,31 +97,38 @@ const Downloadcsv = props => {
     e.preventDefault();
     const formData = new FormData()
     formData.append('file',fileInput.current.files[0])
-    alert(
-      `Selected file - ${fileInput.current.files[0].name}`
-    );
+    if(fileInput.current.files[0])
+      alert(
+        `Selected file - ${fileInput.current.files[0].name}`
+      );
     setSelectedFile(fileInput.current.files[0])
     var data = {
       file: fileInput.current.files[0],
       studentID: params.id,
     };
-    console.log(fileInput.current.files[0].length)
-    console.log(fileInput.current.files[0].size)
-    console.log(data.file)
-    console.log(data.studentID);
-    console.log(formData.get('file'))
+
   
     FileDataService.uploadFile(formData, data.studentID)
       .then(response => {
-        setSubmitted(true);
+        setSubmitted(!submitted);
         setDataCSV(response.data)
         console.log(response.data);
       })
 
-    // fileID = getFile()
-    console.log("dataCSV :")
-    console.log(dataCSV)
-    console.log("uploads/" + data.file.name)
+    //setSubmitted(true);
+    //let navigate = useNavigate();
+    console.log(submitted)
+    if (submitted) {
+      //
+      //console.log("test submitted")
+      //window.location.href="students/"+params.id
+  
+      /*return 
+        <div>navigate(`/students/${params.id}`);</div>*/
+      }
+
+    //redirect()
+
     /*CourseDataService.uploadCourse("uploads/" +data.file.name, data.studentID)
       .then(response => {
         setSubmitted(true);
@@ -156,22 +165,31 @@ const Downloadcsv = props => {
         });
     };
 
+
+    /*const redirect = () => {
+      let navigate = useNavigate();
+      return {() => navigate(`/students/${params.id}`)}
+    }*/
+
+  let navigate = useNavigate();
   return (
-    <form onSubmit={handleOnSubmit} encType='multipart/form-data'>
+    <form method="POST" onSubmit={handleOnSubmit} encType='multipart/form-data'>
     <div>
-      <h3>Upload grades student - SEC </h3>
+      <h3>Upload grades student</h3>
       <input
         type="file"
         accept=".csv,.xlsx,.xls"
         ref={fileInput}
         onChange={handleFileUpload}
       />
-        <button
-          className="btn btn-primary "
-          type="submit"
-        >
-          Upload csv file
-        </button>
+      <input
+        className="btn btn-primary" 
+        type="submit"
+        value="Upload csv file"
+        //onClick={redirect}
+        //onClick={() => setSubmitted(!submitted)}
+        //onChange={navigate(`/students/${params.id}`)}
+      />
       <Link to={"/students/"+params.id} className="btn btn-primary">
         View student visualisation
       </Link>

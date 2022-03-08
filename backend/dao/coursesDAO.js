@@ -199,6 +199,7 @@ export default class CoursesDAO {
       for (var i = 0; i < source.length; i++) {
         var oneRow = {
           codeCourse: source[i]["קוד קורס"],
+          yearOfLearning: source[i]["שנה"],
           semesterOfLearning: source[i]["סמס"],
           courseName: source[i]["שם קורס"],
           typeOfCourse: source[i]["סוג"],
