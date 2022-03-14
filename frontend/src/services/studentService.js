@@ -32,6 +32,10 @@ class StudentDataService {
     getNames(id) {
         return http.get(`/names`);
     }
+
+    updateUnitStudent(data) {
+        return http.put("/updateUnitStudent", data);
+      }
     
 }
     

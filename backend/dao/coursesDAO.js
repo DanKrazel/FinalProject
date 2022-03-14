@@ -1,6 +1,8 @@
 import mongodb from "mongodb"
 import csvtojson from "csvtojson"
 import multer from "multer"
+import fs from "fs"
+import StudentsDAO from "./studentsDAO.js"
 const ObjectId = mongodb.ObjectId
 
 let courses
@@ -17,20 +19,21 @@ export default class CoursesDAO {
     }
   }
 
-  static async addCourse(codeCourse, courseName, grade, semesterOfLearning, yearOfLearning ,units, programStartDate, programEndDate, typeOfCourse, courseBefore, studentID) {
+
+  static async addCourse(codeCourse, courseName, grade, semesterOfLearning, yearOfLearning ,englishUnits, units, typeOfCourse, studentID) {
     try {
       const courseDoc = {
           codeCourse : codeCourse,
-          courseName : courseName,
-          grade: grade,
-          semesterOfLearning: semesterOfLearning,
           yearOfLearning: yearOfLearning,
+          semesterOfLearning: semesterOfLearning,
+          courseName : courseName,
+          typeOfCourse: typeOfCourse,
           englishUnits : englishUnits,
           units: units,
-          programStartDate: programStartDate,
+          grade: grade,
+          /*programStartDate: programStartDate,
           programEndDate: programEndDate,
-          typeOfCourse: typeOfCourse,
-          courseBefore: courseBefore,
+          courseBefore: courseBefore,*/
           studentID: ObjectId(studentID),}
           
       return await courses.insertOne(courseDoc)
@@ -197,19 +200,29 @@ export default class CoursesDAO {
       //console.log(source)
       // Fetching the all data from each row
       for (var i = 0; i < source.length; i++) {
+        if(source[i]["קוד קורס"]!=""){
         var oneRow = {
           codeCourse: source[i]["קוד קורס"],
           yearOfLearning: source[i]["שנה"],
           semesterOfLearning: source[i]["סמס"],
           courseName: source[i]["שם קורס"],
           typeOfCourse: source[i]["סוג"],
-          englishUnits: source[i]["שס"],
-          units: source[i]["נזיכוי"],
-          grade: source[i]["ציון"],
+          englishUnits: parseInt(source[i]["שס"]),
+          units: parseInt(source[i]["נזיכוי"]),
+          grade: parseInt(source[i]["ציון"]),
+          //passCourse: checkPassCourse(grade),
           studentID: ObjectId(studentID)
         };
+        console.log(oneRow)
         arrayToInsert.push(oneRow);
+        //students.updateOne({units:units+courseUnits})
+        //StudentsDAO.updateUnitsStudent(studentID, source[i]["נזיכוי"])
+        }
+        else{
+          console.log("Miss field on csv file, check your file")
+        }
       }
+      fs.unlinkSync(fileName);
       console.log("arrayToInsert : ")
       //console.log(arrayToInsert)
       courses.insertMany(arrayToInsert, (err, result) => {
@@ -221,36 +234,14 @@ export default class CoursesDAO {
        //inserting into the table "courses"    
     });
   });
-}
-
-  static async uploadLineCSVtoDB (data, studentID) {
-  // CSV file name
-    //const fileName = "sample.csv";
-    var arrayToInsert = [];
-    // Fetching the all data from each row
-    for (var i = 0; i < data.length; i++) {
-      var oneRow = {
-        codeCourse: data[i]["קוד קורס"],
-        semesterOfLearning: data[i]["סמס"],
-        courseName: data[i]["שם קורס"],
-        typeOfCourse: data[i]["סוג"],
-        englishUnits: data[i]["שס"],
-        units: data[i]["נזיכוי"],
-        grade: data[i]["ציון"],
-        studentID: ObjectId(studentID)
-      };
-      arrayToInsert.push(oneRow);
-      console.log(oneRow)
-    }
-    console.log("arrayToInsert : ")
-    console.log(arrayToInsert)
-    courses.insertMany(arrayToInsert, (err, result) => {
-      if (err)
-        console.log(err);
-      if(result){
-          console.log("Import CSV into database successfully.");
-      }
-     //inserting into the table "courses"    
-  });
   }
+
+  static async checkPassCourse(grade) {
+    if(grade<56)
+      return false
+    else
+      return true
+  }
+
+
 }

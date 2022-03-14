@@ -1,7 +1,7 @@
 import React, { useState, useEffect} from "react";
 import StudentDataService from "../services/studentService";
 import CourseDataService  from "../services/courseService";
-import { useParams  } from "react-router-dom";
+import { useParams, useNavigate  } from "react-router-dom";
 /**import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';*/
 import { PDFExport, savePDF } from "@progress/kendo-react-pdf";
 import { ArcherContainer, ArcherElement } from 'react-archer';
@@ -23,6 +23,7 @@ const Student = props => {
     years:"",
     courses: []
   };
+
   const rootStyle = { display: 'flex', justifyContent: 'center' };
   const rowStyle = { margin: '200px 0', display: 'flex', justifyContent: 'space-between' };
   const boxStyle = { padding: '10px', border: '1px solid black' };
@@ -78,6 +79,15 @@ const Student = props => {
     window.location.href="/Downloadcsv/"+params.id;
   }
   
+  const updateUnits =() => {
+    for(let i=0; i<student.courses.length; i++){
+      if(student.courses.grade>55){
+          student.units = student.units + students.courses.units
+      }
+    }
+  }
+
+  let navigate = useNavigate()
   return (
     //<form onSubmit={deleteCourseByStudentID(params.id)}>
     <div>
@@ -92,7 +102,7 @@ const Student = props => {
       <button className="k-button" onClick={exportPDFWithComponent}>
         Save PDF to Blockchain
       </button>
-      <button class="position-absolute top-right" type="submit" >
+      <button class="position-absolute top-right" onClick={() => navigate(-1)} >
         Return to previous page
       </button>
     </div>
@@ -126,7 +136,7 @@ const Student = props => {
                 return (
                  <div className="col-sm text-black "  key={index} >
                   <div className="card my-3 " >     
-                  <p className='bg-success text-white text-center  rounded-circle h-90 my-3'>
+                  <p className='bg-success text-white text-center'>
                        <h11>
                          {course.courseName}<br/>
                          {course.grade}<br/>
@@ -140,7 +150,7 @@ const Student = props => {
                 return (      
                    <div className="col-sm text-white "  key={index} >      
                      <div className="card my-3">    
-                     <p className='bg-danger text-white text-center  rounded-circle h-90 my-3'>
+                     <p className='bg-danger text-white text-center'>
                        <h11>
                          {course.courseName}<br/>
                          {course.grade}<br/>
@@ -155,7 +165,7 @@ const Student = props => {
                   return ( 
                     <div className="col-sm text-white "  key={index} >      
                       <div className="card">    
-                      <p className='bg-secondary text-white text-center  rounded-circle h-90 my-3'>
+                      <p className='bg-secondary text-white text-center'>
                           <h11>
                             {course.courseName}<br/>
                             {course.grade}<br/>
@@ -184,7 +194,7 @@ const Student = props => {
                return (
                  <div className="col-sm text-white "  key={index} >      
                    <div className="card my-3">    
-                   <p className='bg-success text-white text-center  rounded-circle h-90 my-3'>
+                   <p className='bg-success text-white text-center'>
                        <h11>
                          {course.courseName}<br/>
                          {course.grade}<br/>
@@ -200,7 +210,7 @@ const Student = props => {
                 return ( 
                    <div className="col-sm text-white "  key={index} >     
                      <div className="card my-3">    
-                     <p className='bg-danger text-white text-center  rounded-circle h-90 my-3'>
+                     <p className='bg-danger text-white text-center'>
                        <h11>
                          {course.courseName}<br/>
                          {course.grade}<br/>
@@ -214,7 +224,7 @@ const Student = props => {
                   return ( 
                     <div className="col-sm text-white "  key={index} >      
                       <div className="card my-3">    
-                      <p className='bg-secondary text-white text-center  rounded-circle h-90 my-3'>
+                      <p className='bg-secondary text-white text-center'>
                        <h11>
                          {course.courseName}<br/>
                          {course.grade}<br/>
@@ -246,7 +256,7 @@ const Student = props => {
                 return (
                  <div className="col-sm text-white "  key={index} >      
                    <div className="card my-3">    
-                        <p className='bg-success text-white text-center rounded-circle h-90 my-3'>
+                        <p className='bg-success text-white text-center'>
                           <h11>
                             {course.courseName}<br/>
                             {course.grade}<br/>
@@ -261,7 +271,7 @@ const Student = props => {
                 return ( 
                    <div className="col-sm text-white "  key={index} >     
                        <div className="card my-3">    
-                      <p className='bg-danger text-white text-center  rounded-circle h-90 my-3'>
+                      <p className='bg-danger text-white text-center'>
                           <h11>
                             {course.courseName}<br/>
                             {course.grade}<br/>
@@ -275,7 +285,7 @@ const Student = props => {
                   return ( 
                     <div className="col-sm text-white "  key={index} >      
                         <div className="card my-3">    
-                      <p className='bg-secondary text-white text-center  rounded-circle h-90 my-3'>
+                      <p className='bg-secondary text-white text-center'>
                           <h11>
                             {course.courseName}<br/>
                             {course.grade}<br/>
@@ -304,7 +314,7 @@ const Student = props => {
                return (
                  <div className="col-sm text-white "  key={index} >      
                      <div className="card my-3">    
-                      <p className='bg-success text-white text-center  rounded-circle h-90 my-3'>
+                      <p className='bg-success text-white text-center'>
                           <h11>
                             {course.courseName}<br/>
                             {course.grade}<br/>
@@ -319,7 +329,7 @@ const Student = props => {
                 return ( 
                    <div className="col-sm text-white "  key={index} >     
                        <div className="card my-3">    
-                      <p className='bg-danger text-white text-center  rounded-circle h-90 my-3'>
+                      <p className='bg-danger text-white text-center'>
                           <h11>
                             {course.courseName}<br/>
                             {course.grade}<br/>
@@ -333,7 +343,7 @@ const Student = props => {
                   return ( 
                     <div className="col-sm text-white "  key={index} >      
                         <div className="card my-3">    
-                      <p className='bg-secondary text-white text-center  rounded-circle h-90 my-3'>
+                      <p className='bg-secondary text-white text-center'>
                           <h11>
                             {course.courseName}<br/>
                             {course.grade}<br/>
@@ -366,7 +376,7 @@ const Student = props => {
                 return (
                  <div className="col-sm text-white "  key={index} >      
                      <div className="card my-3">    
-                      <p className='bg-success text-white text-center  rounded-circle h-90 my-3'>
+                      <p className='bg-success text-white text-center'>
                           <h11>
                             {course.courseName}<br/>
                             {course.grade}<br/>
@@ -381,7 +391,7 @@ const Student = props => {
                 return ( 
                    <div className="col-sm text-white "  key={index} >     
                        <div className="card my-3">    
-                      <p className='bg-danger text-white text-center  rounded-circle h-90 my-3'>
+                      <p className='bg-danger text-white text-center'>
                           <h11>
                             {course.courseName}<br/>
                             {course.grade}<br/>
@@ -395,7 +405,7 @@ const Student = props => {
                   return ( 
                     <div className="col-sm text-white "  key={index} >      
                         <div className="card my-3">    
-                      <p className='bg-secondary text-white text-center  rounded-circle h-90 my-3'>
+                      <p className='bg-secondary text-white text-center'>
                           <h11>
                             {course.courseName}<br/>
                             {course.grade}<br/>

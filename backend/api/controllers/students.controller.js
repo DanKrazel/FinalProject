@@ -60,6 +60,7 @@ export default class  StudentsController {
     }
   }
 
+
   static async apiPostStudent(req, res, next) {
     try {
       const studentID = req.body.student_id
@@ -93,6 +94,45 @@ export default class  StudentsController {
     } catch (e) {
       console.log(`api, ${e}`)
       res.status(500).json({ error: e })
+    }
+  }
+
+  static async apiGetUnitStudent(req, res, next) {
+    try {
+      let id = req.params.id || {}
+      let unit = await StudentsDAO.getUnitByStudentID(ObjectId(id))
+      //console.log(unit[0]["units"])
+      res.json(unit[0]["units"])
+    } catch (e) {
+      console.log(`api, ${e}`)
+      res.status(500).json({ error: e })
+    }
+  }
+
+  static async apiUpdateUnitStudent(req, res, next) {
+    try {
+      const studentID = req.body.student_id
+      const units = req.body.units
+
+      const studentResponse = await StudentsDAO.updateUnitsStudent(
+        studentID,
+        units,
+      )
+
+      var { error } = studentResponse
+      if (error) {
+        res.status(400).json({ error })
+      }
+
+      if (studentResponse.modifiedCount === 0) {
+        throw new Error(
+          "unable to update student unit",
+        )
+      }
+
+      res.json({ status: "success" })
+    } catch (e) {
+      res.status(500).json({ error: e.message })
     }
   }
 

@@ -16,10 +16,7 @@ export default class StudentsDAO {
     }
   }
 
-  static async getStudents({
-    filters = null,
-    page = 0,
-    studentsPerPage = 20,
+  static async getStudents({filters = null,page = 0,studentsPerPage = 20,
   } = {}) {
     let query
     if (filters) {
@@ -145,6 +142,38 @@ export default class StudentsDAO {
       } catch (e) {
         console.error(`Something went wrong in getCoursesByStudentID: ${e}`)
         throw e
+      }
+    }
+
+
+    static async updateUnitsStudent(studentID, unit) {
+      try {
+        const updateResponse = await courses.updateOne(
+          { _id: ObjectId(courseID)},
+          { $set: { units: unit } },
+        )
+  
+        return updateResponse
+      } catch (e) {
+        console.error(`Unable to update student unit: ${e}`)
+        return { error: e }
+      }
+    }
+
+    static async getUnitByStudentID(id){
+      let unit;
+      try {
+        console.log("test")
+        //unit = await students.find({ _id: new ObjectId(id) },
+                                   //{ units: 1, _id: 0 })
+        let query = { "_id": { $eq: id } }
+        unit = await students.find(query)
+        //console.log(unit.toArray()[0])
+        //console.log(unit.toArray()[0]["units"])
+        return unit.toArray()
+      } catch (e) {
+        console.error(`Unable to get unit, ${e}`)
+        return unit
       }
     }
 }

@@ -119,7 +119,6 @@ const Downloadcsv = props => {
     //let navigate = useNavigate();
     console.log(submitted)
     if (submitted) {
-      //
       //console.log("test submitted")
       //window.location.href="students/"+params.id
   
@@ -182,6 +181,7 @@ const Downloadcsv = props => {
         ref={fileInput}
         onChange={handleFileUpload}
       />
+    <div className="btn-group" role="group" aria-label="Basic example">
       <input
         className="btn btn-primary" 
         type="submit"
@@ -193,6 +193,9 @@ const Downloadcsv = props => {
       <Link to={"/students/"+params.id} className="btn btn-primary">
         View student visualisation
       </Link>
+
+      
+    </div>
       <DataTable
         pagination
         highlightOnHover

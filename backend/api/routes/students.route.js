@@ -9,6 +9,8 @@ const router = express.Router()
 
 router.route("/").get(StudentsCtrl.apiGetStudents)
                  .post(StudentsCtrl.apiPostStudent)
+router.route("/getUnitStudent/:id").get(StudentsCtrl.apiGetUnitStudent)
+router.route("/updateUnitStudent").put(StudentsCtrl.apiUpdateUnitStudent)
 router.route("/user").get(UsersCtrl.apiGetUsers)
                      .post(UsersCtrl.apiPostUser)
 router.route("/login").post(UsersCtrl.apiCheckAuthentification)

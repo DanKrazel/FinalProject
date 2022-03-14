@@ -52,30 +52,30 @@ export default class CoursesController {
   static async apiPostCourse(req, res, next) {
     try {
       const codeCourse = req.body.codeCourse
-      const courseName = req.body.courseName
-      const grade = req.body.grade
-      const semesterOfLearning = req.body.semesterOfLearning
       const yearOfLearning = req.body.yearOfLearning
+      const semesterOfLearning = req.body.semesterOfLearning
+      const courseName = req.body.courseName
+      const typeOfCourse = req.body.typeOfCourse
       const englishUnits = req.body.englishUnits
       const units = req.body.units
-      const programStartDate = req.body.programStartDate
+      const grade = req.body.grade
+      /*const programStartDate = req.body.programStartDate
       const programEndDate = req.body.programEndDate
-      const typeOfCourse = req.body.typeOfCourse
-      const courseBefore = req.body.courseBefore
+      const courseBefore = req.body.courseBefore*/
       const studentID = req.body.studentID
 
       const CourseResponse = await CoursesDAO.addCourse(
         codeCourse,
-        courseName,
-        grade,
-        semesterOfLearning,
         yearOfLearning,
+        semesterOfLearning,
+        courseName,
+        typeOfCourse,
         englishUnits,
         units,
-        programStartDate,
+        grade,
+        /*programStartDate,
         programEndDate,
-        typeOfCourse,
-        courseBefore,
+        courseBefore,*/
         studentID
       )
       if(CourseResponse){
