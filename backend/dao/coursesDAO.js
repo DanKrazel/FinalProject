@@ -75,7 +75,7 @@ export default class CoursesDAO {
       const deleteResponse = await courses.deleteMany({
         studentID: ObjectId(studentID),
       })
-
+      StudentsDAO.updateUnitsStudent(studentID)
       return deleteResponse
     } catch (e) {
       console.error(`Unable to delete course: ${e}`)

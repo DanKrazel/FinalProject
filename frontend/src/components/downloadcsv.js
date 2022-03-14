@@ -101,7 +101,11 @@ const Downloadcsv = props => {
       alert(
         `Selected file - ${fileInput.current.files[0].name}`
       );
-    setSelectedFile(fileInput.current.files[0])
+    else
+      alert(
+        `Selected file - None`
+      )
+    //setSelectedFile(fileInput.current.files[0])
     var data = {
       file: fileInput.current.files[0],
       studentID: params.id,
@@ -153,6 +157,13 @@ const Downloadcsv = props => {
     });
     }
 
+    const resetFile = id => {
+      CourseDataService.deleteCourseByStudentID(params.id)
+      .then(response => {
+        console.log(response.data);
+      })
+    }
+
     const getFile = id => {
       FileDataService.get(id)
         .then(response => {
@@ -193,6 +204,9 @@ const Downloadcsv = props => {
       <Link to={"/students/"+params.id} className="btn btn-primary">
         View student visualisation
       </Link>
+      <button onClick={resetFile} className="btn btn-primary">
+        Reset csv file
+      </button>
 
       
     </div>

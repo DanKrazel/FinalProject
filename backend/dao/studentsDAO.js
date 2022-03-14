@@ -146,11 +146,11 @@ export default class StudentsDAO {
     }
 
 
-    static async updateUnitsStudent(studentID, unit) {
+    static async updateUnitsStudent(studentID) {
       try {
-        const updateResponse = await courses.updateOne(
-          { _id: ObjectId(courseID)},
-          { $set: { units: unit } },
+        const updateResponse = await students.updateOne(
+          { _id: ObjectId(studentID)},
+          { $set: { units: 0 } },
         )
   
         return updateResponse
