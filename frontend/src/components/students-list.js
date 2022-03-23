@@ -152,8 +152,8 @@ const StudentsList = props => {
                 <div className="card-body">
                   <h5 className="card-title">{student.names}</h5>
                   <p className="card-text">
-                    <strong>ID: </strong>{student.student_id}
-                    <strong>Name: </strong>{student.name}
+                    <strong>ID: </strong>{student.student_id}<br/>
+                    <strong>Name: </strong>{student.name}<br/>
                     <strong>Average: </strong>{student.average}<br/>
                     <strong>Units: </strong>{student.units}
                   </p>
