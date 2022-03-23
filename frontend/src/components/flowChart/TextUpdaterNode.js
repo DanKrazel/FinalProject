@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+/*import { useCallback } from 'react';
 import { Handle, Position } from 'react-flow-renderer';
 
 const handleStyle = { left: 10 };
@@ -21,4 +21,4 @@ function TextUpdaterNode({ data }) {
   );
 }
 
-export default TextUpdaterNode;
+export default TextUpdaterNode;*/

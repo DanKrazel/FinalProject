@@ -38,7 +38,6 @@
 }
 .card-text {
   position: relative;
-  display: flex;
   flex-direction: column;
   min-width: 0;
   word-wrap: break-word;
@@ -58,5 +57,5 @@
 }
 
 .col-sm {
-  max-width: 10rm;
+  max-width: 10rem;
 }

@@ -118,7 +118,7 @@ const Student = props => {
               if (course.yearOfLearning =='א'){
                 if ((course.grade>55 && course.semesterOfLearning=='א' )){
                 return (
-                 <div className="col"  key={index} >
+                 <div className="col-sm text-white "  key={index} >
                   <div className="card my-3 " style={{maxWidth: '20rem'}}>     
                   <p className='bg-success text-white text-center'>
                        <h11>
@@ -132,7 +132,7 @@ const Student = props => {
                 );}
                 else if (course.grade<56 && course.semesterOfLearning=='א' ){
                 return (      
-                   <div className="col"  key={index} >      
+                   <div className="col-sm text-white "  key={index} >      
                      <div className="card my-3" style={{maxWidth: '18rem'}}>    
                      <p className='bg-danger text-white text-center'>
                        <h11>

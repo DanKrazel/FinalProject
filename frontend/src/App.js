@@ -63,10 +63,6 @@ function App() {
           path="/Downloadcsv/:id"
           element = { <Downloadcsv user={user}/> } 
         />
-        <Route 
-          path="/testFlowChart/:id"
-          element = { <Flow user={user}/> } 
-        />
         </Routes>
     </div>
   </div>
