@@ -8,6 +8,7 @@
     "csv-parse": "^5.0.4",
     "csvtojson": "^2.0.10",
     "fast-csv": "^4.3.6",
+    "flowchart-react": "^3.1.0",
     "fs": "^0.0.1-security",
     "gridfs-stream": "^1.1.1",
     "jsonwebtoken": "^8.5.1",
@@ -17,10 +18,15 @@
     "multer-gridfs-storage": "^5.0.2",
     "papaparse": "^5.3.1",
     "pdfkit": "^0.13.0",
+    "react-arrows": "^1.2.0",
     "react-data-table-component": "^7.4.7",
+    "react-flow-renderer": "^10.0.3",
     "react-router-dom": "^6.1.1",
     "styled-components": "^5.3.3",
     "uuid": "^8.3.2",
     "xlsx": "^0.17.5"
+  },
+  "devDependencies": {
+    "react-error-overlay": "^6.0.9"
   }
 }

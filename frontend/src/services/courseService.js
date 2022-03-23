@@ -2,15 +2,15 @@ import http from "../http-common";
 
 class CourseDataService {
     getAll(page = 0) {
-        return http.get(`?page=${page}`);
+        return http.get(`course?page=${page}`);
     }
     
     get(id) {
-        return http.get(`?id=${id}`);
+        return http.get(`course?id=${id}`);
     }
     
-    find(query, by = "student_id", page = 0) {
-        return http.get(`?${by}=${query}&page=${page}`);
+    find(query, by = "studentID") {
+        return http.get(`course?${by}=${query}`);
     } 
 
     createCourse(data) {

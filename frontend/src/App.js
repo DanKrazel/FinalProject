@@ -6,7 +6,7 @@ import Student from "./components/students";
 import StudentsList from "./components/students-list";
 import Downloadcsv from "./components/downloadcsv";
 import Login from "./components/login";
-import student from "./services/studentService";
+import Flow from "./components/flowChart/testFlowChart";
 
 
 function App() {
@@ -59,10 +59,15 @@ function App() {
           path="/login"
           element = { <Login login={login} /> }
         />
-         <Route 
+        <Route 
           path="/Downloadcsv/:id"
-          element = { <Downloadcsv user={user}/> } />
-          </Routes>
+          element = { <Downloadcsv user={user}/> } 
+        />
+        <Route 
+          path="/testFlowChart/:id"
+          element = { <Flow user={user}/> } 
+        />
+        </Routes>
     </div>
   </div>
   );

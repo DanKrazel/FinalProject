@@ -35,7 +35,7 @@ class StudentDataService {
 
     updateUnitStudent(data) {
         return http.put("/updateUnitStudent", data);
-      }
+    }
     
 }
     

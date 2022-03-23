@@ -44,6 +44,15 @@
   word-wrap: break-word;
   background-color: #fff;
   background-clip: border-box;
-  border: 1px solid rgba(0,0,0,.125);
-  border-radius: .25rem;
+  border-radius: 0.25rem;
+}
+
+.bg-success {
+  min-height: 6rem;
+  margin-bottom: 0;
+}
+
+.bg-danger {
+  min-height: 6rem;
+  margin-bottom: 0;
 }

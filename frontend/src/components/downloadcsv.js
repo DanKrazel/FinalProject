@@ -5,26 +5,66 @@ import DataTable from 'react-data-table-component';
 import * as XLSX from 'xlsx';
 import CourseDataService from "../services/courseService"
 import FileDataService from "../services/fileService"
+import StudentDataService from "../services/studentService"
 import { Link, Navigate } from "react-router-dom";
 import { fileURLToPath } from "url";
 import axios from 'axios';
-import Papa from "papaparse"
+
 
 
 const Downloadcsv = props => {
+
+  const initialStudentState = {
+    student_id: "",
+    name: "",
+    average: "",
+    units: "",
+    years:"",
+  };
+
   const [columns, setColumns] = useState([]);
   const [data, setData] = useState([]);
+  const [courses, setCourses] = useState([]);
   const [CsvReport, setCsvReport] = useState([])
   const fileInput = React.createRef();
   let initialFileState = ""
-  const [selectedFile, setSelectedFile] = useState(initialFileState);
+  const [selectedFile, setSelectedFile] = useState()
   const [submitted, setSubmitted] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [student, setStudent] = useState(initialStudentState)
   const [selectFile, setSelectFile] = useState([])
   const [dataCSV, setDataCSV] = useState([]);
   const [IDfile, setIDfile] = useState("")
 
   const params = useParams();
 
+
+  useEffect(() => {
+    retrieveCourses();
+    findStudent();
+  }, [refreshKey]);
+
+  const retrieveCourses = () => {
+    CourseDataService.find(params.id, "studentID")
+      .then(response => {
+        console.log(response.data);
+        setCourses(response.data.courses); 
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
+
+  const findStudent = () => {
+    StudentDataService.find(params.id,"_id")
+    .then(response => {
+      console.log(response.data);
+      setStudent(response.data.students[0]); 
+    })
+    .catch(e => {
+      console.log(e);
+    });
+  };
 
   // process CSV data
   const processData = dataString => {
@@ -97,72 +137,59 @@ const Downloadcsv = props => {
     e.preventDefault();
     const formData = new FormData()
     formData.append('file',fileInput.current.files[0])
-    if(fileInput.current.files[0])
+    /*if(fileInput.current.files[0]){
       alert(
         `Selected file - ${fileInput.current.files[0].name}`
       );
+      }
     else
       alert(
         `Selected file - None`
-      )
+      )*/
     //setSelectedFile(fileInput.current.files[0])
     var data = {
       file: fileInput.current.files[0],
       studentID: params.id,
     };
 
-  
-    FileDataService.uploadFile(formData, data.studentID)
-      .then(response => {
-        setSubmitted(!submitted);
-        setDataCSV(response.data)
-        console.log(response.data);
-      })
-
-    //setSubmitted(true);
-    //let navigate = useNavigate();
-    console.log(submitted)
-    if (submitted) {
-      //console.log("test submitted")
-      //window.location.href="students/"+params.id
-  
-      /*return 
-        <div>navigate(`/students/${params.id}`);</div>*/
-      }
-
-    //redirect()
-
-    /*CourseDataService.uploadCourse("uploads/" +data.file.name, data.studentID)
-      .then(response => {
-        setSubmitted(true);
-        console.log(response.data);
-      })
-      .catch(e => {
-        console.log("hey")
-        console.log(e);
-      });*/
-    }
-
-    const handleSubmitTest = event => {
-      var fileInput = document.getElementById('csv');
-      fileInput.addEventListener('change', function (event) {
-      var csvInput = event.target;
-      var file = csvInput.files[0];
-      Papa.parse(file, {
-        complete: function (results) {
-          console.log(results.data); 
-          // process the JSON
-        }
-      });
-    });
-    }
-
-    const resetFile = id => {
+    console.log(selectedFile)
+    if(courses.length != 0){
       CourseDataService.deleteCourseByStudentID(params.id)
       .then(response => {
         console.log(response.data);
       })
+      alert(
+        `CSV file was deleted`
+      );
+      setRefreshKey(oldKey => oldKey +1)
     }
+    else{
+      if(fileInput.current.files[0]){
+        FileDataService.uploadFile(formData, data.studentID)
+        .then(response => {
+          setSubmitted(!submitted);
+          setDataCSV(response.data)
+          console.log(response.data);
+        })
+        alert(
+          `Selected file - ${fileInput.current.files[0].name} was uploaded`
+        );
+        setRefreshKey(oldKey => oldKey +1)
+        }
+      else{
+        alert(
+          'Selected file - None, choose a file to upload'
+        )
+      }
+    }
+
+    //setSubmitted(true);
+    //let navigate = useNavigate();
+    console.log(submitted)
+
+    }
+
+
 
     const getFile = id => {
       FileDataService.get(id)
@@ -183,9 +210,9 @@ const Downloadcsv = props => {
 
   let navigate = useNavigate();
   return (
-    <form method="POST" onSubmit={handleOnSubmit} encType='multipart/form-data'>
+    <form  onSubmit={handleOnSubmit} encType='multipart/form-data'>
     <div>
-      <h3>Upload grades student</h3>
+      <h3>Upload grades student - {student.name}</h3>
       <input
         type="file"
         accept=".csv,.xlsx,.xls"
@@ -193,22 +220,30 @@ const Downloadcsv = props => {
         onChange={handleFileUpload}
       />
     <div className="btn-group" role="group" aria-label="Basic example">
-      <input
-        className="btn btn-primary" 
-        type="submit"
-        value="Upload csv file"
-        //onClick={redirect}
-        //onClick={() => setSubmitted(!submitted)}
-        //onChange={navigate(`/students/${params.id}`)}
-      />
+    { courses.length != 0 ? (
+            <input
+            className="btn btn-primary" 
+            type="submit"
+            value="Reset csv file"
+          />
+          ) : (            
+            <input
+              className="btn btn-primary" 
+              type="submit"
+              value="Upload csv file"
+            //onClick={redirect}
+            //onClick={() => setSubmitted(!submitted)}
+            //onChange={navigate(`/students/${params.id}`)}
+          />
+          )}
+
       <Link to={"/students/"+params.id} className="btn btn-primary">
         View student visualisation
+      </Link>     
+      <Link to={"/"} class="btn btn-primary">
+        Return to previous page
       </Link>
-      <button onClick={resetFile} className="btn btn-primary">
-        Reset csv file
-      </button>
 
-      
     </div>
       <DataTable
         pagination

@@ -4,10 +4,12 @@ import CourseDataService  from "../services/courseService";
 import { useParams, useNavigate  } from "react-router-dom";
 /**import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';*/
 import { PDFExport, savePDF } from "@progress/kendo-react-pdf";
-import { ArcherContainer, ArcherElement } from 'react-archer';
+import "../App.css";
+import styles from "../index.css"
 
 const Student = props => {
   const params = useParams();
+  var countUnitSemesters = 0;
   console.log(params.id)
   var myState = {
     pdf: null,
@@ -29,7 +31,15 @@ const Student = props => {
   const boxStyle = { padding: '10px', border: '1px solid black' };
   const [students, setStudents] = useState([]);
   const [student, setStudent] = useState(initialStudentState);
+  //const [refreshKey, setRefreshKey] = useState(0);
+  const [countUnitSemester1, setCountUnitSemester1] = useState(0)
 
+  
+  useEffect(() => {
+    getStudent(params.id);
+    //retrieveStudents();
+  }, []);
+  
   const getStudent = (id) => {
     StudentDataService.findStudent(id)
       .then(response => {
@@ -40,16 +50,12 @@ const Student = props => {
         console.log(e);
       });
   };
-  useEffect(() => {
-    getStudent(params.id)
-    retrieveStudents()
-  }, []);
 
   const retrieveStudents = () => {
     StudentDataService.getAll()
       .then(response => {
         console.log(response.data);
-        setStudents(response.data.students); 
+        setStudents(response.data.students);
       })
       .catch(e => {
         console.log(e);
@@ -65,27 +71,6 @@ const Student = props => {
       }
     }
 
-  const deleteCourseByStudentID = id => {
-    CourseDataService.deleteCourseByStudentID(id)
-      .then(response => {
-        console.log(response.data);
-      })
-      .catch(e => {
-        console.log(e);
-      });
-    }
-
-  const redirect = () => {
-    window.location.href="/Downloadcsv/"+params.id;
-  }
-  
-  const updateUnits =() => {
-    for(let i=0; i<student.courses.length; i++){
-      if(student.courses.grade>55){
-          student.units = student.units + students.courses.units
-      }
-    }
-  }
 
   let navigate = useNavigate()
   return (
@@ -114,28 +99,27 @@ const Student = props => {
         <div>
           <h5>{student.name}</h5>
           <p>
-          <div className="col-sm text-white bg-secondary w-40 l-20">
+          <div className="col-sm1 text-white bg-secondary w-40 l-20">
             <strong> ת״ז : </strong>{student.student_id}
             <strong> | ממוצע : </strong>{student.average}
             <strong> | שנה : </strong>{student.years}
-            <strong> | סמסטר : </strong>{student.semester} 
             <strong> | נק״ז : </strong>{student.units}<br/>   
             </div>        
           </p>   
           <div className="card text-center " >     
-            Year 1     
+             שנה א      
           </div>  
             <div className="row">
             <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
-              Semester 1  
+              סמסטר א  
             </div>  
             {student.courses.length > 0 ? (
              student.courses.map((course, index) => {  
               if (course.yearOfLearning =='א'){
                 if ((course.grade>55 && course.semesterOfLearning=='א' )){
                 return (
-                 <div className="col-sm text-black "  key={index} >
-                  <div className="card my-3 " >     
+                 <div className="col"  key={index} >
+                  <div className="card my-3 " style={{maxWidth: '20rem'}}>     
                   <p className='bg-success text-white text-center'>
                        <h11>
                          {course.courseName}<br/>
@@ -144,12 +128,12 @@ const Student = props => {
                        </h11>
                      </p>
                      </div> 
-                 </div> 
+                      </div> 
                 );}
                 else if (course.grade<56 && course.semesterOfLearning=='א' ){
                 return (      
-                   <div className="col-sm text-white "  key={index} >      
-                     <div className="card my-3">    
+                   <div className="col"  key={index} >      
+                     <div className="card my-3" style={{maxWidth: '18rem'}}>    
                      <p className='bg-danger text-white text-center'>
                        <h11>
                          {course.courseName}<br/>
@@ -164,7 +148,7 @@ const Student = props => {
                 else if (course.semesterOfLearning=='א' ){
                   return ( 
                     <div className="col-sm text-white "  key={index} >      
-                      <div className="card">    
+                      <div className="card"  style="width: 18rem;">    
                       <p className='bg-secondary text-white text-center'>
                           <h11>
                             {course.courseName}<br/>
@@ -185,7 +169,7 @@ const Student = props => {
           </div>
           <div className="row">
           <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
-              Semester 2  
+            סמסטר ב            
             </div>    
             {student.courses.length > 0 ? (
              student.courses.map((course, index) => {     
@@ -243,12 +227,12 @@ const Student = props => {
             )}
           </div>
           <div className="card text-center " >    
-            Year 2    
+            שנה ב     
           </div>  
           <div className="row">    
           <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
-              Semester 1  
-            </div>            
+            סמסטר א 
+          </div>            
             {student.courses.length > 0 ? (
              student.courses.map((course, index) => {   
               if (course.yearOfLearning =='ב'){   
@@ -305,14 +289,14 @@ const Student = props => {
           </div>
           <div className="row">
           <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
-              Semester 2  
+               סמסטר ב     
             </div>      
             {student.courses.length > 0  ? (
              student.courses.map((course, index) => {
               if (course.yearOfLearning =='ב'){      
                 if (course.grade>55 && course.semesterOfLearning=='ב'){
                return (
-                 <div className="col-sm text-white "  key={index} >      
+                 <div id="no1" className="col-sm text-white "  key={index} >      
                      <div className="card my-3">    
                       <p className='bg-success text-white text-center'>
                           <h11>
@@ -363,12 +347,12 @@ const Student = props => {
             
           </div> 
           <div className="card text-center " >    
-            Year 3    
+            שנה ג           
           </div>  
           <div className="row">    
           <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
-              Semester 1  
-            </div>
+            סמסטר א
+          </div>
             {student.courses.length > 0 ? (
              student.courses.map((course, index) => {   
               if (course.yearOfLearning =='ג'){   
@@ -425,7 +409,7 @@ const Student = props => {
           </div>
           <div className="row">
           <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
-              Semester 2 
+            סמסטר ב     
             </div> 
             {student.courses.length > 0  ? (
              student.courses.map((course, index) => {
@@ -433,8 +417,8 @@ const Student = props => {
                 if (course.grade>55 && course.semesterOfLearning=='ב'){
                return (
                  <div className="col-sm text-white "  key={index} >      
-                   <div className="card">    
-                   <p className='bg-success text-white text-center  '>
+                   <div className="card my-3">    
+                   <p className='bg-success text-white text-center  '> 
                           <h11>
                             {course.courseName}<br/>
                             {course.grade}<br/>
@@ -448,7 +432,7 @@ const Student = props => {
                 else if (course.grade<56 && course.semesterOfLearning=='ב'){
                 return ( 
                    <div className="col-sm text-white "  key={index} >     
-                     <div className="card">    
+                     <div className="card my-3">    
                      <p className='bg-success text-white text-center  '>
                           <h11>
                             {course.courseName}<br/>
@@ -462,7 +446,7 @@ const Student = props => {
                 else if (course.semesterOfLearning=='ב'){
                   return ( 
                     <div className="col-sm text-white "  key={index} >      
-                      <div className="card">    
+                      <div className="card my-3">    
                       <p className='bg-success text-white text-center  '>
                           <h11>
                             {course.courseName}<br/>
@@ -483,20 +467,20 @@ const Student = props => {
             
           </div> 
           <div className="card text-center " >      
-            Year 4    
+            שנה ד         
           </div>  
           <div className="row">    
           
           <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
-              Semester 1  
-            </div>          
+              סמסטר א           
+          </div>          
             {student.courses.length > 0 ? (
              student.courses.map((course, index) => {   
               if (course.yearOfLearning =='4'){   
                 if (course.grade>55 && course.semesterOfLearning=='א'){
                 return (
                  <div className="col-sm text-white "  key={index} >      
-                   <div className="card">    
+                   <div className="card my-3">    
                    <p className='bg-success text-white text-center  '>
                           <h11>
                             {course.courseName}<br/>
@@ -511,7 +495,7 @@ const Student = props => {
                 else if (course.grade<56 && course.semesterOfLearning=='א'){
                 return ( 
                    <div className="col-sm text-white "  key={index} >     
-                     <div className="card">    
+                     <div className="card my-3">    
                      <p className='bg-success text-white text-center  '>
                           <h11>
                             {course.courseName}<br/>
@@ -525,7 +509,7 @@ const Student = props => {
                 else if (course.semesterOfLearning=='א'){
                   return ( 
                     <div className="col-sm text-white "  key={index} >      
-                      <div className="card">    
+                      <div className="card my-3">    
                       <p className='bg-success text-white text-center  '>
                           <h11>
                             {course.courseName}<br/>
@@ -546,7 +530,7 @@ const Student = props => {
           </div>
           <div className="row">
           <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
-              Semester 2 
+            סמסטר ב     
             </div>        
             {student.courses.length > 0  ? (
              student.courses.map((course, index) => {
@@ -554,7 +538,7 @@ const Student = props => {
                 if (course.grade>55 && course.semesterOfLearning=='ב'){
                return (
                  <div className="col-sm text-white "  key={index} >      
-                   <div className="card " >    
+                   <div className="card  my-3" >    
                    <p className='bg-success text-white text-center  '>
                           <h11>
                             {course.courseName}<br/>
@@ -569,7 +553,7 @@ const Student = props => {
                 else if (course.grade<56 && course.semesterOfLearning=='ב'){
                 return ( 
                    <div className="col-sm text-white "  key={index} >     
-                     <div className="card">    
+                     <div className="card my-3">    
                      <p className='bg-success text-white text-center  '>
                           <h11>
                             {course.courseName}<br/>
@@ -583,7 +567,7 @@ const Student = props => {
                 else if (course.semesterOfLearning=='ב'){
                   return ( 
                     <div className="col-sm text-white "  key={index} >      
-                      <div className="card">    
+                      <div className="card my-3">    
                       <p className='bg-success text-white text-center  '>
                           <h11>
                             {course.courseName}<br/>
@@ -613,7 +597,7 @@ const Student = props => {
       </PDFExport>
       </div>
   </div>
-  //</form>
+  
   );
 };
 

@@ -1,4 +1,7 @@
 import CoursesDAO from "../../dao/coursesDAO.js"
+import mongodb from "mongodb"
+const ObjectId = mongodb.ObjectId
+
 
 export default class CoursesController {
   static async apiGetCourses(req, res, next) {
@@ -30,7 +33,7 @@ export default class CoursesController {
     } else if (req.query.courseBefore) {
         filters.courseBefore = req.query.courseBefore
     } else if (req.query.studentID) {
-        filters.studentID = req.query.studentID
+        filters.studentID = ObjectId(req.query.studentID)
     }
 
 
