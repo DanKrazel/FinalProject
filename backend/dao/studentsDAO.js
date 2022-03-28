@@ -150,7 +150,7 @@ export default class StudentsDAO {
       try {
         const updateResponse = await students.updateOne(
           { _id: ObjectId(studentID)},
-          { $set: { units: 0 } },
+          { $set: { units: 0} },
         )
   
         return updateResponse

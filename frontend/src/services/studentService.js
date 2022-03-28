@@ -37,6 +37,9 @@ class StudentDataService {
         return http.put("/updateUnitStudent", data);
     }
     
+    findUnitsBySemester(query, by = "studentID") {
+        return http.get(`unitsBySemester?${by}=${query}`);
+    } 
 }
     
     export default new StudentDataService();

@@ -35,6 +35,7 @@ const StudentsList = props => {
       .then(response => {
         console.log(response.data);
         setStudents(response.data.students); 
+        console.log("students",students )
       })
       .catch(e => {
         console.log(e);
@@ -46,7 +47,7 @@ const StudentsList = props => {
       .then(response => {
         console.log(response.data);
         setNames(["All Names"].concat(response.data));
-        
+        console.log("names",names )
       })
       .catch(e => {
         console.log(e);

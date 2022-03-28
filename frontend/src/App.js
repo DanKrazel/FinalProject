@@ -48,10 +48,6 @@ function App() {
           path="/"
           element={<StudentsList/>} />
         <Route 
-          path="/students/:id/review"
-          element = { <AddStudent user={user} /> }
-        />
-        <Route 
           path="/students/:id"
           element = { <Student user={user}/> }
         />

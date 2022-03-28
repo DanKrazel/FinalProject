@@ -2,6 +2,7 @@ import express from "express"
 import StudentsCtrl from "../controllers/students.controller.js"
 import UsersCtrl from "../controllers/users.controller.js"
 import CoursesCtrl from "../controllers/course.controller.js"
+import UnitsBySemesterCtrl from "../controllers/unitsBySemester.controller.js"
 import FilesCtrl from "../controllers/files.controller.js"
 import upload from "../../middleware/upload.js"
 
@@ -23,6 +24,10 @@ router.route("/course").post(CoursesCtrl.apiPostCourse)
                        .get(CoursesCtrl.apiGetCoursesByStudentID)
 router.route("/course/:id").delete(CoursesCtrl.apiDeleteCourseBystudentID)
 router.route("/uploadCourses/:id").post(CoursesCtrl.apiUploadCoursesToDB)
+router.route("/unitsBySemester").get(UnitsBySemesterCtrl.apiGetUnitsBySemester)
+                                .put(UnitsBySemesterCtrl.apiUpdateUnitsSemesters)
+router.route("/unitsBySemester/:id").delete(UnitsBySemesterCtrl.apiDeleteUnitsBySemesterStudentID)
+                                    
 router.route("/uploadFile/:id").post(upload.single('file'),FilesCtrl.apiNewTestPostFile)
                            .get(FilesCtrl.apiGetFiles)
                        
