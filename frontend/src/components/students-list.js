@@ -154,8 +154,9 @@ const StudentsList = props => {
                   <p className="card-text">
                     <strong>ID: </strong>{student.student_id}<br/>
                     <strong>Name: </strong>{student.name}<br/>
-                    <strong>Average: </strong>{student.average}<br/>
-                    <strong>Units: </strong>{student.units}
+                    <strong>Average: </strong>{Math.round((student.average/student.totalunits) * 100) / 100}<br/>
+                    <strong>Total Units: </strong>{student.totalunits}<br/>
+                    <strong>Valide Units: </strong>{student.valideunits}
                   </p>
                   <div className="row">
                   <Link to={"/Downloadcsv/"+student._id} className="btn btn-primary col-lg-5 mx-1 mb-1">

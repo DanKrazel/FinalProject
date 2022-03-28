@@ -20,7 +20,8 @@ const Student = props => {
     student_id: null,
     name: "",
     average: "",
-    units: "",
+    valideunits: "",
+    totalunits: "",
     semester:"",
     years:"",
     courses: []
@@ -33,17 +34,34 @@ const Student = props => {
   const [student, setStudent] = useState(initialStudentState);
   //const [refreshKey, setRefreshKey] = useState(0);
   const [countUnitSemester1, setCountUnitSemester1] = useState(0)
-
-  
   useEffect(() => {
     getStudent(params.id);
     //retrieveStudents();
   }, []);
-  
+  function sleep(time){
+      return new Promise((resolve)=>setTimeout(resolve,time)
+    )
+  }
+  const setaverage = (id) => {
+    //StudentDataService.updateaverage(id)
+    StudentDataService.findStudent(id)
+      .then(response => {
+        response.data.average=Math.round((response.data.average/response.data.totalunits) * 100) / 100
+        setStudent(response.data);
+        console.log(response.data);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
+
   const getStudent = (id) => {
     StudentDataService.findStudent(id)
       .then(response => {
+        setaverage(id)
+        //response.data.average=(response.data.average/response.data.units)
         setStudent(response.data);
+
         console.log(response.data);
       })
       .catch(e => {
@@ -97,7 +115,7 @@ const Student = props => {
         <div >
           <h5>{student.name}</h5>
           {(() => {
-            if ((student.average <60 ) || ( student.years=== 'ב'  && student.units<36) || (( student.years=== 'ג'  && student.units<75 )) || (( student.years=== 'ד'  && student.units<115 )) )
+            if ((student.average <60 ) || ( student.years=== 'ב'  && student.totalunits<36) || (( student.years=== 'ג'  && student.totalunits<75 )) || (( student.years=== 'ד'  && student.totalunits<115 )) )
               {
                             return (
                                 <p>
@@ -105,8 +123,8 @@ const Student = props => {
                                   <strong> ת״ז : </strong>{student.student_id}
                                   <strong> | ממוצע : </strong>{student.average}
                                   <strong> | שנה : </strong>{student.years}
-                                  <strong> | נק״ז : </strong>{student.units} 
-                                  <strong> |  : </strong>{student.units} 
+                                  <strong> | נק״ז : </strong>{student.totalunits} 
+                                  <strong> | נק״ז : </strong>{student.valideunits} 
                                   <button class=" d-block  ml-auto" onClick={() => navigate(-1)} >         חריגה </button> <br/> 
                                   </div>        
                                 </p> 
@@ -118,7 +136,8 @@ const Student = props => {
                                 <strong> ת״ז : </strong>{student.student_id}
                                 <strong> | ממוצע : </strong>{student.average}
                                 <strong> | שנה : </strong>{student.years}
-                                <strong> | נק״ז : </strong>{student.units} 
+                                <strong> | נק״ז כללי: </strong>{student.totalunits} 
+                                <strong> | נק״ז עובר: </strong>{student.valideunits} 
                                 <strong class=" d-block  ml-auto mr-o " > תקין </strong> 
                                 <br/> 
                                 </div>        
