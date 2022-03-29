@@ -13,8 +13,10 @@ export default class  StudentsController {
       filters.student_id = req.query.student_id
     } else if (req.query.name) {
       filters.name = req.query.name
-    } else if (req.query.units) {
-      filters.units = req.query.units
+    } else if (req.query.totalunits) {
+      filters.totalunits = req.query.totalunits
+    } else if (req.query.valideunits) {
+        filters.valideunits = req.query.valideunits
     } else if (req.query.yearsOfLearning) {
       filters.yearsOfLearning = req.query.yearsOfLearning
     }
@@ -66,14 +68,16 @@ export default class  StudentsController {
       const studentID = req.body.student_id
       const name = req.body.name
       const average = req.body.average
-      const units = req.body.units
       const years = req.body.years
+      const totalunits = req.body.totalunits
+      const valideunits = req.body.valideunits
       const StudentResponse = await StudentsDAO.addStudent(
         studentID,
         name,
         average,
-        units,
         years,
+        totalunits,
+        valideunits,
       )
       res.json({ status: "success" })
     } catch (e) {
@@ -102,21 +106,78 @@ export default class  StudentsController {
       let id = req.params.id || {}
       let unit = await StudentsDAO.getUnitByStudentID(ObjectId(id))
       //console.log(unit[0]["units"])
-      res.json(unit[0]["units"])
+      res.json(unit[0]["totalunits"])
     } catch (e) {
       console.log(`api, ${e}`)
       res.status(500).json({ error: e })
     }
   }
-
+  static async apiGetAverageStudent(req, res, next) {
+    try {
+      let id = req.params.id || {}
+      let unit = await StudentsDAO.getAverageByStudentID(ObjectId(id))
+      //console.log(unit[0]["units"])
+      res.json(unit[0]["average"])
+    } catch (e) {
+      console.log(`api, ${e}`)
+      res.status(500).json({ error: e })
+    }
+  }
   static async apiUpdateUnitStudent(req, res, next) {
     try {
       const studentID = req.body.student_id
-      const units = req.body.units
-
+      const totalunits = req.body.totalunits
       const studentResponse = await StudentsDAO.updateUnitsStudent(
         studentID,
-        units,
+        totalunits,
+      )
+
+      var { error } = studentResponse
+      if (error) {
+        res.status(400).json({ error })
+      }
+
+      if (studentResponse.modifiedCount === 0) {
+        throw new Error(
+          "unable to update student unit",
+        )
+      }
+
+      res.json({ status: "success" })
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  }
+  static async apiUpdateAverageStudent(req, res, next) {
+    try {
+      const studentID = req.body.student_id
+      const studentResponse = await StudentsDAO.updateAverageStudent(
+        studentID,
+        average,
+      )
+
+      var { error } = studentResponse
+      if (error) {
+        res.status(400).json({ error })
+      }
+
+      if (studentResponse.modifiedCount === 0) {
+        throw new Error(
+          "unable to update student unit",
+        )
+      }
+
+      res.json({ status: "success" })
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  }
+  static async apiResetAverageStudent(req, res, next) {
+    try {
+      const studentID = req.body.student_id
+      const studentResponse = await StudentsDAO.updateAverageStudent(
+        studentID,
+        average,
       )
 
       var { error } = studentResponse
@@ -136,5 +197,5 @@ export default class  StudentsController {
     }
   }
 
-
+  
 }

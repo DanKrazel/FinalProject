@@ -79,9 +79,9 @@ const Downloadcsv = props => {
         for (let j = 0; j < headers.length; j++) {
           let d = row[j];
           if (d.length > 0) {
-            if (d[0] == '"')
+            if (d[0] === '"')
               d = d.substring(1, d.length - 1);
-            if (d[d.length - 1] == '"')
+            if (d[d.length - 1] === '"')
               d = d.substring(d.length - 2, 1);
           }
           if (headers[j]) {
@@ -138,9 +138,9 @@ const Downloadcsv = props => {
       file: fileInput.current.files[0],
       studentID: params.id,
     };
-
     console.log(selectedFile)
     if(courses.length != 0){
+      params.average=0;
       CourseDataService.deleteCourseByStudentID(params.id)
       .then(response => {
         console.log(response.data);

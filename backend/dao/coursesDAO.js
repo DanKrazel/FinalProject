@@ -76,6 +76,7 @@ export default class CoursesDAO {
         studentID: ObjectId(studentID),
       })
       StudentsDAO.updateUnitsStudent(studentID)
+      StudentsDAO.resetAverageStudent(studentID)
       return deleteResponse
     } catch (e) {
       console.error(`Unable to delete course: ${e}`)

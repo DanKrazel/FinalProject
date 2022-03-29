@@ -27,7 +27,8 @@ const Student = props => {
     student_id: null,
     name: "",
     average: "",
-    units: "",
+    valideunits: "",
+    totalunits: "",
     semester:"",
     years:"",
     courses: []
@@ -55,11 +56,32 @@ const Student = props => {
     updateTotalUnitForEachSemester();
   }, []);
 
-  
+  function sleep(time){
+      return new Promise((resolve)=>setTimeout(resolve,time)
+    )
+  }
+
+  const setaverage = (id) => {
+    //StudentDataService.updateaverage(id)
+    StudentDataService.findStudent(id)
+      .then(response => {
+        response.data.average=Math.round((response.data.average/response.data.totalunits) * 100) / 100
+        setStudent(response.data);
+        console.log(response.data);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
+
   const getStudent = (id) => {
     StudentDataService.findStudent(id)
       .then(response => {
+        //setaverage(id)
+        //response.data.average=(response.data.average/response.data.units)
+        response.data.average=Math.round((response.data.average/response.data.totalunits) * 100) / 100
         setStudent(response.data);
+
         console.log(response.data);
         console.log("student", student)
       })
@@ -171,21 +193,44 @@ const Student = props => {
         Return to previous page
       </button>
     </div>
-
-    
-    <div  >
+    <div >
     <PDFExport ref={pdfExportComponent} paperSize="auto" margin={40} fileName={`Report for ${new Date().getFullYear()}`} author="KendoReact Team">
-      {student ? (
-        <div>
+      {student ? (  
+        <div >
           <h5>{student.name}</h5>
-          <p>
-          <div className="col-sm1 text-white bg-secondary w-40 l-20">
-            <strong> ת״ז : </strong>{student.student_id}
-            <strong> | ממוצע : </strong>{student.average}
-            <strong> | שנה : </strong>{student.years}
-            <strong> | נק״ז : </strong>{student.units}<br/>   
-            </div>        
-          </p>   
+          {(() => {
+            if ((student.average <60 ) || ( student.years=== 'ב'  && student.totalunits<36) || (( student.years=== 'ג'  && student.totalunits<75 )) || (( student.years=== 'ד'  && student.totalunits<115 )) )
+              {
+                            return (
+                                <p>
+                                <div className="col-sm1 text-white bg-secondary w-40 l-20">
+                                  <strong> ת״ז : </strong>{student.student_id}
+                                  <strong> | ממוצע : </strong>{student.average}
+                                  <strong> | שנה : </strong>{student.years}
+                                  <strong> | נק״ז : </strong>{student.totalunits} 
+                                  <strong> | נק״ז : </strong>{student.valideunits} 
+                                  <button class=" d-block  ml-auto" onClick={() => navigate(-1)} >         חריגה </button> <br/> 
+                                  </div>        
+                                </p> 
+                            )
+                        } else {
+                            return (
+                              <p>
+                              <div className="col-sm1 text-white bg-secondary w-40 l-20">
+                                <strong> ת״ז : </strong>{student.student_id}
+                                <strong> | ממוצע : </strong>{student.average}
+                                <strong> | שנה : </strong>{student.years}
+                                <strong> | נק״ז כללי: </strong>{student.totalunits} 
+                                <strong> | נק״ז עובר: </strong>{student.valideunits} 
+                                <strong class=" d-block  ml-auto mr-o " > תקין </strong> 
+                                <br/> 
+                                </div>        
+                              </p> 
+                          )
+                        }
+                })()  
+            }
+         
           <div className="card text-center " >     
              שנה א      
           </div>  
@@ -316,7 +361,7 @@ const Student = props => {
             </div>    
             {student.courses.length > 0 ? (
              student.courses.map((course, index) => {     
-              if (course.yearOfLearning =='א'){ 
+              if (course.yearOfLearning ==='א'){ 
                 if (course.grade>55 && course.semesterOfLearning=='ב'){
                   if(course.courseName == 'חדוא 2 להנדסת תוכנה'){
                     return (
@@ -852,7 +897,7 @@ const Student = props => {
             )}
             
           </div>            
-          </div>        
+        </div>        
         ) : (
         <div>
           <br />

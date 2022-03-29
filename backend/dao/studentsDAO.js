@@ -15,7 +15,6 @@ export default class StudentsDAO {
       )
     }
   }
-
   static async getStudents({filters = null,page = 0,studentsPerPage = 20,
   } = {}) {
     let query
@@ -26,9 +25,12 @@ export default class StudentsDAO {
         query = { "student_id": { $eq: filters["student_id"] } }
       } else if ("name" in filters) {
         query = { "name": { $eq: filters["name"] } }
-      } else if ("units" in filters) {
-        query = { "units": { $eq: filters["units"] } }
+      } else if ("valideunits" in filters) {
+        query = { "valideunits": { $eq: filters["valideunits"] } }
+      } else if ("totalunits" in filters) {
+        query = { "totalunits": { $eq: filters["totalunits"] } }
       }
+      
     }
 
     let cursor
@@ -55,7 +57,6 @@ export default class StudentsDAO {
       return { studentsList: [], totalNumStudents: 0 }
     }
   }
-  
   static async getStudentsByID(id) {
     try {
       const pipeline = [
@@ -71,7 +72,6 @@ export default class StudentsDAO {
       throw e
     }
   }
-
   static async getNames() {
     let names = []
     try {
@@ -82,14 +82,13 @@ export default class StudentsDAO {
       return names
     }
   }
-
-  static async addStudent (studentID, name, average, units, years) {
+  static async addStudent (studentID, name, average, totalunits, years) {
     try {
       const studentDoc = { 
           student_id: studentID,
           name: name,
           average: average,
-          units: units,
+          totalunits: totalunits,
           years: years}
 
       return await students.insertOne(studentDoc)
@@ -98,9 +97,7 @@ export default class StudentsDAO {
       return { error: e }
     }
   }
-
-
-    static async getStudentByID(id) {
+  static async getStudentByID(id) {
       try {
         const pipeline = [
           {
@@ -143,14 +140,25 @@ export default class StudentsDAO {
         console.error(`Something went wrong in getCoursesByStudentID: ${e}`)
         throw e
       }
-    }
-
-
-    static async updateUnitsStudent(studentID) {
+  }
+//good
+  static async updateUnitsStudent(studentID) {
+  try {
+      const updateResponse = await students.updateOne(
+        { _id: ObjectId(studentID)},{ $set: { totalunits: 0 ,valideunits: 0 } },
+      )
+       return updateResponse
+      } catch (e) {
+        console.error(`Unable to update student unit: ${e}`)
+        return { error: e }
+      }
+  }
+//good
+  static async resetAverageStudent(studentID) {
       try {
         const updateResponse = await students.updateOne(
           { _id: ObjectId(studentID)},
-          { $set: { units: 0} },
+          { $set: { average: 0 } },
         )
   
         return updateResponse
@@ -158,9 +166,21 @@ export default class StudentsDAO {
         console.error(`Unable to update student unit: ${e}`)
         return { error: e }
       }
-    }
-
-    static async getUnitByStudentID(id){
+  }
+  static async updateAverageStudent(studentID) {
+      try {
+        const updateResponse = await students.updateOne(
+          { _id: ObjectId(studentID)},
+          { $set: { average: average/totalunits } },
+        )
+  
+        return updateResponse
+      } catch (e) {
+        console.error(`Unable to update student unit: ${e}`)
+        return { error: e }
+      }
+  }
+  static async getUnitByStudentID(id){
       let unit;
       try {
         console.log("test")
@@ -175,5 +195,21 @@ export default class StudentsDAO {
         console.error(`Unable to get unit, ${e}`)
         return unit
       }
-    }
+  }
+  static async getAverageByStudentID(id){
+      let unit;
+      try {
+        console.log("test")
+        //unit = await students.find({ _id: new ObjectId(id) },
+                                   //{ units: 1, _id: 0 })
+        let query = { "_id": { $eq: id } }
+        unit = await students.find(query)
+        //console.log(unit.toArray()[0])
+        //console.log(unit.toArray()[0]["units"])
+        return unit.toArray()
+      } catch (e) {
+        console.error(`Unable to get unit, ${e}`)
+        return unit
+      }
+  }
 }

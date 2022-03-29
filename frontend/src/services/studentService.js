@@ -36,6 +36,13 @@ class StudentDataService {
     updateUnitStudent(data) {
         return http.put("/updateUnitStudent", data);
     }
+    updateAverageStudent(data) {
+        return http.put("/updateAverageStudent", data);
+    }
+    resetAverageStudent(data) {
+        return http.put("/resetAverageStudent", data);
+    }
+    
     
     findUnitsBySemester(query, by = "studentID") {
         return http.get(`unitsBySemester?${by}=${query}`);
