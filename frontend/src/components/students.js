@@ -61,24 +61,10 @@ const Student = props => {
     )
   }
 
-  const setaverage = (id) => {
-    //StudentDataService.updateaverage(id)
-    StudentDataService.findStudent(id)
-      .then(response => {
-        response.data.average=Math.round((response.data.average/response.data.totalunits) * 100) / 100
-        setStudent(response.data);
-        console.log(response.data);
-      })
-      .catch(e => {
-        console.log(e);
-      });
-  };
 
   const getStudent = (id) => {
     StudentDataService.findStudent(id)
       .then(response => {
-        //setaverage(id)
-        //response.data.average=(response.data.average/response.data.units)
         response.data.average=Math.round((response.data.average/response.data.totalunits) * 100) / 100
         setStudent(response.data);
 
@@ -242,7 +228,7 @@ const Student = props => {
               if(unitBySemester.yearOfLearning == 'א'){
                 if(unitBySemester.semesterOfLearning == 'א'){
                     return (<div>
-                        נק״ז : {unitBySemester.units}
+                        נק״ז : {unitBySemester.totalunits } /  {unitBySemester.valideunits }
                     </div>); 
                 }
               }
@@ -352,7 +338,7 @@ const Student = props => {
               if(unitBySemester.yearOfLearning == 'א'){
                 if(unitBySemester.semesterOfLearning == 'ב'){
                     return (<div>
-                        נק״ז : {unitBySemester.units}
+                        נק״ז : {unitBySemester.totalunits } /  {unitBySemester.valideunits }
                     </div>); 
                 }
               }
@@ -377,10 +363,10 @@ const Student = props => {
                       </p>
                       </div> 
                       
-                      {/* /<Xarrow curveness={0} path="grid" _cpx1Offset={-90} _cpy1Offset={58} _cpx2Offset={80} _cpy2Offset={-44}
+                      {<Xarrow curveness={0} path="grid" _cpx1Offset={-90} _cpy1Offset={58} _cpx2Offset={80} _cpy2Offset={-44}
                         start={box1Ref} //can be react ref
                         end={(course.codeCourse).toString()} //or an id
-                      /> */}
+                      /> }
                       </div> 
 
                       );
@@ -466,6 +452,81 @@ const Student = props => {
             </div>
             )}
           </div>
+          <div className="row">
+          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
+              סמסטר ק
+            <div>
+            {unitsBySemester.map((unitBySemester) => {
+              if(unitBySemester.yearOfLearning == 'א'){
+                if(unitBySemester.semesterOfLearning == 'ק'){
+                    return (<div>
+                        נק״ז : {unitBySemester.totalunits } /  {unitBySemester.valideunits }
+                    </div>); 
+                }
+              }
+            })} 
+            </div>      
+            </div>  
+
+          
+                
+            {student.courses.length > 0  ? (
+             student.courses.map((course, index) => {
+              if (course.yearOfLearning =='א'){      
+                if (course.grade>55 && course.semesterOfLearning=='ק'){
+               return (
+                 <div id="no1" className="col-sm text-white "  key={index} >      
+                     <div className="card my-3">    
+                      <p className='bg-success text-white text-center'>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>
+                   </div>
+                  
+                 </div> 
+                );}
+                else if (course.grade<56 && course.semesterOfLearning=='ק'){
+                return ( 
+                   <div className="col-sm text-white "  key={index} >     
+                       <div className="card my-3">    
+                      <p className='bg-danger text-white text-center'>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>
+                     </div>
+                   </div> 
+                );}
+                else if (course.semesterOfLearning=='ק'){
+                  return ( 
+                    <div className="col-sm text-white "  key={index} >      
+                        <div className="card my-3">    
+                      <p className='bg-secondary text-white text-center'>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>   
+                      </div>
+                    </div>
+                );}
+              }
+             })
+            ) : (
+            <div className="col-sm-4">
+              <p>No courses yet.</p>
+            </div>
+            )}
+            
+          </div> 
+        
+        
           <div className="card text-center " >    
             שנה ב     
           </div>  
@@ -481,7 +542,7 @@ const Student = props => {
               if(unitBySemester.yearOfLearning == 'ב'){
                 if(unitBySemester.semesterOfLearning == 'א'){
                     return (<div>
-                        נק״ז : {unitBySemester.units + countUnitSemesters}
+                        נק״ז :{unitBySemester.totalunits } /  {unitBySemester.valideunits }
                     </div>); 
                 }
               }
@@ -550,13 +611,13 @@ const Student = props => {
               if(unitBySemester.yearOfLearning == 'ב'){
                 if(unitBySemester.semesterOfLearning == 'ב'){
                     return (<div>
-                        נק״ז : {unitBySemester.units}
+                        נק״ז : {unitBySemester.totalunits } /  {unitBySemester.valideunits }
                     </div>); 
                 }
               }
             })} 
             </div>      
-            </div>      
+            </div>   
             {student.courses.length > 0  ? (
              student.courses.map((course, index) => {
               if (course.yearOfLearning =='ב'){      
@@ -612,6 +673,81 @@ const Student = props => {
             )}
             
           </div> 
+          <div className="row">
+          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
+              סמסטר ק
+            <div>
+            {unitsBySemester.map((unitBySemester) => {
+              if(unitBySemester.yearOfLearning == 'ב'){
+                if(unitBySemester.semesterOfLearning == 'ק'){
+                    return (<div>
+                        נק״ז : {unitBySemester.totalunits } /  {unitBySemester.valideunits }
+                    </div>); 
+                }
+              }
+            })} 
+            </div>      
+            </div>  
+
+          
+                
+            {student.courses.length > 0  ? (
+             student.courses.map((course, index) => {
+              if (course.yearOfLearning =='ב'){      
+                if (course.grade>55 && course.semesterOfLearning=='ק'){
+               return (
+                 <div id="no1" className="col-sm text-white "  key={index} >      
+                     <div className="card my-3">    
+                      <p className='bg-success text-white text-center'>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>
+                   </div>
+                  
+                 </div> 
+                );}
+                else if (course.grade<56 && course.semesterOfLearning=='ק'){
+                return ( 
+                   <div className="col-sm text-white "  key={index} >     
+                       <div className="card my-3">    
+                      <p className='bg-danger text-white text-center'>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>
+                     </div>
+                   </div> 
+                );}
+                else if (course.semesterOfLearning=='ק'){
+                  return ( 
+                    <div className="col-sm text-white "  key={index} >      
+                        <div className="card my-3">    
+                      <p className='bg-secondary text-white text-center'>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>   
+                      </div>
+                    </div>
+                );}
+              }
+             })
+            ) : (
+            <div className="col-sm-4">
+              <p>No courses yet.</p>
+            </div>
+            )}
+            
+          </div> 
+        
+        
           <div className="card text-center " >    
             שנה ג           
           </div>  
@@ -623,7 +759,7 @@ const Student = props => {
               if(unitBySemester.yearOfLearning == 'ג'){
                 if(unitBySemester.semesterOfLearning == 'א'){
                     return (<div>
-                        נק״ז : {unitBySemester.units}
+                        נק״ז : {unitBySemester.totalunits } /  {unitBySemester.valideunits }
                     </div>); 
                 }
               }
@@ -692,7 +828,7 @@ const Student = props => {
               if(unitBySemester.yearOfLearning == 'ג'){
                 if(unitBySemester.semesterOfLearning == 'ב'){
                     return (<div>
-                        נק״ז : {unitBySemester.units}
+                        נק״ז : {unitBySemester.totalunits } /  {unitBySemester.valideunits }
                     </div>); 
                 }
               }
@@ -754,6 +890,80 @@ const Student = props => {
             )}
             
           </div> 
+
+          <div className="row">
+          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
+              סמסטר ק
+            <div>
+            {unitsBySemester.map((unitBySemester) => {
+              if(unitBySemester.yearOfLearning == 'ג'){
+                if(unitBySemester.semesterOfLearning == 'ק'){
+                    return (<div>
+                        נק״ז : {unitBySemester.totalunits } /  {unitBySemester.valideunits }
+                    </div>); 
+                }
+              }
+            })} 
+            </div>      
+            </div> 
+                
+            {student.courses.length > 0  ? (
+             student.courses.map((course, index) => {
+              if (course.yearOfLearning =='ג'){      
+                if (course.grade>55 && course.semesterOfLearning=='ק'){
+               return (
+                 <div id="no1" className="col-sm text-white "  key={index} >      
+                     <div className="card my-3">    
+                      <p className='bg-success text-white text-center'>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>
+                   </div>
+                  
+                 </div> 
+                );}
+                else if (course.grade<56 && course.semesterOfLearning=='ק'){
+                return ( 
+                   <div className="col-sm text-white "  key={index} >     
+                       <div className="card my-3">    
+                      <p className='bg-danger text-white text-center'>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>
+                     </div>
+                   </div> 
+                );}
+                else if (course.semesterOfLearning=='ק'){
+                  return ( 
+                    <div className="col-sm text-white "  key={index} >      
+                        <div className="card my-3">    
+                      <p className='bg-secondary text-white text-center'>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>   
+                      </div>
+                    </div>
+                );}
+              }
+             })
+            ) : (
+            <div className="col-sm-4">
+              <p>No courses yet.</p>
+            </div>
+            )}
+            
+          </div> 
+        
+        
           <div className="card text-center " >      
             שנה ד   
           </div>  
@@ -766,7 +976,7 @@ const Student = props => {
               if(unitBySemester.yearOfLearning == 'ד'){
                 if(unitBySemester.semesterOfLearning == 'א'){
                     return (<div>
-                        נק״ז : {unitBySemester.units}
+                        נק״ז : {unitBySemester.totalunits } /  {unitBySemester.valideunits }
                     </div>); 
                 }
               }
@@ -835,7 +1045,7 @@ const Student = props => {
               if(unitBySemester.yearOfLearning == 'ד'){
                 if(unitBySemester.semesterOfLearning == 'ב'){
                     return (<div>
-                        נק״ז : {unitBySemester.units}
+                        נק״ז : {unitBySemester.totalunits } /  {unitBySemester.valideunits }
                     </div>); 
                 }
               }
@@ -896,7 +1106,82 @@ const Student = props => {
             </div>
             )}
             
-          </div>            
+          </div>   
+          <div className="row">
+          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
+              סמסטר ק
+            <div>
+            {unitsBySemester.map((unitBySemester) => {
+              if(unitBySemester.yearOfLearning == 'ד'){
+                if(unitBySemester.semesterOfLearning == 'ק'){
+                    return (<div>
+                        נק״ז : {unitBySemester.totalunits } /  {unitBySemester.valideunits }
+                    </div>); 
+                }
+              }
+            })} 
+            </div>      
+            </div>  
+
+          
+                
+            {student.courses.length > 0  ? (
+             student.courses.map((course, index) => {
+              if (course.yearOfLearning =='ד'){      
+                if (course.grade>55 && course.semesterOfLearning=='ק'){
+               return (
+                 <div id="no1" className="col-sm text-white "  key={index} >      
+                     <div className="card my-3">    
+                      <p className='bg-success text-white text-center'>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>
+                   </div>
+                  
+                 </div> 
+                );}
+                else if (course.grade<56 && course.semesterOfLearning=='ק'){
+                return ( 
+                   <div className="col-sm text-white "  key={index} >     
+                       <div className="card my-3">    
+                      <p className='bg-danger text-white text-center'>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>
+                     </div>
+                   </div> 
+                );}
+                else if (course.semesterOfLearning=='ק'){
+                  return ( 
+                    <div className="col-sm text-white "  key={index} >      
+                        <div className="card my-3">    
+                      <p className='bg-secondary text-white text-center'>
+                          <h11>
+                            {course.courseName}<br/>
+                            {course.grade}<br/>
+                            {course.units}
+                          </h11>
+                        </p>   
+                      </div>
+                    </div>
+                );}
+              }
+             })
+            ) : (
+            <div className="col-sm-4">
+              <p>No courses yet.</p>
+            </div>
+            )}
+            
+          </div> 
+        
+                 
         </div>        
         ) : (
         <div>

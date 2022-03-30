@@ -126,13 +126,8 @@ const StudentsList = props => {
         </div>
         <div className="input-group col-lg-4">
 
-          <select onChange={onChangeSearchNames}>
-             {names.map(names => {
-               return (
-                 <option value={names}> {names.substr(0, 20)} </option>
-               )
-             })}
-          </select>
+        
+
           <div className="input-group-append">
             <button
               className="btn btn-outline-secondary"
