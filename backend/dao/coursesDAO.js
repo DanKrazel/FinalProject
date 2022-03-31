@@ -209,7 +209,7 @@ export default class CoursesDAO {
           courseName: source[i]["שם קורס"],
           typeOfCourse: source[i]["סוג"],
           englishUnits: parseInt(source[i]["שס"]),
-          units: parseInt(source[i]["נזיכוי"]),
+          units: parseFloat(source[i]["נזיכוי"]),
           grade: parseInt(source[i]["ציון"]),
           //passCourse: checkPassCourse(grade),
           studentID: ObjectId(studentID)
