@@ -11,6 +11,7 @@ dotenv.config()
 const MongoClient = mongodb.MongoClient
 
 const port = process.env.PORT || 8000
+const JWT_SECRET=process.env.jwt;
 
 MongoClient.connect(
   process.env.STUDREVIEWS_DB_URI,

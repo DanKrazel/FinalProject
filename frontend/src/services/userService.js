@@ -1,5 +1,5 @@
 import http from "../http-common";
-
+import authHeader from './auth-header';
 
 class UserDataService {
     getAll(page = 0) {
@@ -14,11 +14,6 @@ class UserDataService {
         return http.get(`user?${by}=${query}&page=${page}`);
     } 
 
-
-    checkAuthentification(data){
-        return http.post("/login", data);
-    }
-
     createUser(data) {
         return http.post("/user-new", data);
     }
@@ -30,6 +25,19 @@ class UserDataService {
     deleteUser(id, userId) {
         return http.delete(`/user-delete?id=${id}`, {data:{user_id: userId}});
     }
+
+    getAdminBoard(){
+        return http.get('/admin', { headers: authHeader() });
+    }
+    
+    getSecretariatBoard(){
+        return http.get('/secretariat', { headers: authHeader() });
+    }
+
+    getProfessorBoard(){
+        return http.get('/professor', { headers: authHeader() });
+    }
+    
 
 }
      

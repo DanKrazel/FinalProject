@@ -1,9 +1,15 @@
 import express from "express"
 import cors from "cors"
 import student from "./api/routes/students.route.js"
+import jwt from "jsonwebtoken"
+import bodyparser from "body-parser"
+import cookieParser from "cookie-parser"
+const salt = 10;
 
 const app = express()
 
+app.use(bodyparser.urlencoded({extended:true}));
+app.use(cookieParser());
 app.use(cors())
 app.use(express.json())
 

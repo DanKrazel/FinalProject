@@ -129,7 +129,7 @@ const StudentsList = props => {
           <select onChange={onChangeSearchNames}>
              {names.map(names => {
                return (
-                 <option value={names}> {names.substr(0, 20)} </option>
+                 <option value={names}> {names} </option>
                )
              })}
           </select>

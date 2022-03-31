@@ -61,19 +61,6 @@ const Student = props => {
     )
   }
 
-  const setaverage = (id) => {
-    //StudentDataService.updateaverage(id)
-    StudentDataService.findStudent(id)
-      .then(response => {
-        response.data.average=Math.round((response.data.average/response.data.totalunits) * 100) / 100
-        setStudent(response.data);
-        console.log(response.data);
-      })
-      .catch(e => {
-        console.log(e);
-      });
-  };
-
   const getStudent = (id) => {
     StudentDataService.findStudent(id)
       .then(response => {
@@ -377,10 +364,10 @@ const Student = props => {
                       </p>
                       </div> 
                       
-                      {/* /<Xarrow curveness={0} path="grid" _cpx1Offset={-90} _cpy1Offset={58} _cpx2Offset={80} _cpy2Offset={-44}
+                      <Xarrow curveness={0} path="grid" _cpx1Offset={-90} _cpy1Offset={58} _cpx2Offset={80} _cpy2Offset={-44}
                         start={box1Ref} //can be react ref
                         end={(course.codeCourse).toString()} //or an id
-                      /> */}
+                      />
                       </div> 
 
                       );
