@@ -240,7 +240,7 @@ const Student = props => {
                 if ((course.grade>55 && course.semesterOfLearning=='א' )){
                   if(course.courseName == 'חדו"א  - 1'){
                     return (
-                      <div className="col-sm text-white " id={(course.codeCourse).toString()}
+                      <div className="col-sm" id={(course.codeCourse).toString()}
                           key={course.codeCourses} >               
                       <div  className="card my-3 " ref={box1Ref}>     
                       <p className='bg-success text-white text-center'>

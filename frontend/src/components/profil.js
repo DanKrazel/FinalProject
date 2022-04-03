@@ -8,8 +8,8 @@ const Profil = props => {
     const [refreshKey, setRefreshKey] = useState(0);
 
     useEffect(() => {
-      
-    }, [refreshKey]);
+      console.log("props.user",props.user)
+    }, []);
 
     return (
       <div className="container">
