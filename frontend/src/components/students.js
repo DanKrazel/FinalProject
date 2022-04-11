@@ -53,7 +53,7 @@ const Student = props => {
     console.log("useEffect student")
     getStudent(params.id);
     getUnitsBySemester(params.id);
-    updateTotalUnitForEachSemester();
+    //updateTotalUnitForEachSemester();
   }, []);
 
   function sleep(time){
@@ -64,7 +64,8 @@ const Student = props => {
   const getStudent = (id) => {
     StudentDataService.findStudent(id)
       .then(response => {
-        response.data.average=Math.round((response.data.average/response.data.totalunits) * 100) / 100
+        if(response.data.average)
+          response.data.average=Math.round((response.data.average/response.data.totalunits) * 100) / 100
         setStudent(response.data);
 
         console.log(response.data);
@@ -164,17 +165,19 @@ const Student = props => {
     //<form onSubmit={deleteCourseByStudentID(params.id)}>
     <div>
       <div className="example-config">
-        <button className="k-button" onClick={exportPDFWithComponent}>
+        <button className="btn btn-secondary " onClick={exportPDFWithComponent}>
          Export PDF
         </button>
       &nbsp;
-      <button className="k-button" onClick={exportPDFWithComponent}>
+      <button className="btn btn-secondary" onClick={exportPDFWithComponent}>
         Send PDF to verification 
       </button>
-      <button className="k-button" onClick={exportPDFWithComponent}>
+      &nbsp;
+      <button className="btn btn-secondary " onClick={exportPDFWithComponent}>
         Save PDF to Blockchain
       </button>
-      <button class="position-absolute top-right" onClick={() => navigate(-1)} >
+      &nbsp;
+      <button class="btn btn-secondary " onClick={() => navigate(-1)} >
         Return to previous page
       </button>
     </div>
@@ -192,9 +195,9 @@ const Student = props => {
                                   <strong> ת״ז : </strong>{student.student_id}
                                   <strong> | ממוצע : </strong>{student.average}
                                   <strong> | שנה : </strong>{student.years}
-                                  <strong> | נק״ז : </strong>{student.totalunits} 
-                                  <strong> | נק״ז : </strong>{student.valideunits} 
-                                  <button class=" d-block  ml-auto" onClick={() => navigate(-1)} >         חריגה </button> <br/> 
+                                  <strong> | נק״ז כללי: </strong>{student.totalunits} 
+                                  <strong> | נק״ז עובר: </strong>{student.valideunits} 
+                                  <strong class=" d-block  ml-auto mr-o " >  חריגה </strong> <br/> 
                                   </div>        
                                 </p> 
                             )

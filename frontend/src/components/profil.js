@@ -18,23 +18,20 @@ const Profil = props => {
             <strong>{currentUser.username}</strong> Profile
           </h3>
         </header>
-        <p>
-          <strong>Token:</strong>{" "}
-          {currentUser.accessToken.substring(0, 20)} ...{" "}
-          {currentUser.accessToken.substr(currentUser.accessToken.length - 20)}
-        </p>
-        <p>
+      <ul class="list-group">
+        <li class="list-group-item">
           <strong>Id:</strong>{" "}
           {currentUser.id}
-        </p>
-        <p>
+        </li>
+        <li class="list-group-item">
           <strong>Email:</strong>{" "}
           {currentUser.mail}
-        </p>
-        <p>
+        </li>
+        <li class="list-group-item">
           <strong>Roles:</strong>{" "}
           {currentUser.role}
-        </p>
+        </li>
+      </ul>
       </div>
     );
   }

@@ -30,7 +30,9 @@ export default class userDAO {
   } = {}) {
     let query
     if (filters) {
-       if ("username" in filters) {
+      if ("_id" in filters) {
+        query = { "_id": { $eq: filters["_id"] } }
+      } else if ("username" in filters) {
         query = { "username": { $eq: filters["username"] } }
       } else if ("password" in filters) {
         query = { "password": { $eq: filters["password"] } } 

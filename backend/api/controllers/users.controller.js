@@ -2,6 +2,10 @@ import UsersDAO from "../../dao/usersDAO.js"
 import jwt from"jsonwebtoken"
 import bcrypt from "bcryptjs"
 import 'dotenv/config'
+import mongodb from "mongodb"
+import emailjs from '@emailjs/browser';
+
+const ObjectId = mongodb.ObjectId
 
 
 
@@ -15,7 +19,9 @@ export default class UsersController {
     const page = req.query.page ? parseInt(req.query.page, 10) : 0
 
     let filters = {}
-    if (req.query.username) {
+    if (req.query._id) {
+      filters._id = ObjectId(req.query._id)
+    } else if (req.query.username) {
       filters.username = req.query.username
     } else if (req.query.password) {
       filters.password = req.query.password
@@ -177,7 +183,7 @@ export default class UsersController {
       if (!token) {
         return res.status(403).send({ message: "No token provided!" });
       }
-      console.log("access token", token)
+      //console.log("access token", token)
 
       //console.log("decoded")
       const decoded = jwt.verify(token,JWT_SECRET);
@@ -251,7 +257,7 @@ export default class UsersController {
   static async apiSecretariatBoard(req, res, next) {
     try {
       res.status(200).send("Secretariat Content.");
-    } catch (error) {
+    } catch (e) {
       res.status(500).json({ error: e })
     }
   

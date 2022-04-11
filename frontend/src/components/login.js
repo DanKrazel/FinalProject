@@ -11,6 +11,7 @@ const Login = props => {
   const [user, setUser] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false)
 
   let navigate = useNavigate()
 
@@ -44,10 +45,10 @@ const Login = props => {
     if(response.data.status == "success" && response.data.accessToken){
       localStorage.setItem("user", JSON.stringify(response.data));
       console.log("localStorage user :", localStorage.getItem('user'))
-      alert('Login successful')
+      //alert('Login successful')
       setUser(data);
       //props.login(user)
-      navigate('/profil')
+      navigate('/profil', { replace: true })
     }
     else {
 			alert('Please check your username and password')

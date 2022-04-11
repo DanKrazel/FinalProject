@@ -61,7 +61,7 @@ const StudentsList = props => {
   const find = (query, by) => {
     StudentDataService.find(query, by)
       .then(response => {
-        console.log(response.data);
+        console.log("find",response.data);
         setStudents(response.data.students);
       })
       .catch(e => {

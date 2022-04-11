@@ -57,16 +57,12 @@ export default class StudentsDAO {
       return { studentsList: [], totalNumStudents: 0 }
     }
   }
-  static async getStudentsByID(id) {
+  static async getStudentByID(studentID) {
     try {
-      const pipeline = [
-        {
-            $match: {
-                _id: new ObjectId(id),
-            },
-        },
-          ]
-      return await students.aggregate(pipeline).next()
+      const studentDoc = {
+        _id:studentID
+      }
+      return await students.findOne(studentDoc)
     } catch (e) {
       console.error(`Something went wrong in getStudentByID: ${e}`)
       throw e
@@ -97,7 +93,7 @@ export default class StudentsDAO {
       return { error: e }
     }
   }
-  static async getStudentByID(id) {
+  static async getCoursesByStudentID(id) {
       try {
         const pipeline = [
           {

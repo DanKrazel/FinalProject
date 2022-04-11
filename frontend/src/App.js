@@ -8,21 +8,34 @@ import Profil from "./components/profil"
 import AuthService from "../src/services/authService"
 import Downloadcsv from "./components/downloadcsv";
 import Login from "./components/login";
-import AdminBoard from "./components/Boards/adminBoard";
-import ProfessorBoard from "./components/Boards/professorBoards";
-import SecretariatBoard from "./components/Boards/secretariatBoard";
-import Flow from "./components/flowChart/testFlowChart";
+import AdminBoard from "./components/Admin/adminBoard";
+import ProfessorBoard from "./components/Professor/professorBoards";
+import SecretariatBoard from "./components/Secretariat/secretariatBoard";
 import RegisterUser from "./components/Admin/RegisterUser";
+import ViewRequests from "./components/Secretariat/viewRequests";
+import UploadCSVForProfessor from "./components/Secretariat/uploadCSVForProfessor";
+import StudentSendProf from "./components/Secretariat/studentSendProf";
+import 'dotenv/config';
 
+import jwt from"jsonwebtoken"
+
+const JWT_SECRET = process.env.jwt
+
+//import { AuthContext } from "./components/context/authContext"
 
 function App() {
 
-  const [user, setUser] = useState("")
-  const [currentUser, setCurrentUser] = useState(AuthService.getCurrentUser())
+  //const [user, setUser] = useState("")
+  //const [currentUser, setCurrentUser] = useState(null)
   const [adminBoard , setAdminBoard ] = useState(false)
   const [secretariatBoard , setSecretariatBoard ] = useState(false)
   const [professorBoard , setProfessorBoard ] = useState(false)
+  //const [token, setToken] = useState(false)
+  const [roleSecretariat, setRoleSecretariat] = useState("")
+  const [roleAdmin, setRoleAdmin] = useState("")
+  const [roleProfessor, setRoleProfessor] = useState("")
   let navigate = useNavigate()
+  const currentUser = AuthService.getCurrentUser();
 
 
   useEffect(() => {
@@ -34,6 +47,7 @@ function App() {
     console.log("localStorage user :", localStorage.getItem('user'))
     //navigate('/login')
   }
+
 
   const getBoard = () => {
     if(currentUser){
@@ -48,51 +62,72 @@ function App() {
 
   }
 
+  // const checkTokenIsExpire = () => {
+  //   if(!jwt.verify(currentUser.accessToken,JWT_SECRET))
+  //     logout()
+  // }
+
+
   return (
     <div>
-    <nav className="navbar navbar-expand navbar-dark bg-dark">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <Link to="/" className="navbar-brand">
           Students List
       </Link>
-      <div className="navbar-nav mr-auto">
           {adminBoard && (
-              <li className="nav-item">
+          <div className="navbar-nav me-auto mb-2 mb-lg-0 ">
+              <li className="nav-item active">
                 <Link to={"/admin"} className="nav-link">
                   Admin Board
                 </Link>
               </li>
+              <li className="nav-item active">
+                <Link to={"/signup"} className="nav-link">
+                  Register users
+                </Link>
+              </li>
+            </div>
+              
           )}
           {secretariatBoard && (
-              <li className="nav-item">
+          <div className="navbar-nav me-auto mb-2 mb-lg-0">
+              <li className="nav-item active">
                 <Link to={"/secretariat"} className="nav-link">
                   Secretariat Board
                 </Link>
               </li>
+            <li className="nav-item active">
+              <Link to={"/view-requests"} className="nav-link">
+                View requests
+              </Link>
+            </li>
+          </div>
           )}
           {professorBoard && (
-            <li className="nav-item">
+          <div className="navbar-nav me-auto mb-2 mb-lg-0">
+            <li className="nav-item active">
               <Link to={"/professor"} className="nav-link">
                 Professor Board
               </Link>
             </li>
+          </div>
         )}
-        </div>
           { currentUser ? (
-          <div className="navbar-nav mr-auto">
-            <li className="nav-item">
+          <div className="nav navbar-nav navbar-right">
+            <li className="nav-item active">
                 <Link to={"/profil"} className="nav-link">
-                  {currentUser.username}
+                  Profil {currentUser.username}
                 </Link>
             </li>
-            <li className="nav-item">
+            <li className="nav-item active">
               <a href="/login" onClick={logout} className="nav-link" style={{cursor:'pointer'}}>
                 Logout
               </a>
             </li>
           </div>
           ) : (
-          <div className="navbar-nav mr-auto">
-            <li className="nav-item">
+          <div className="navbar-nav navbar-right">
+            <li className="nav-item active">
               <Link to={"/login"} className="nav-link">
                 Login
               </Link>       
@@ -117,7 +152,7 @@ function App() {
         />
         <Route 
           path="/signup"
-          element = { <RegisterUser/> }
+          element = { <RegisterUser user={currentUser}/> }
         />
         <Route 
           path="/profil"
@@ -134,6 +169,18 @@ function App() {
         <Route 
           path="/secretariat"
           element = { <SecretariatBoard user={currentUser}/> } 
+        />
+        <Route 
+          path="/view-requests"
+          element = { <ViewRequests user={currentUser}/> } 
+        />
+        <Route 
+          path="/uploadCSVForProfessor/:studentID/:professorID"
+          element = { <UploadCSVForProfessor user={currentUser}/> } 
+        />
+        <Route 
+          path="/studentSendProf/:studentID/:professorID"
+          element = { <StudentSendProf user={currentUser}/> } 
         />
         <Route 
           path="/Downloadcsv/:id"
