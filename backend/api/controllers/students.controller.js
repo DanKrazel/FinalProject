@@ -85,11 +85,28 @@ export default class  StudentsController {
     }
   }
 
+
   static async apiGetStudentByID(req, res, next){
+    try {
+      let studentID = req.body.studentID
+      console.log('id',id)
+      let student = await StudentsDAO.getStudentByID(studentID)
+      if (!student) {
+        res.status(404).json({ error: "Not found" })
+        return
+      }
+      res.json(student)
+    } catch (e) {
+      console.log(`api, ${e}`)
+      res.status(500).json({ error: e })
+    }
+  }
+
+  static async apiGetCoursesStudentByID(req, res, next){
     try {
       let id = req.params.id || {}
       console.log('id',id)
-      let student = await StudentsDAO.getStudentByID(id)
+      let student = await StudentsDAO.getCoursesByStudentID(id)
       if (!student) {
         res.status(404).json({ error: "Not found" })
         return
@@ -123,6 +140,7 @@ export default class  StudentsController {
       res.status(500).json({ error: e })
     }
   }
+  
   static async apiUpdateUnitStudent(req, res, next) {
     try {
       const studentID = req.body.student_id

@@ -1,4 +1,11 @@
 import mongodb from "mongodb"
+import jwt from "jsonwebtoken"
+import bcrypt from "bcryptjs"
+import 'dotenv/config'
+
+
+
+const JWT_SECRET = process.env.jwt
 const ObjectId = mongodb.ObjectId
 let users
 
@@ -23,7 +30,9 @@ export default class userDAO {
   } = {}) {
     let query
     if (filters) {
-       if ("username" in filters) {
+      if ("_id" in filters) {
+        query = { "_id": { $eq: filters["_id"] } }
+      } else if ("username" in filters) {
         query = { "username": { $eq: filters["username"] } }
       } else if ("password" in filters) {
         query = { "password": { $eq: filters["password"] } } 
@@ -31,6 +40,8 @@ export default class userDAO {
         query = { "phone": { $eq: filters["phone"] } }
       } else if ("mail" in filters) {
         query = { "mail": { $eq: filters["mail"] } }
+      } else if ("role" in filters) {
+        query = { "role": { $eq: filters["role"] } }
       }
     }
 
@@ -64,7 +75,6 @@ export default class userDAO {
           user_id: userID,
           username: username,
           password: password,
-          phone: phone,
           mail: mail,}
       return await users.insertOne(userDoc)
     } catch (e) {
@@ -73,13 +83,12 @@ export default class userDAO {
     }
   }
 
-  static async updateUser (userID, username, password, phone, mail) {
+  static async updateUser (userID, username, password, mail) {
     try {
       const userDoc = {
           user_id: userID,
           username: username,
           password: password,
-          phone: phone,
           mail: mail,}
 
       return await users.updateOne(userDoc)
@@ -89,13 +98,12 @@ export default class userDAO {
     }
   }
 
-  static async deleteUser (userID, username, password, phone, mail) {
+  static async deleteUser (userID, username, password, mail) {
     try {
       const userDoc = { 
           user_id: userID,
           username: username,
           password: password,
-          phone: phone,
           mail: mail,}
 
       return await users.deleteOne(userDoc)
@@ -116,4 +124,96 @@ export default class userDAO {
       return { error: e }
     }
   }
+
+  static async checkDuplicateUsername (username) {
+    // Username
+    try {
+      const userDoc = {
+        username: username,
+      }
+      return await users.findOne(userDoc)
+    } catch (e) {
+      console.error(`Unable to check username: ${e}`)
+      return { error: e }
+    }
+  };
+
+  static async checkDuplicateEmail (mail) {
+    // Mail
+    try {
+      const userDoc = {
+        mail: mail,
+      }
+      return await users.findOne(userDoc)
+    } catch (e) {
+      console.error(`Unable to check mail: ${e}`)
+      return { error: e }
+    }
+  };
+
+
+  static async signUp (user_id, username, password, mail, role){
+    try {
+      const userDoc = {
+        user_id: user_id,
+        username: username,
+        password: password,
+        mail: mail,
+        role: role
+      }
+       return await users.insertOne(userDoc)
+    } catch (error) {
+      console.error(`Unable to insert user: ${e}`)
+      return { error: e }
+    }
+
+  }
+
+  static async verifyUserLogin (username,password) {
+    try {
+        const userDoc = {
+          username: username,
+        }
+        const user = await users.findOne(userDoc)
+        if(user && await bcrypt.compare(password,user.password)){
+            // creating a JWT token
+            var token = jwt.sign({id:user._id,username:user.username},JWT_SECRET,{ expiresIn: '2h'})
+            return {status:'success',
+                    id: user.user_id,
+                    username: user.username,
+                    mail: user.mail,
+                    role: user.role,
+                    accessToken: token}
+        }
+        return {status:"failed"}
+
+    } catch (e) {
+        console.log(e);
+        return { error : e }
+    }
+}
+
+  static async findUser(userID){
+    try {
+      const userDoc = {
+        _id: ObjectId(userID)
+      }
+      return await users.findOne(userDoc)
+    } catch (error) {
+      console.error(`Unable to check user role: ${e}`)
+      return { error: e }
+    }
+  }
+
+  // static async verifyToken(token){
+  //   try {
+  //     const decoded = jwt.verify(token,JWT_SECRET);
+  //     return decoded;
+  //   } catch (error) {
+  //     console.log(JSON.stringify(error),"error");
+  //     return false;
+  //   }
+  // }
+
+
 }

@@ -1,46 +1,141 @@
-import React from "react";
-import { Routes, Route, Link } from "react-router-dom";
+import React, { useState, useEffect, useRef} from "react";
+import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import AddStudent from "./components/add-student";
 import Student from "./components/students";
 import StudentVisual from "./components/studentsVisual";
 import StudentsList from "./components/students-list";
+import Profil from "./components/profil"
+import AuthService from "../src/services/authService"
 import Downloadcsv from "./components/downloadcsv";
 import Login from "./components/login";
-import Flow from "./components/flowChart/testFlowChart";
+import AdminBoard from "./components/Admin/adminBoard";
+import ProfessorBoard from "./components/Professor/professorBoards";
+import SecretariatBoard from "./components/Secretariat/secretariatBoard";
+import RegisterUser from "./components/Admin/RegisterUser";
+import ViewRequests from "./components/Secretariat/viewRequests";
+import UploadCSVForProfessor from "./components/Secretariat/uploadCSVForProfessor";
+import StudentSendProf from "./components/Secretariat/studentSendProf";
+import 'dotenv/config';
 
+import jwt from"jsonwebtoken"
+
+const JWT_SECRET = process.env.jwt
+
+//import { AuthContext } from "./components/context/authContext"
 
 function App() {
-  const [user, setUser] = React.useState(null)
 
-  async function login(user = null){
-    setUser(user)
-  }
+  //const [user, setUser] = useState("")
+  //const [currentUser, setCurrentUser] = useState(null)
+  const [adminBoard , setAdminBoard ] = useState(false)
+  const [secretariatBoard , setSecretariatBoard ] = useState(false)
+  const [professorBoard , setProfessorBoard ] = useState(false)
+  //const [token, setToken] = useState(false)
+  const [roleSecretariat, setRoleSecretariat] = useState("")
+  const [roleAdmin, setRoleAdmin] = useState("")
+  const [roleProfessor, setRoleProfessor] = useState("")
+  let navigate = useNavigate()
+  const currentUser = AuthService.getCurrentUser();
+
+
+  useEffect(() => {
+    getBoard();
+  }, [currentUser]);
 
   async function logout() {
-    setUser(null)
+    AuthService.logout()
+    console.log("localStorage user :", localStorage.getItem('user'))
+    //navigate('/login')
   }
+
+
+  const getBoard = () => {
+    if(currentUser){
+      if(currentUser.role == 'Admin'){
+        setAdminBoard(true)
+      }else if(currentUser.role == 'Secretariat'){
+        setSecretariatBoard(true)
+      }else if(currentUser.role == 'Professor'){
+        setProfessorBoard(true)
+      }
+    }
+
+  }
+
+  // const checkTokenIsExpire = () => {
+  //   if(!jwt.verify(currentUser.accessToken,JWT_SECRET))
+  //     logout()
+  // }
+
 
   return (
     <div>
-    <nav className="navbar navbar-expand navbar-dark bg-dark">
-      <a href="/" className="navbar-brand">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+      <Link to="/" className="navbar-brand">
           Students List
-      </a>
-      <div className="navbar-nav mr-auto">
-        <li className="nav-item" >
-          { user ? (
-            <a onClick={logout} className="nav-link" style={{cursor:'pointer'}}>
-              Logout {user.name}
-            </a>
-          ) : (            
-          <Link to={"/login"} className="nav-link">
-            Login
-          </Link>
+      </Link>
+          {adminBoard && (
+          <div className="navbar-nav me-auto mb-2 mb-lg-0 ">
+              <li className="nav-item active">
+                <Link to={"/admin"} className="nav-link">
+                  Admin Board
+                </Link>
+              </li>
+              <li className="nav-item active">
+                <Link to={"/signup"} className="nav-link">
+                  Register users
+                </Link>
+              </li>
+            </div>
+              
           )}
-
-        </li>
-      </div>
+          {secretariatBoard && (
+          <div className="navbar-nav me-auto mb-2 mb-lg-0">
+              <li className="nav-item active">
+                <Link to={"/secretariat"} className="nav-link">
+                  Secretariat Board
+                </Link>
+              </li>
+            <li className="nav-item active">
+              <Link to={"/view-requests"} className="nav-link">
+                View requests
+              </Link>
+            </li>
+          </div>
+          )}
+          {professorBoard && (
+          <div className="navbar-nav me-auto mb-2 mb-lg-0">
+            <li className="nav-item active">
+              <Link to={"/professor"} className="nav-link">
+                Professor Board
+              </Link>
+            </li>
+          </div>
+        )}
+          { currentUser ? (
+          <div className="nav navbar-nav navbar-right">
+            <li className="nav-item active">
+                <Link to={"/profil"} className="nav-link">
+                  Profil {currentUser.username}
+                </Link>
+            </li>
+            <li className="nav-item active">
+              <a href="/login" onClick={logout} className="nav-link" style={{cursor:'pointer'}}>
+                Logout
+              </a>
+            </li>
+          </div>
+          ) : (
+          <div className="navbar-nav navbar-right">
+            <li className="nav-item active">
+              <Link to={"/login"} className="nav-link">
+                Login
+              </Link>       
+            </li>
+          </div>
+          
+          )}
     </nav>
 
     <div className="container mt-3">
@@ -50,7 +145,7 @@ function App() {
           element={<StudentsList/>} />
         <Route 
           path="/students/:id"
-          element = { <Student user={user}/> }
+          element = { <Student user={currentUser}/> }
         />
         <Route 
           path="/studentsVisual/:id"
@@ -58,11 +153,43 @@ function App() {
         />
         <Route 
           path="/login"
-          element = { <Login login={login} /> }
+          element = { <Login/> }
+        />
+        <Route 
+          path="/signup"
+          element = { <RegisterUser user={currentUser}/> }
+        />
+        <Route 
+          path="/profil"
+          element = { <Profil user={currentUser}/> } 
+        />
+        <Route 
+          path="/admin"
+          element = { <AdminBoard user={currentUser}/> } 
+        />
+        <Route 
+          path="/professor"
+          element = { <ProfessorBoard user={currentUser}/> } 
+        />
+        <Route 
+          path="/secretariat"
+          element = { <SecretariatBoard user={currentUser}/> } 
+        />
+        <Route 
+          path="/view-requests"
+          element = { <ViewRequests user={currentUser}/> } 
+        />
+        <Route 
+          path="/uploadCSVForProfessor/:studentID/:professorID"
+          element = { <UploadCSVForProfessor user={currentUser}/> } 
+        />
+        <Route 
+          path="/studentSendProf/:studentID/:professorID"
+          element = { <StudentSendProf user={currentUser}/> } 
         />
         <Route 
           path="/Downloadcsv/:id"
-          element = { <Downloadcsv user={user}/> } 
+          element = { <Downloadcsv user={currentUser}/> } 
         />
         </Routes>
     </div>

@@ -61,7 +61,7 @@ const StudentsList = props => {
   const find = (query, by) => {
     StudentDataService.find(query, by)
       .then(response => {
-        console.log(response.data);
+        console.log("find",response.data);
         setStudents(response.data.students);
       })
       .catch(e => {
@@ -126,6 +126,13 @@ const StudentsList = props => {
         </div>
         <div className="input-group col-lg-4">
 
+          <select onChange={onChangeSearchNames}>
+             {names.map(names => {
+               return (
+                 <option value={names}> {names} </option>
+               )
+             })}
+          </select>
         
 
           <div className="input-group-append">

@@ -1,5 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef} from "react";
 import UserDataService from "../services/userService";
+import AuthService from "../services/authService";
+import { useNavigate } from "react-router-dom";
+
+
 
 const Login = props => {
 
@@ -7,6 +11,9 @@ const Login = props => {
   const [user, setUser] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false)
+
+  let navigate = useNavigate()
 
   useEffect(() => {
     retrieveUsers();
@@ -30,21 +37,27 @@ const Login = props => {
   };
 
 
-  async function loginUser(event){
+  async function handleLogin(event){
     event.preventDefault()
     const data = {username,password}
-    const response = await UserDataService.checkAuthentification(data)
-    if(response.data.status == "success"){
-      alert('Login successful')
+    const response = await AuthService.login(data)
+    console.log("response.data",response.data)
+    if(response.data.status == "success" && response.data.accessToken){
+      localStorage.setItem("user", JSON.stringify(response.data));
+      console.log("localStorage user :", localStorage.getItem('user'))
+      //alert('Login successful')
       setUser(data);
-      props.login(user)
-      window.location.href = '/'
-    }else {
+      //props.login(user)
+      navigate('/profil', { replace: true })
+    }
+    else {
 			alert('Please check your username and password')
 		}
     
     console.log(response.data.status)
+  // do something when no error
   }
+
 
  /* function validateForm() {
     return username.length > 0 && password.length > 0;
@@ -87,39 +100,47 @@ const Login = props => {
   }*/
 
     return (
-    <div className="submit-form">
       <div>
+      <form class="needs-validation"  onSubmit={handleLogin} novalidate>
         <div className="form-group">
-          <label htmlFor="username">Username</label>
+          <label for="validationCustomUsername">Username</label>
           <input
             type="text"
-            className="form-control"
-            id="username"
-            required
+            class="form-control"
+            placeholder="Username"
             value={username}
             onChange={onChangeUsername}
             name="username"
+            id="validationCustomUsername"
+            required
           />
+          <div class="invalid-feedback">
+          Please choose a username.
+          </div>
         </div>
 
         <div className="form-group">
-          <label htmlFor="password">Password</label>
+          <label for="validationCustom02">Password</label>
           <input
             type="password"
             className="form-control"
-            id="password"
+            id="validationCustom02"
+            placeholder="Password"
             required
             value={password}
             onChange={onChangePassword}
             name="password"
           />
         </div>
+        <div class="invalid-feedback">
+          Please choose a password
+        </div>
 
-        <button onClick={loginUser} className="btn btn-success" >
+        <button type="submit" className="btn btn-success" >
           Login
         </button>
+        </form>
       </div>
-    </div>
     );
 };
 
