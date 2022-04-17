@@ -17,6 +17,7 @@
     "react-archer": "^3.2.2",
     "react-data-table-component": "^7.4.6",
     "react-dom": "^17.0.2",
+    "react-draggable": "^4.4.4",
     "react-icons": "^4.3.1",
     "react-router-dom": "^6.1.1",
     "react-scripts": "4.0.3",

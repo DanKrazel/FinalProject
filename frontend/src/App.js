@@ -3,6 +3,7 @@ import { Routes, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import AddStudent from "./components/add-student";
 import Student from "./components/students";
+import StudentVisual from "./components/studentsVisual";
 import StudentsList from "./components/students-list";
 import Downloadcsv from "./components/downloadcsv";
 import Login from "./components/login";
@@ -50,6 +51,10 @@ function App() {
         <Route 
           path="/students/:id"
           element = { <Student user={user}/> }
+        />
+        <Route 
+          path="/studentsVisual/:id"
+          element = { <StudentVisual user={user}/> }
         />
         <Route 
           path="/login"

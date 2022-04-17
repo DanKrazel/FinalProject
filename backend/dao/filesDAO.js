@@ -80,24 +80,133 @@ export default class filesDAO {
   }
 
 
-    static async uploadCSVtoDB (data) {
+  static async uploadCSVtoDB (data) {
     // CSV file name
       //const fileName = "sample.csv";
       var arrayToInsert = [];
       // Fetching the all data from each row
-      for (var i = 0; i < data.length; i++) {
-        var oneRow = {
-          codeCourse: source[i]["קוד קורס"],
-          semesterOfLearning: source[i]["סמס"],
-          courseName: source[i]["שם קורס"],
-          typeOfCourse: source[i]["סוג"],
-          englishUnits: source[i]["שס"],
-          units: source[i]["נזיכוי"],
-          grade: source[i]["ציון"],
+      
+  var i= 0;
+  while(i!=data.length){
+      for (var j = 0; j < data.length; j++) {
+        if((source[j]["שם קורס"]=="חדו'א  - 1") && ( source[j]["שם קורס"]!="")){
+         var oneRow = {
+          codeCourse: source[j]["קוד קורס"],
+          yearOfLearning: source[j]["שנה"],
+          semesterOfLearning: source[j]["סמס"],
+          courseName: source[j]["שם קורס"],
+          typeOfCourse: source[j]["סוג"],
+          englishUnits: parseInt(source[j]["שס"]),
+          units: parseFloat(source[j]["נזיכוי"]),
+          grade: parseInt(source[j]["ציון"]),
+          //passCourse: checkPassCourse(grade),
           studentID: ObjectId(studentID)
         };
+        console.log(oneRow)
         arrayToInsert.push(oneRow);
+        //students.updateOne({units:units+courseUnits})
+        //StudentsDAO.updateUnitsStudent(studentID, source[i]["נזיכוי"])
+        i=i++;
+        break;
+
+        
+        
       }
+    }
+      for (var j = 0; j < data.length; j++) {
+      if((source[j]["שם קורס"]=="אלגברה לינארית לתוכנה-ה") && ( source[j]["שם קורס"]!="")){
+       var oneRow = {
+        codeCourse: source[j]["קוד קורס"],
+        yearOfLearning: source[j]["שנה"],
+        semesterOfLearning: source[j]["סמס"],
+        courseName: source[j]["שם קורס"],
+        typeOfCourse: source[j]["סוג"],
+        englishUnits: parseInt(source[j]["שס"]),
+        units: parseFloat(source[j]["נזיכוי"]),
+        grade: parseInt(source[j]["ציון"]),
+        //passCourse: checkPassCourse(grade),
+        studentID: ObjectId(studentID)
+      };
+      console.log(oneRow)
+      arrayToInsert.push(oneRow);
+      //students.updateOne({units:units+courseUnits})
+      //StudentsDAO.updateUnitsStudent(studentID, source[i]["נזיכוי"])
+      i=i++;
+      break;
+      
+    }
+  } 
+      for (var j = 0; j < data.length; j++) {
+    if((source[j]["שם קורס"]=="ארכיטקטורת מחשבים I") && ( source[j]["שם קורס"]!="")){
+     var oneRow = {
+      codeCourse: source[j]["קוד קורס"],
+      yearOfLearning: source[j]["שנה"],
+      semesterOfLearning: source[j]["סמס"],
+      courseName: source[j]["שם קורס"],
+      typeOfCourse: source[j]["סוג"],
+      englishUnits: parseInt(source[j]["שס"]),
+      units: parseFloat(source[j]["נזיכוי"]),
+      grade: parseInt(source[j]["ציון"]),
+      //passCourse: checkPassCourse(grade),
+      studentID: ObjectId(studentID)
+    };
+    console.log(oneRow)
+    arrayToInsert.push(oneRow);
+    //students.updateOne({units:units+courseUnits})
+    //StudentsDAO.updateUnitsStudent(studentID, source[i]["נזיכוי"])
+    i=i++;
+    break;
+    
+  }
+  } 
+  for (var j = 0; j < data.length; j++) {
+    if((source[j]["שם קורס"]=="ארכיטקטורת מחשבים I") && ( source[j]["שם קורס"]!="")){
+     var oneRow = {
+      codeCourse: source[j]["קוד קורס"],
+      yearOfLearning: source[j]["שנה"],
+      semesterOfLearning: source[j]["סמס"],
+      courseName: source[j]["שם קורס"],
+      typeOfCourse: source[j]["סוג"],
+      englishUnits: parseInt(source[j]["שס"]),
+      units: parseFloat(source[j]["נזיכוי"]),
+      grade: parseInt(source[j]["ציון"]),
+      //passCourse: checkPassCourse(grade),
+      studentID: ObjectId(studentID)
+    };
+    console.log(oneRow)
+    arrayToInsert.push(oneRow);
+    //students.updateOne({units:units+courseUnits})
+    //StudentsDAO.updateUnitsStudent(studentID, source[i]["נזיכוי"])
+    i=i++;
+    
+    break;
+  }
+  }        
+}
+
+for (var j = i; j < data.length; j++) {
+  if(( source[j]["שם קורס"]!="")){
+   var oneRow = {
+    codeCourse: source[j]["קוד קורס"],
+    yearOfLearning: source[j]["שנה"],
+    semesterOfLearning: source[j]["סמס"],
+    courseName: source[j]["שם קורס"],
+    typeOfCourse: source[j]["סוג"],
+    englishUnits: parseInt(source[j]["שס"]),
+    units: parseFloat(source[j]["נזיכוי"]),
+    grade: parseInt(source[j]["ציון"]),
+    //passCourse: checkPassCourse(grade),
+    studentID: ObjectId(studentID)
+  };
+  console.log(oneRow)
+  arrayToInsert.push(oneRow);
+  //students.updateOne({units:units+courseUnits})
+  //StudentsDAO.updateUnitsStudent(studentID, source[i]["נזיכוי"])
+
+  
+}
+}
+
       console.log("arrayToInsert : ")
       console.log(arrayToInsert)
       courses.insertMany(arrayToInsert, (err, result) => {

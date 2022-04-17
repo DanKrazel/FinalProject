@@ -4,6 +4,7 @@ import multer from "multer"
 import fs from "fs"
 import StudentsDAO from "./studentsDAO.js"
 const ObjectId = mongodb.ObjectId
+import unitsBySemesterDAO from "./unitsBySemesterDAO.js"
 
 let courses
 
@@ -18,8 +19,6 @@ export default class CoursesDAO {
       console.error(`Unable to establish collection handles in courseDAO: ${e}`)
     }
   }
-
-
   static async addCourse(codeCourse, courseName, grade, semesterOfLearning, yearOfLearning ,englishUnits, units, typeOfCourse, studentID) {
     try {
       const courseDoc = {
@@ -42,7 +41,6 @@ export default class CoursesDAO {
       return { error: e }
     }
   }
-
   static async updateCourse(courseID, userId, text, date) {
     try {
       const updateResponse = await courses.updateOne(
@@ -56,7 +54,6 @@ export default class CoursesDAO {
       return { error: e }
     }
   }
-
   static async deleteCourse(courseID) {
     try {
       const deleteResponse = await courses.deleteOne({
@@ -69,12 +66,12 @@ export default class CoursesDAO {
       return { error: e }
     }
   }
-
   static async deleteCoursesByStudentID(studentID) {
     try {
       const deleteResponse = await courses.deleteMany({
         studentID: ObjectId(studentID),
       })
+      unitsBySemesterDAO.deleteUnitsByStudentID(studentID)
       StudentsDAO.updateUnitsStudent(studentID)
       StudentsDAO.resetAverageStudent(studentID)
       return deleteResponse
@@ -83,7 +80,6 @@ export default class CoursesDAO {
       return { error: e }
     }
   }
-
   static async getCourses({
     filters = null,
     page = 0,
@@ -144,7 +140,6 @@ export default class CoursesDAO {
       return { coursesList: [], totalNumCourses: 0 }
     }
   }
-
   static async getCoursesByStudentID(id) {
     try {
       const pipeline = [
@@ -190,7 +185,6 @@ export default class CoursesDAO {
       throw e
     }
   }
-
   static async uploadCSVtoDB (fileName, studentID) {
     // CSV file name
       //const fileName = "sample.csv";
@@ -201,7 +195,7 @@ export default class CoursesDAO {
       //console.log(source)
       // Fetching the all data from each row
       for (var i = 0; i < source.length; i++) {
-        if(source[i]["קוד קורס"]!=""){
+        if(source[i]["קוד קורס"]!=""   ){
         var oneRow = {
           codeCourse: source[i]["קוד קורס"],
           yearOfLearning: source[i]["שנה"],
@@ -211,7 +205,6 @@ export default class CoursesDAO {
           englishUnits: parseInt(source[i]["שס"]),
           units: parseFloat(source[i]["נזיכוי"]),
           grade: parseInt(source[i]["ציון"]),
-          //passCourse: checkPassCourse(grade),
           studentID: ObjectId(studentID)
         };
         console.log(oneRow)
@@ -223,10 +216,90 @@ export default class CoursesDAO {
           console.log("Miss field on csv file, check your file")
         }
       }
+      console.log(arrayToInsert[0]["courseName"]);
+      var arrayToInserttemp = [];
+      var i = 0 ;
+      while(i!=arrayToInsert.length){
+        for (var j = 0; j < arrayToInsert.length; j++) {
+          if((arrayToInsert[j]["courseName"]=='חדו"א  - 1')&&(arrayToInsert[j]["yearOfLearning"]=="א")&&(arrayToInsert[j]["semesterOfLearning"]=="א")){
+            arrayToInserttemp.push(arrayToInsert[j]);
+            arrayToInsert.splice(j, 1);
+            i=i++;
+            break;
+
+          }
+        } 
+        
+        for (var j = 0; j < arrayToInsert.length; j++) {
+          if(arrayToInsert[j]["courseName"]=="ארכיטקטורת מחשבים I"){
+            arrayToInserttemp.push(arrayToInsert[j]);
+            arrayToInsert.splice(j, 1);
+            i=i++;
+            break;   
+          }
+        }
+        for (var j = 0; j < arrayToInsert.length; j++) {
+          if((arrayToInsert[j]["courseName"]=="אלגברה לינארית לתוכנה-ה")&&(arrayToInsert[j]["yearOfLearning"]=="א")&&(arrayToInsert[j]["semesterOfLearning"]=="א")){
+
+            arrayToInserttemp.push(arrayToInsert[j]);
+            arrayToInsert.splice(j, 1);
+            i=i++;
+            break;
+          }
+        } 
+        for (var j = 0; j < arrayToInsert.length; j++) {
+          if(arrayToInsert[j]["courseName"]=="מבוא למדעי המחשב"){
+            arrayToInserttemp.push(arrayToInsert[j]);
+            arrayToInsert.splice(j, 1);
+            i=i++;
+            break;   
+          }
+        }
+        for (var j = 0; j < arrayToInsert.length; j++) {
+          if(arrayToInsert[j]["courseName"]=="חדוא 2 להנדסת תוכנה"){
+            arrayToInserttemp.push(arrayToInsert[j]);
+            arrayToInsert.splice(j, 1);
+            i=i++;
+            break;   
+          }
+        }
+        for (var j = 0; j < arrayToInsert.length; j++) {
+          if(arrayToInsert[j]["courseName"]=="לוגיקה ונושאים דיסקרטיים"){
+            arrayToInserttemp.push(arrayToInsert[j]);
+            arrayToInsert.splice(j, 1);
+            i=i++;
+            break;   
+          }
+        }
+        for (var j = 0; j < arrayToInsert.length; j++) {
+          if(arrayToInsert[j]["courseName"]=="ארכיטקטורת מחשבים  II"){
+            arrayToInserttemp.push(arrayToInsert[j]);
+            arrayToInsert.splice(j, 1);
+            i=i++;
+            break;   
+          }
+        }
+        for (var j = 0; j < arrayToInsert.length; j++) {
+          if(arrayToInsert[j]["courseName"]=="תכנות מונחה עצמים"){
+            arrayToInserttemp.push(arrayToInsert[j]);
+            arrayToInsert.splice(j, 1);
+            break;   
+          }
+        } 
+        break;
+      } 
+      console.log(arrayToInsert.length);
+      console.log(arrayToInsert);
+      for (var k=0; k < arrayToInsert.length; k++) { 
+          arrayToInserttemp.push(arrayToInsert[k]);
+          //students.updateOne({units:units+courseUnits})
+          //StudentsDAO.updateUnitsStudent(studentID, source[i]["נזיכוי"])
+      }
+      
       fs.unlinkSync(fileName);
-      console.log("arrayToInsert : ")
+      console.log("arrayToInserttemp : ")
       //console.log(arrayToInsert)
-      courses.insertMany(arrayToInsert, (err, result) => {
+      courses.insertMany(arrayToInserttemp, (err, result) => {
         if (err)
           console.log(err);
         if(result){
@@ -236,7 +309,6 @@ export default class CoursesDAO {
     });
   });
   }
-
   static async checkPassCourse(grade) {
     if(grade<56)
       return false

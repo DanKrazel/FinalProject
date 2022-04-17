@@ -6,7 +6,6 @@ import * as XLSX from 'xlsx';
 import CourseDataService from "../services/courseService"
 import FileDataService from "../services/fileService"
 import StudentDataService from "../services/studentService"
-import UnitsBySemesterDataService from "../services/unitsBySemesterService";
 import { Link, Navigate } from "react-router-dom";
 import { fileURLToPath } from "url";
 import axios from 'axios';
@@ -127,13 +126,27 @@ const Downloadcsv = props => {
     reader.readAsBinaryString(file);
   }
 
+  /*const uploadFileToDB = e => {
+    const file = e.target.files[0]
+    console.log(file)
+    CourseDataService.uploadCourse(file, params.id)
+  }*/
 
   // handle click event of the upload button
   const handleOnSubmit = e => {
     e.preventDefault();
     const formData = new FormData()
     formData.append('file',fileInput.current.files[0])
-
+    /*if(fileInput.current.files[0]){
+      alert(
+        `Selected file - ${fileInput.current.files[0].name}`
+      );
+      }
+    else
+      alert(
+        `Selected file - None`
+      )*/
+    //setSelectedFile(fileInput.current.files[0])
     var data = {
       file: fileInput.current.files[0],
       studentID: params.id,
@@ -142,10 +155,6 @@ const Downloadcsv = props => {
     if(courses.length != 0){
       params.average=0;
       CourseDataService.deleteCourseByStudentID(params.id)
-      .then(response => {
-        console.log(response.data);
-      })
-      UnitsBySemesterDataService.deleteUnitsBySemesterByStudentID(params.id)
       .then(response => {
         console.log(response.data);
       })
@@ -179,7 +188,6 @@ const Downloadcsv = props => {
     console.log(submitted)
 
     }
-
 
 
     const getFile = id => {
@@ -228,7 +236,7 @@ const Downloadcsv = props => {
           />
           )}
 
-      <Link to={"/students/"+params.id} className="btn btn-primary">
+      <Link to={"/studentsVisual/"+params.id} className="btn btn-primary">
         View student visualisation
       </Link>     
       <Link to={"/"} class="btn btn-primary">
