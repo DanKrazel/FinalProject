@@ -149,7 +149,7 @@ function App() {
         />
         <Route 
           path="/studentsVisual/:id"
-          element = { <StudentVisual user={user}/> }
+            element={<StudentVisual user={currentUser}/> }
         />
         <Route 
           path="/login"
