@@ -17,7 +17,6 @@ import emailjs from '@emailjs/browser';
 
 
 const StudentSendProf = props => {
-  const listCourses1 = ['חדו"א  - 1', 'מבנה נתונים-ה', 'מבוא למדעי המחשב', 'I ארכיטקטורת מחשבים']
   const params = useParams();
   var countUnitSemesters = 0
   var countUnitSemester2 = 0;
@@ -376,10 +375,10 @@ const StudentSendProf = props => {
                       </p>
                       </div> 
                       
-                      {<Xarrow curveness={0} path="grid" _cpx1Offset={-90} _cpy1Offset={58} _cpx2Offset={80} _cpy2Offset={-44}
+                      {/* {<Xarrow curveness={0} path="grid" _cpx1Offset={-90} _cpy1Offset={58} _cpx2Offset={80} _cpy2Offset={-44}
                         start={box1Ref} //can be react ref
                         end={(course.codeCourse).toString()} //or an id
-                      /> }
+                      /> } */}
                       </div> 
 
                       );

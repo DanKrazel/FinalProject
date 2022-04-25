@@ -35,7 +35,6 @@ const ProfessorBoard = props => {
         UserDataService.getProfessorBoard()
         .then(response => {
             console.log("response",response)
-            setContent(response.data)
         })
         .catch(error => {
             setContent((error.response &&
@@ -198,6 +197,8 @@ const ProfessorBoard = props => {
 
     return (
         <div>
+          {!content ? (
+          <div>
           <div className="row pb-1">
             <div className="input-group col-lg-4">
               <input
@@ -304,6 +305,15 @@ const ProfessorBoard = props => {
     
     
           </div>
+          </div>
+          ):(
+            <div className="container">
+              <header className="jumbotron">
+                <h3>{content}</h3>
+              </header>
+            </div>
+                      )}
+            
         </div>
       );
 

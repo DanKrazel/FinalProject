@@ -148,6 +148,15 @@ export default class CoursesController {
     }
   }
 
+  static async apiDeleteAllCourses(req, res, next) {
+    try {
+      const courseResponse = await CoursesDAO.deleteAllCourses()
+      res.json({ status: "success" })
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  }
+
   static async apiGetCoursesByStudentID(req, res, next){
     try {
       let id = req.params.id || {}
@@ -190,5 +199,37 @@ export default class CoursesController {
       res.status(500).json({ error: e })
     }
   }
+
+  static async apiUploadCourses(req, res) {
+    try{
+      let studentID = req.params.id || {}
+
+      const CourseResponse = await CoursesDAO.uploadCourses(
+        req.file.path, 
+        studentID
+        )
+      console.log("CourseResponse:")
+      console.log(CourseResponse)
+      res.json({ status: "success" })
+    } catch (e) {
+      console.log("heybackend")
+      console.log(`api, ${e}`)
+      res.status(500).json({ error: e })
+    }
+  }
+
+  static async apiUploadCoursesAllStudents(req, res) {
+    try{
+      const CourseResponse = await CoursesDAO.uploadCoursesAllStudents(
+        req.file.path, 
+        )
+      console.log("CourseResponse:", CourseResponse)
+      res.json({ status: "success" })
+    } catch (e) {
+      console.log(`api, ${e}`)
+      res.status(500).json({ error: e })
+    }
+  }
+  
 
 }

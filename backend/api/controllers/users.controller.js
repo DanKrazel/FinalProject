@@ -9,7 +9,7 @@ const ObjectId = mongodb.ObjectId
 
 
 
-const JWT_SECRET = process.env.jwt
+const JWT_SECRET = process.env.JWT
 
 
 export default class UsersController {
@@ -189,6 +189,7 @@ export default class UsersController {
       const decoded = jwt.verify(token,JWT_SECRET);
       console.log("decoded")
       console.log(decoded)
+      console.log("JWT_SECRET",JWT_SECRET)
       if(!decoded){
         return res.status(401).send({ message: "Unauthorized!" });
       }
@@ -211,7 +212,7 @@ export default class UsersController {
       res.status(403).send({ message: "Require Admin Role!" });
       return;
     } catch (e) {
-      res.status(500).json({ error: e })
+      res.status(500).json({ error: e})
     }
   }
 

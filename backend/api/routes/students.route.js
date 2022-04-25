@@ -22,6 +22,8 @@ router.route("/getAverageStudent/:id").get(StudentsCtrl.apiGetAverageStudent)
 router.route("/resetAverageStudent").put(StudentsCtrl.apiResetAverageStudent)
 router.route("/updateAverageStudent").put(StudentsCtrl.apiUpdateAverageStudent)
 router.route("/updateUnitStudent").put(StudentsCtrl.apiUpdateUnitStudent)
+router.route("/uploadStudents").post(upload.single('file'),StudentsCtrl.apiUploadStudentFromCSV)
+router.route("/deleteAllStudents").delete(StudentsCtrl.apiDeleteAllStudent)
 router.route("/testToken").get(UsersCtrl.apiVerifyToken)
 
 router.route("/user").get(UsersCtrl.apiGetUsers)
@@ -52,21 +54,28 @@ router.route("/professor").get(UsersCtrl.apiVerifyToken,
                            
 router.route("/names").get(StudentsCtrl.apiGetStudentName)
 router.route("/getCoursesStudent/:id").get(StudentsCtrl.apiGetCoursesStudentByID)
+router.route("/deleteAllCourses").delete(CoursesCtrl.apiDeleteAllCourses)
 router.route("/course").post(CoursesCtrl.apiPostCourse)
                        .put(CoursesCtrl.apiUpdateCourse)
                        .delete(CoursesCtrl.apiDeleteCourse)
                        .get(CoursesCtrl.apiGetCourses)
                        .get(CoursesCtrl.apiGetCoursesByStudentID)
+
+
+
 router.route("/course/:id").delete(CoursesCtrl.apiDeleteCourseBystudentID)
-router.route("/uploadCourses/:id").post(CoursesCtrl.apiUploadCoursesToDB)
+//router.route("/uploadCourses/:id").post(CoursesCtrl.apiUploadCoursesToDB)
 
 router.route("/unitsBySemester").get(UnitsBySemesterCtrl.apiGetUnitsBySemester)
                                 .put(UnitsBySemesterCtrl.apiUpdateUnitsSemesters)
 router.route("/unitsBySemester/:id").delete(UnitsBySemesterCtrl.apiDeleteUnitsBySemesterStudentID)
                                     
-router.route("/uploadFile/:id").post(upload.single('file'),FilesCtrl.apiNewTestPostFile)
-                           .get(FilesCtrl.apiGetFiles)
+router.route("/uploadCourses/:id").post(upload.single('file'),CoursesCtrl.apiUploadCourses)
+router.route("/uploadCoursesAllStudents").post(upload.single('file'),CoursesCtrl.apiUploadCoursesAllStudents)
+
                        
+router.route("/uploadPDF").post(upload.single('file'),FilesCtrl.apiNewTestPostFile)
+
 
 
 export default router

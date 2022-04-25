@@ -47,6 +47,14 @@ class StudentDataService {
     findUnitsBySemester(query, by = "studentID") {
         return http.get(`unitsBySemester?${by}=${query}`);
     } 
+
+    uploadStudents(data){
+        return http.post('/uploadStudents',data)
+    }
+
+    deleteAllStudents(){
+        return http.delete('/deleteAllStudents')
+    }
 }
     
     export default new StudentDataService();

@@ -1,4 +1,10 @@
 import mongodb from "mongodb"
+import pdfjsLib  from "pdfjs-dist/build/pdf.js"
+import pdfParse from "pdf-parse"
+import parsePDF from "../helpFunction/parsePDF.js"
+
+
+
 const ObjectId = mongodb.ObjectId
 
 
@@ -218,6 +224,33 @@ for (var j = i; j < data.length; j++) {
        //inserting into the table "courses"    
     });
 }
+
+  static async getContentPDF(src) {
+    const doc = await pdfjsLib.getDocument(src).promise // note the use of the property promise
+    const page = await doc.getPage(1)
+    return await page.getTextContent()
+  }
+
+  // static async getItemsPDF(src) {
+  //   const pdfExtract = new PDFExtract();
+  //   const options = {}; /* see below */
+  //   pdfExtract.extract('test.pdf', options, (err, data) => {
+  //   if (err) 
+  //     return console.log(err);
+  //   console.log(data);
+  //   });
+    
+  
+  // }
+
+  
+
+  static async postDataPDF (file) {
+    //check documents https://mozilla.github.io/pdf.js/
+    const fileParsed = await pdfParse(file)
+    return fileParsed;
+}
+
 
 }
  

@@ -5,7 +5,7 @@ import 'dotenv/config'
 
 
 
-const JWT_SECRET = process.env.jwt
+const JWT_SECRET = process.env.JWT
 const ObjectId = mongodb.ObjectId
 let users
 

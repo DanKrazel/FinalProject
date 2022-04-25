@@ -21,9 +21,17 @@ class CourseDataService {
         return http.get(`/${id}`);
     }
     
-    uploadCourse(data, id){
+    uploadCourses(data, id){
         return http.post(`/uploadCourses/${id}`, data);
     }
+
+    uploadCoursesAllStudents(data){
+        return http.post('/uploadCoursesAllStudents', data);
+    }
+
+    // uploadFile(data, id){
+    //     return http.post(`/uploadFile/${id}`, data);
+    // }
 
     updateCourse(data) {
         return http.put("/course-edit", data);

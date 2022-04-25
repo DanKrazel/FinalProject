@@ -1,9 +1,14 @@
-import filesDAO from "../../dao/filesDAO.js"
+import FilesDAO from "../../dao/filesDAO.js"
 import CoursesDAO from "../../dao/coursesDAO.js"
 import fs from "fs"
 import upload from "../../middleware/upload.js"
 import mongodb from "mongodb"
 import csv from "fast-csv"
+import pdfParse from "pdf-parse"
+import {PdfReader} from "pdfreader"
+import pdfjsLib  from "pdfjs-dist/build/pdf.js"
+
+
 const ObjectId = mongodb.ObjectId
 
 export default class FilesController {
@@ -11,9 +16,6 @@ export default class FilesController {
 
     static async apiNewTestPostFile(req, res) {
       try{
-      //let file = req.file
-        const fileRows = [];
-        const fileTestRow = [];
         let studentID = req.params.id || {}
 
         const CourseResponse = await CoursesDAO.uploadCSVtoDB(
@@ -22,26 +24,84 @@ export default class FilesController {
           )
         console.log("CourseResponse:")
         console.log(CourseResponse)
-        //console.log("fs:")
-        //fs.unlinkSync(req.file.path);
-        /*fs.unlink(req.file.path, (err => {
-          if (err) 
-            console.log(err);
-          else {
-            console.log("\nDeleted file: "+req.file.path);
-          }
-        }));*/
         res.json({ status: "success" })
       } catch (e) {
         console.log("heybackend")
         console.log(`api, ${e}`)
         res.status(500).json({ error: e })
       }
-      //fs.unlinkSync(req.file.path); 
-
-    
     }
     
+
+   
+
+    static async apiPostPDF(req, res) {
+      try{
+        let file = req.body.filePath
+        console.log("file",file)
+          // let file = req.file.path
+          // console.log("FileResponse:")
+          // console.log(file)
+          // // res.json({ status: "success",
+          // //            FileResponse: FileResponse })
+          // res.status(200).send({ status: "success",
+          //                        file: file
+          //              });
+          
+          // const FileResponse = await FilesDAO.getItemsPDF(
+          //   file, 
+          //   )
+          // if (!file) {
+          //   res.status(400);
+          //   res.end();
+          // }
+    
+  
+
+          const FileResponse = await FilesDAO.postDataPDF(file);
+          let text = ""
+          for (let i=0; i<FileResponse.text.length; i++) {
+              if(FileResponse.text[i]!= '\n'){
+                  text += FileResponse.text[i]
+              }
+              else if(FileResponse.text[i] == '(A)' || FileResponse.text[i] == '(B)' || FileResponse.text[i] == '(C)' || FileResponse.text[i] == '(D)'
+              || FileResponse.text[i] == '(E)' || FileResponse.text[i] == '(F)')
+                text += '\n'
+          }
+          // new PdfReader().parseFileItems(file, (err, item) => {
+          //   if (err) console.error("error:", err);
+          //   else if (!item) 
+          //     console.warn("end of file");
+          //   else if (item.text) 
+          //     //console.log(item.text);
+          //     var item = item.text
+          // });
+          FileResponse.text = text
+          res.json({ FileResponse: FileResponse} )
+
+          //console.log("FileResponse:", FileResponse)
+          //res.json({ file: file})
+        } catch (e) {
+          console.log("heybackend")
+          console.log(`api, ${e}`)
+          res.status(500).json({ error: e })
+        }
+    }
+    
+    static async apiGetContentPDF(req, res, next) {
+      let render_options = {
+        //replaces all occurrences of whitespace with standard spaces (0x20). The default value is `false`.
+        normalizeWhitespace: false,
+        //do not attempt to combine same line TextItem's. The default value is `false`.
+        disableCombineTextItems: false
+    }
+      let file = req.body.filePath
+      console.log("file",file)
+      const doc = await pdfjsLib.getDocument(file).promise // note the use of the property promise
+      const page = await doc.getPage(1)
+      const content = await page.getTextContent(render_options)
+      res.json({content: content})
+    }
   
 
   

@@ -215,5 +215,27 @@ export default class  StudentsController {
     }
   }
 
+  static async apiUploadStudentFromCSV(req, res) {
+    try{
+      const StudentResponse = await StudentsDAO.uploadStudentFromCSV(
+        req.file.path, 
+        )
+      console.log("StudentResponse:", StudentResponse)
+      res.json({ status: "success" })
+    } catch (e) {
+      console.log("heybackend")
+      console.log(`api, ${e}`)
+      res.status(500).json({ error: e })
+    }
+  }
+
+  static async apiDeleteAllStudent(req, res, next) {
+    try {
+      const StudentResponse = await StudentsDAO.deleteAllStudent()
+      res.json({ status: "success" })
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  }
   
 }

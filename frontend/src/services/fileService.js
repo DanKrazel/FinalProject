@@ -2,8 +2,10 @@ import http from "../http-common";
 
 class FileDataService {
 
-    uploadFile(data, id){
-        return http.post(`/uploadFile/${id}`, data);
+
+
+    uploadPDF(data){
+        return http.post(`/uploadPDF`, data);
     }
 
 

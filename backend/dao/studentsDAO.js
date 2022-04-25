@@ -1,4 +1,9 @@
 import mongodb from "mongodb"
+import csvtojson from "csvtojson"
+import multer from "multer"
+import fs from "fs"
+import XLSX from "xlsx"
+
 const ObjectId = mongodb.ObjectId
 let students
 
@@ -207,5 +212,48 @@ export default class StudentsDAO {
         console.error(`Unable to get unit, ${e}`)
         return unit
       }
+  }
+
+  static async uploadStudentFromCSV(filePath){
+      var arrayToInsert = [];
+      console.log(filePath)
+      // Load the Excel file
+      const workBook = XLSX.readFile(filePath);
+      XLSX.writeFile(workBook, filePath, { bookType: "csv" });
+      //console.log("workBook", workBook)
+      csvtojson({flatKeys:true}).fromFile(filePath).then(source => {
+      //console.log("source:", source)
+      //console.log(source)
+      // Fetching the all data from each row
+      for (var i = 0; i < source.length; i++) {
+        var oneRow = {
+          student_id: source[i]['ת. זהות'],
+          name: source[i]["שם"],
+          valideunits: parseFloat(source[i]['נ"ז מצטבר']),
+          average: parseFloat(source[i]["ממוצע מצטבר"]),
+        };
+        arrayToInsert.push(oneRow);
+        //console.log(oneRow)
+      }
+        fs.unlinkSync(filePath);
+        students.insertMany(arrayToInsert, (err, result) => {
+          if (err)
+            console.log(err);
+          if(result){
+              console.log("Import CSV into database successfully.");
+          }
+         //inserting into the table "courses"    
+      });
+    });
+  }
+
+  static async deleteAllStudent() {
+    try {
+      const deleteResponse = await students.deleteMany({"totalunits": undefined })
+      return deleteResponse
+    } catch (e) {
+      console.error(`Unable to delete students: ${e}`)
+      return { error: e }
+    }
   }
 }

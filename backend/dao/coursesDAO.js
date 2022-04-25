@@ -2,6 +2,10 @@ import mongodb from "mongodb"
 import csvtojson from "csvtojson"
 import multer from "multer"
 import fs from "fs"
+import XLSX from "xlsx"
+import csv from "csv-parser"
+import { v1 as uuidv1 } from 'uuid';
+
 import StudentsDAO from "./studentsDAO.js"
 const ObjectId = mongodb.ObjectId
 import unitsBySemesterDAO from "./unitsBySemesterDAO.js"
@@ -71,15 +75,28 @@ export default class CoursesDAO {
       const deleteResponse = await courses.deleteMany({
         studentID: ObjectId(studentID),
       })
-      unitsBySemesterDAO.deleteUnitsByStudentID(studentID)
-      StudentsDAO.updateUnitsStudent(studentID)
-      StudentsDAO.resetAverageStudent(studentID)
+      // unitsBySemesterDAO.deleteUnitsByStudentID(studentID)
+      // StudentsDAO.updateUnitsStudent(studentID)
+      // StudentsDAO.resetAverageStudent(studentID)
       return deleteResponse
     } catch (e) {
       console.error(`Unable to delete course: ${e}`)
       return { error: e }
     }
   }
+
+  static async deleteAllCourses() {
+    try {
+      const deleteResponse = await courses.deleteMany({
+      })
+      return deleteResponse
+    } catch (e) {
+      console.error(`Unable to delete course: ${e}`)
+      return { error: e }
+    }
+  }
+
+
   static async getCourses({
     filters = null,
     page = 0,
@@ -185,13 +202,13 @@ export default class CoursesDAO {
       throw e
     }
   }
-  static async uploadCSVtoDB (fileName, studentID) {
+  static async uploadCourses (fileName, studentID) {
     // CSV file name
       //const fileName = "sample.csv";
       var arrayToInsert = [];
       console.log(fileName)
       csvtojson().fromFile(fileName).then(source => {
-      console.log("source:")
+      console.log("source:", source)
       //console.log(source)
       // Fetching the all data from each row
       for (var i = 0; i < source.length; i++) {
@@ -202,8 +219,8 @@ export default class CoursesDAO {
           semesterOfLearning: source[i]["סמס"],
           courseName: source[i]["שם קורס"],
           typeOfCourse: source[i]["סוג"],
-          englishUnits: parseInt(source[i]["שס"]),
-          units: parseFloat(source[i]["נזיכוי"]),
+          englishUnits: parseInt(source[i]['ש"ס']),
+          units: parseFloat(source[i]["נ.זיכוי"]),
           grade: parseInt(source[i]["ציון"]),
           studentID: ObjectId(studentID)
         };
@@ -309,12 +326,160 @@ export default class CoursesDAO {
     });
   });
   }
-  static async checkPassCourse(grade) {
-    if(grade<56)
-      return false
-    else
-      return true
+
+  static async uploadCoursesAllStudents (filePath) {
+    // CSV file name
+      //const fileName = "sample.csv";
+      var count  = 0;     
+      console.log(filePath)
+      const results = [];
+      // const buf = fs.readFileSync(filePath);
+      // const workBook = XLSX.read(buf);
+      //const aoa = XLSX.utils.sheet_to_json(filePath, {header: 1}).slice(1)
+
+      /* find worksheet range */
+      // const ws = XLSX.readFile(filePath);
+      // XLSX.utils.sheet_add_aoa(ws, [
+      //   ["1"],                             // <-- Write 1 to cell B3
+      // ], { origin: "A1:J13" });
+      // console.log("ws", ws.Sheets)
+      const workbookTest = XLSX.utils.book_new();
+      const workBook = XLSX.readFile(filePath)
+      for(let i=0; i<workBook.SheetNames.length; i++){;
+        var arrayToInsert = [];
+        //console.log("workbook", workBook.Sheets[workBook.SheetNames[0]])
+        //XLSX.utils.book_append_sheet(workbookTest, workBook.Sheets[workBook.SheetNames[i]], workBook.SheetNames[i], true);
+        var csv = XLSX.utils.sheet_to_csv(workBook.Sheets[workBook.SheetNames[i]]);
+        //console.log("csv", csv)
+        //XLSX.writeFile(csv, filePath, { bookType: "csv" });
+        //console.log("workbookTest", workbookTest)
+        csvtojson({
+          noheader: false,
+          headers: ["קוד קורס","סמס","שם קורס","סוג","שם מרצה",'ש"ס',"נ.זיכוי","ציון"],
+          flatKeys:true
+        })    
+        .fromString(csv)
+        .then(source => {
+        // Fetching the all data from each row
+        for (var j = 0; j < source.length; j++) {
+          if(source[j]["קוד קורס"] != "תשפב" && source[j]["קוד קורס"] != "קוד קורס" ){
+          var oneRow = {
+            codeCourse: source[j]["קוד קורס"],
+            semesterOfLearning: source[j]["סמס"],
+            courseName: source[j]["שם קורס"],
+            typeOfCourse: source[j]["סוג"],
+            profName: source[j]["שם מרצה"],
+            englishUnits: parseInt(source[j]['ש"ס']),
+            units: parseFloat(source[j]["נ.זיכוי"]),
+            grade: parseInt(source[j]["ציון"]),
+            studentName: workBook.SheetNames[i]
+          };
+          //console.log(oneRow)
+          
+          arrayToInsert.push(oneRow);
+        }
+      }
+        courses.insertMany(arrayToInsert,{ordered:false},(err, result) => {
+          if (err){
+            console.log(err);
+            //fs.unlinkSync(filePath);
+          }
+          if(result){
+              console.log(result)
+              console.log("Import CSV into database successfully.");
+              //fs.unlinkSync(filePath);
+          }
+         //inserting into the table "courses"    
+        });
+        //console.log(arrayToInsert)
+         });
+      }
+      //console.log("workbookTest", workbookTest)
+      //XLSX.writeFile(workBook, filePath, { bookType: "csv" });
+
+    //   csvtojson({
+    //     noheader: false,
+	  //     headers: ["קוד קורס","סמס","שם קורס","סוג","שם מרצה",'ש"ס',"נ.זיכוי","ציון"],
+    //     flatKeys:true
+    //   })    
+    //   .fromFile(filePath).then(source => {
+    //   //console.log("source:", source)
+    //   //console.log(source)
+    //   // Fetching the all data from each row
+    //   for (var i = 0; i < source.length; i++) {
+    //     if(source[i]["קוד קורס"] != "תשפב" && source[i]["קוד קורס"] != "קוד קורס" ){
+    //     var oneRow = {
+    //       codeCourse: source[i]["קוד קורס"],
+    //       semesterOfLearning: source[i]["סמס"],
+    //       courseName: source[i]["שם קורס"],
+    //       typeOfCourse: source[i]["סוג"],
+    //       profName: source[i]["שם מרצה"],
+    //       englishUnits: parseInt(source[i]['ש"ס']),
+    //       units: parseFloat(source[i]["נ.זיכוי"]),
+    //       grade: parseInt(source[i]["ציון"]),
+    //     };
+    //     console.log(oneRow)
+    //     arrayToInsert.push(oneRow);
+    //     //students.updateOne({units:units+courseUnits})
+    //     //StudentsDAO.updateUnitsStudent(studentID, source[i]["נזיכוי"])
+    //   }
+    // }
+
+    //   courses.insertMany(arrayToInsert, (err, result) => {
+    //     if (err){
+    //       console.log(err);
+    //       //fs.unlinkSync(filePath);
+    //     }
+    //     if(result){
+    //         console.log("Import CSV into database successfully.");
+    //         fs.unlinkSync(filePath);
+    //     }
+    //    //inserting into the table "courses"    
+    //   });
+    // });
   }
+      
+      // console.log("workbook", workBook.Sheets[workBook.SheetNames[0]])
+      // fs.createReadStream(filePath)
+      //   .pipe(csv(["קוד קורס","סמס","שם קורס","סוג","שם מרצה",'ש"ס',"נ.זיכוי","ציון"],false))
+      //   .on('data', (row) => {
+      //         var oneRow = {
+      //           codeCourse: row["קוד קורס"],
+      //           semesterOfLearning: row["סמס"],
+      //           courseName: row["שם קורס"],
+      //           typeOfCourse: row["סוג"],
+      //           profName: row["שם מרצה"],
+      //           englishUnits: parseInt(row['ש"ס']),
+      //           units: parseFloat(row["נ.זיכוי"]),
+      //           grade: parseInt(row["ציון"]),
+      //         };
+      //         //console.log(oneRow)
+      //         //arrayToInsert.push(oneRow);
+      //         //students.updateOne({units:units+courseUnits})
+      //         //StudentsDAO.updateUnitsStudent(studentID, source[i]["נזיכוי"])
+      //         if(oneRow.codeCourse != ''){
+      //           results.push(oneRow)
+      //         }
+      //         else {
+      //           console.log('check')
+      //         }
+      //   })
+      //   .on('end', () => {      
+      //   console.log("results",results);
+      //   courses.insertMany(results, (err, result) => {
+      //     if (err){
+      //       console.log(err);
+      //       //fs.unlinkSync(filePath);
+      //     }
+      //     if(result){
+      //         console.log("Import CSV into database successfully.");
+      //         fs.unlinkSync(filePath);
+      //     }
+      //    //inserting into the table "courses"    
+      //   });
+      //   });
+      
+      //console.log(arrayToInsert)
 
 
 }

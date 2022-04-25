@@ -16,15 +16,16 @@ import RegisterUser from "./components/Admin/RegisterUser";
 import ViewRequests from "./components/Secretariat/viewRequests";
 import UploadCSVForProfessor from "./components/Secretariat/uploadCSVForProfessor";
 import StudentSendProf from "./components/Secretariat/studentSendProf";
-import 'dotenv/config';
+import UploadFiles from "./components/uploadFiles"
+import dotenv from "dotenv"
 
 import jwt from"jsonwebtoken"
 
-const JWT_SECRET = process.env.jwt
 
 //import { AuthContext } from "./components/context/authContext"
 
 function App() {
+
 
   //const [user, setUser] = useState("")
   //const [currentUser, setCurrentUser] = useState(null)
@@ -41,6 +42,7 @@ function App() {
 
   useEffect(() => {
     getBoard();
+    //checkTokenIsExpire();
   }, [currentUser]);
 
   async function logout() {
@@ -63,10 +65,6 @@ function App() {
 
   }
 
-  // const checkTokenIsExpire = () => {
-  //   if(!jwt.verify(currentUser.accessToken,JWT_SECRET))
-  //     logout()
-  // }
 
 
   return (
@@ -190,6 +188,10 @@ function App() {
         <Route 
           path="/Downloadcsv/:id"
           element = { <Downloadcsv user={currentUser}/> } 
+        />
+        <Route 
+          path="/uploadFiles"
+          element = { <UploadFiles user={currentUser}/> } 
         />
         </Routes>
     </div>
