@@ -345,7 +345,8 @@ export default class CoursesDAO {
       // console.log("ws", ws.Sheets)
       const workbookTest = XLSX.utils.book_new();
       const workBook = XLSX.readFile(filePath)
-      for(let i=0; i<workBook.SheetNames.length; i++){;
+      for(let i=0; i<workBook.SheetNames.length; i++){
+        //const workBook = XLSX.readFile(filePath);
         var arrayToInsert = [];
         //console.log("workbook", workBook.Sheets[workBook.SheetNames[0]])
         //XLSX.utils.book_append_sheet(workbookTest, workBook.Sheets[workBook.SheetNames[i]], workBook.SheetNames[i], true);
@@ -387,13 +388,13 @@ export default class CoursesDAO {
           if(result){
               console.log(result)
               console.log("Import CSV into database successfully.");
-              //fs.unlinkSync(filePath);
           }
          //inserting into the table "courses"    
         });
         //console.log(arrayToInsert)
          });
       }
+      fs.unlinkSync(filePath);
       //console.log("workbookTest", workbookTest)
       //XLSX.writeFile(workBook, filePath, { bookType: "csv" });
 
