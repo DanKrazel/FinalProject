@@ -2,6 +2,7 @@ import React from 'react';
 import { useRef, useState } from 'react';
 import Select from 'react-select';
 import { Link } from 'react-router-dom'
+import DependenciesDataService from "../services/dependencieService"
 
 import { StyleSheet, View, Text, Button, TouchableOpacity } from 'react-native';
 var arrayCourses = ['חדו"א  - 1', 'אלגברה לינארית לתוכנה-ה', 'לוגיקה ונושאים דיסקרטיים I', 'I ארכיטקטורת מחשבים', 'מבוא למדעי המחשב', 'חדוא 2 להנדסת תוכנה',
@@ -31,6 +32,30 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     }
 })
+/*
+const handleSendRequests = (event, index) => {
+    event.preventDefault()
+    var studentID = students[index]._id
+    console.log("testRequest")
+    console.log(currentUser.username)
+    console.log(students)
+    var dataRequest = {
+        sender: currentUser.username,
+        receiver: "Regina",
+        studentID: studentID
+    }
+    //getRequestSent(dataRequest)
+    console.log("requestSentHandle", requestSent)
+    DependenciesDataService.postRequest(dataRequest)
+        .then(response => {
+            console.log("postRequest", response)
+            setRefreshKey(oldKey => oldKey + 1)
+        })
+        .catch(error => {
+            console.log(error)
+        });
+}
+*/
 
 function PreorderDepedency(arrayCourses) {
     const options = []
@@ -71,9 +96,6 @@ function orderDepedency(options, selectedOption, selectedOption2) {
     console.log(options);
     return options
 }
-
-
-
 const createPost = (selectedOption, selectedOption2) => {
     const options = PreorderDepedency(arrayCourses);
     console.log("createPost - Post");

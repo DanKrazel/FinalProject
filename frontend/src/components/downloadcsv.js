@@ -225,7 +225,7 @@ const Downloadcsv = props => {
           />
           )}
 
-      <Link to={"/studentsVisual/"+params.id} className="btn btn-primary">
+          <Link to={"/DynamicVisualisation/"+params.id} className="btn btn-primary">
         View student visualisation
       </Link>     
       <Link to={"/"} class="btn btn-primary">
