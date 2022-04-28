@@ -249,7 +249,7 @@ export default class StudentsDAO {
 
   static async deleteAllStudent() {
     try {
-      const deleteResponse = await students.deleteMany({"totalunits": undefined })
+      const deleteResponse = await students.deleteMany()
       return deleteResponse
     } catch (e) {
       console.error(`Unable to delete students: ${e}`)

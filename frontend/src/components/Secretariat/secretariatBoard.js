@@ -11,19 +11,17 @@ const SecretariatBoard = props => {
     const [searchName, setSearchName ] = useState("");
     const [names, setNames] = useState(["All Names"]);
     const [content, setContent] = useState(null);
+    const [pageNumber, setPageNumber] = useState(0);
+    const [numberOfPages, setNumberOfPages] = useState(0);
     
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//       content: ""
-//     };
-//   }
+    const pages = new Array(numberOfPages).fill(null).map((v, i) => i);
+
 
     useEffect(() => {
         retrieveContent();
         retrieveStudents();
         retrieveNames();
-    }, []);
+    }, [pageNumber]);
 
     const retrieveContent = () => {
         UserDataService.getSecretariatBoard()
@@ -31,7 +29,6 @@ const SecretariatBoard = props => {
             console.log("response",response)
         })
         .catch(error => {
-          console.log("errooor",error)
           setContent((error.response &&
             error.response.data &&
             error.response.data.message) ||
@@ -56,10 +53,12 @@ const SecretariatBoard = props => {
     };
 
     const retrieveStudents = () => {
-        StudentDataService.getAll()
+        StudentDataService.getAll(pageNumber)
         .then(response => {
             console.log(response.data);
+            console.log(pageNumber)
             setStudents(response.data.students); 
+            setNumberOfPages(response.data.totalPages)
             console.log("students",students )
         })
         .catch(e => {
@@ -108,6 +107,14 @@ const SecretariatBoard = props => {
         } else {
             find(searchName, "name")
         }
+    };
+
+    const gotoNext = () => {
+      setPageNumber(Math.min(numberOfPages - 1, pageNumber + 1));
+    };
+
+    const gotoPrevious = () => {
+      setPageNumber(Math.max(0, pageNumber - 1));
     };
 
     return (  
@@ -174,29 +181,7 @@ const SecretariatBoard = props => {
           </div>
           <div className="row">
             {students.map((student) => {
-              if(student.totalunits!=0){
-              return (
-                <div className="col-lg-4 pb-1">
-                  <div className="card">
-                    <div className="card-body">
-                      <h5 className="card-title">{student.names}</h5>
-                      <p className="card-text">
-                        <strong>ID: </strong>{student.student_id}<br/>
-                        <strong>Name: </strong>{student.name}<br/>
-                        <strong>Average: </strong>{Math.round((student.average/student.totalunits) * 100) / 100}<br/>
-                        <strong>Total Units: </strong>{student.totalunits}<br/>
-                        <strong>Valid Units: </strong>{student.valideunits}
-                      </p>
-                      <div className="row">
-                      <Link to={"/Downloadcsv/"+student._id} className="btn btn-primary col-lg-5 mx-1 mb-1">
-                        View students
-                      </Link>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            }else{
+
               return (
                 <div className="col-lg-4 pb-1">
                   <div className="card">
@@ -206,7 +191,6 @@ const SecretariatBoard = props => {
                         <strong>ID: </strong>{student.student_id}<br/>
                         <strong>Name: </strong>{student.name}<br/>
                         <strong>Average: </strong>{student.average}<br/>
-                        <strong>Total Units: </strong>{student.totalunits}<br/>
                         <strong>Valid Units: </strong>{student.valideunits}
                       </p>
                       <div className="row">
@@ -218,11 +202,29 @@ const SecretariatBoard = props => {
                   </div>
                 </div>
               );
-            }
             })}
     
 
-          </div>        
+          </div>
+          <nav aria-label="Page navigation example">
+            <ul class="pagination">
+              <li class="page-item">
+                <button class="page-link" onClick={gotoPrevious}>Previous</button>
+              </li>
+              <li class="page-item">
+                <button class="page-link" onClick={() => setPageNumber(0)}>1</button>
+              </li>
+              <li class="page-item">
+                <button class="page-link" onClick={() => setPageNumber(1)}>2</button>
+              </li>
+              <li class="page-item">
+                <button class="page-link" onClick={() => setPageNumber(2)}>3</button>
+              </li>
+              <li class="page-item">
+                <button class="page-link" onClick={gotoNext}>Next</button>
+              </li>
+            </ul>
+        </nav>        
         </div>
           ):(
           <div className="container">

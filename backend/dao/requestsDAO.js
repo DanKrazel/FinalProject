@@ -81,13 +81,13 @@ export default class RequestsDAO {
     }
   }
 
-  static async deleteRequests (requestID) {
+  static async deleteRequestbyID (requestID) {
     try {
-        const requestsDoc = { 
-            requestID:requestID
-          }
+      const deleteResponse = await requests.deleteOne({
+        _id: ObjectId(requestID),
+      })
 
-      return await requests.deleteOne(requestsDoc)
+      return await requests.deleteOne(deleteResponse)
     } catch (e) {
       console.error(`Unable to delete request: ${e}`)
       return { error: e }
@@ -241,6 +241,16 @@ export default class RequestsDAO {
         throw e
       }
 }
+
+  static async deleteAllrequests() {
+    try {
+      const deleteResponse = await requests.deleteMany()
+      return deleteResponse
+    } catch (e) {
+      console.error(`Unable to delete requests: ${e}`)
+      return { error: e }
+    }
+  }
 
 
 }

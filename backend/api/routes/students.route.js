@@ -31,10 +31,13 @@ router.route("/user").get(UsersCtrl.apiGetUsers)
 
 router.route("/requests").post(RequestsCtrl.apiPostRequest)
                          .get(RequestsCtrl.apiGetRequests)
+                         .delete(RequestsCtrl.apiDeleteRequestByID)
 
+//router.route("/requests/:id").delete(RequestsCtrl.apiDeleteRequestBystudentID)
 router.route("/requests/:id").delete(RequestsCtrl.apiDeleteRequestBystudentID)
 router.route("/requestSent").get(RequestsCtrl.apiGetRequestSent)
 router.route("/retrievInfoByRequest").get(RequestsCtrl.apiRetrieveinfoByRequest)
+router.route("/deleteAllRequests").delete(RequestsCtrl.apiDeleteAllRequests)
 
 router.route("/login").post(UsersCtrl.apiLogin)
 router.route("/signup").post(UsersCtrl.apiCheckDuplicateUsernameOrMail, UsersCtrl.apiSignup)

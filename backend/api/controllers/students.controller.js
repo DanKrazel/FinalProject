@@ -4,7 +4,7 @@ const ObjectId = mongodb.ObjectId
 
 export default class  StudentsController {
   static async apiGetStudents(req, res, next) {
-    const studentsPerPage = req.query.studentsPerPage ? parseInt(req.query.studentsPerPage, 10) : 20
+    const studentsPerPage = req.query.studentsPerPage ? parseInt(req.query.studentsPerPage, 10) : 6
     const page = req.query.page ? parseInt(req.query.page, 10) : 0
     let filters = {}
     if (req.query._id) {
@@ -34,6 +34,7 @@ export default class  StudentsController {
       filters: filters,
       entries_per_page: studentsPerPage,
       total_results: totalNumStudents,
+      totalPages: Math.ceil(totalNumStudents / studentsPerPage),
     }
     res.json(response)
   }

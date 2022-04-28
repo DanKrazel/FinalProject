@@ -333,27 +333,11 @@ export default class CoursesDAO {
       var count  = 0;     
       console.log(filePath)
       const results = [];
-      // const buf = fs.readFileSync(filePath);
-      // const workBook = XLSX.read(buf);
-      //const aoa = XLSX.utils.sheet_to_json(filePath, {header: 1}).slice(1)
-
-      /* find worksheet range */
-      // const ws = XLSX.readFile(filePath);
-      // XLSX.utils.sheet_add_aoa(ws, [
-      //   ["1"],                             // <-- Write 1 to cell B3
-      // ], { origin: "A1:J13" });
-      // console.log("ws", ws.Sheets)
       const workbookTest = XLSX.utils.book_new();
       const workBook = XLSX.readFile(filePath)
       for(let i=0; i<workBook.SheetNames.length; i++){
-        //const workBook = XLSX.readFile(filePath);
         var arrayToInsert = [];
-        //console.log("workbook", workBook.Sheets[workBook.SheetNames[0]])
-        //XLSX.utils.book_append_sheet(workbookTest, workBook.Sheets[workBook.SheetNames[i]], workBook.SheetNames[i], true);
         var csv = XLSX.utils.sheet_to_csv(workBook.Sheets[workBook.SheetNames[i]]);
-        //console.log("csv", csv)
-        //XLSX.writeFile(csv, filePath, { bookType: "csv" });
-        //console.log("workbookTest", workbookTest)
         csvtojson({
           noheader: false,
           headers: ["קוד קורס","סמס","שם קורס","סוג","שם מרצה",'ש"ס',"נ.זיכוי","ציון"],
@@ -395,49 +379,6 @@ export default class CoursesDAO {
          });
       }
       fs.unlinkSync(filePath);
-      //console.log("workbookTest", workbookTest)
-      //XLSX.writeFile(workBook, filePath, { bookType: "csv" });
-
-    //   csvtojson({
-    //     noheader: false,
-	  //     headers: ["קוד קורס","סמס","שם קורס","סוג","שם מרצה",'ש"ס',"נ.זיכוי","ציון"],
-    //     flatKeys:true
-    //   })    
-    //   .fromFile(filePath).then(source => {
-    //   //console.log("source:", source)
-    //   //console.log(source)
-    //   // Fetching the all data from each row
-    //   for (var i = 0; i < source.length; i++) {
-    //     if(source[i]["קוד קורס"] != "תשפב" && source[i]["קוד קורס"] != "קוד קורס" ){
-    //     var oneRow = {
-    //       codeCourse: source[i]["קוד קורס"],
-    //       semesterOfLearning: source[i]["סמס"],
-    //       courseName: source[i]["שם קורס"],
-    //       typeOfCourse: source[i]["סוג"],
-    //       profName: source[i]["שם מרצה"],
-    //       englishUnits: parseInt(source[i]['ש"ס']),
-    //       units: parseFloat(source[i]["נ.זיכוי"]),
-    //       grade: parseInt(source[i]["ציון"]),
-    //     };
-    //     console.log(oneRow)
-    //     arrayToInsert.push(oneRow);
-    //     //students.updateOne({units:units+courseUnits})
-    //     //StudentsDAO.updateUnitsStudent(studentID, source[i]["נזיכוי"])
-    //   }
-    // }
-
-    //   courses.insertMany(arrayToInsert, (err, result) => {
-    //     if (err){
-    //       console.log(err);
-    //       //fs.unlinkSync(filePath);
-    //     }
-    //     if(result){
-    //         console.log("Import CSV into database successfully.");
-    //         fs.unlinkSync(filePath);
-    //     }
-    //    //inserting into the table "courses"    
-    //   });
-    // });
   }
       
       // console.log("workbook", workBook.Sheets[workBook.SheetNames[0]])

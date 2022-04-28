@@ -19,6 +19,8 @@ const ProfessorBoard = props => {
     const [currentUser, setCurrentUser] = useState(props.user);
     const [requestSent, setRequestSent] = useState(false)
     const [refreshKey, setRefreshKey] = useState(0);
+    const [pageNumber, setPageNumber] = useState(0);
+    const [numberOfPages, setNumberOfPages] = useState(0);
 
 
 
@@ -29,7 +31,7 @@ const ProfessorBoard = props => {
         retrieveRequests();
         //defineRequestSent();
         //console.log("requestSentEffect",requestSent)
-    }, [refreshKey]);
+    }, [refreshKey,pageNumber]);
 
     const retrieveContent = () => {
         UserDataService.getProfessorBoard()
@@ -56,15 +58,11 @@ const ProfessorBoard = props => {
     };
 
     const retrieveStudents = () => {
-        StudentDataService.getAll()
+        StudentDataService.getAll(pageNumber)
         .then(response => {
             console.log(response.data);
-            for(let i=0; i<response.data.students.length;i++){
-              response.data.students[i].sent=false
-            }
-            
             setStudents(response.data.students); 
-            console.log("students",students )
+            setNumberOfPages(response.data.totalPages)
         })
         .catch(e => {
         console.log(e);
@@ -110,27 +108,15 @@ const ProfessorBoard = props => {
         }
     };
 
+    const gotoNext = () => {
+      setPageNumber(Math.min(numberOfPages - 1, pageNumber + 1));
+    };
 
-  // const getRequestSent = (studentID) => {
-  //   var dataRequest = {
-  //     sender:currentUser.username,
-  //     receiver:"Regina",
-  //     studentID:studentID
-  //   };
-  //   //console.log("dataRequest",dataRequest)
-  //   RequestDataService.getRequestSent(dataRequest)
-  //     .then(response => {
-  //         console.log("findrequest",response);
-  //         setRequestSent(response.data)
-  //         //console.log(requestSent)
-  //         //setRequestSent(response.data)
-  //         //return true  
-  //     })
-  //     .catch(e => {
-  //       console.log(e);
-  //     });
-  //   //return false
-  // }
+    const gotoPrevious = () => {
+      setPageNumber(Math.max(0, pageNumber - 1));
+    };
+
+
 
   const handleSendRequests = (event, index) => {
     event.preventDefault()
@@ -153,13 +139,6 @@ const ProfessorBoard = props => {
     .catch(error => {
         console.log(error)
     });
-    //console.log("getRequestSent(dataRequest)", requestSent)
-    // else{
-    //   setRequestSent((oldRequestSent) => oldRequestSent.concat({studentID:index,sent:true}))
-    // }
-
-
-    //getRequestSent(dataRequest, index)
   }
 
   const retrieveRequests = () => {
@@ -254,12 +233,12 @@ const ProfessorBoard = props => {
                   Search
                 </button>
               </div>
-    
+                 
             </div>
-          </div>
+            </div>
+            
           <div className="row">
             {students.map((student,i) => {
-              if(student.totalunits!=0){
               return (
                 <div className="col-lg-4 pb-1 " key={student._id}>
                   <div className="card">
@@ -268,28 +247,7 @@ const ProfessorBoard = props => {
                       <p className="card-text">
                         <strong>ID: </strong>{student.student_id}<br/>
                         <strong>Name: </strong>{student.name}<br/>
-                        <strong>Average: </strong>{Math.round((student.average/student.totalunits) * 100) / 100}<br/>
-                        <strong>Total Units: </strong>{student.totalunits}<br/>
-                        <strong>Valid Units: </strong>{student.valideunits}
-                      </p>
-                      <div className="row">
-                      {renderButtonsSentOrView(requests, student, i)}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            }else{
-              return (
-                <div className="col-lg-4 pb-1">
-                  <div className="card">
-                    <div className="card-body">
-                      <h5 className="card-title">{student.names}</h5>
-                      <p className="card-text">
-                        <strong>ID: </strong>{student.student_id}<br/>
-                        <strong>Name: </strong>{student.name}<br/>
                         <strong>Average: </strong>{student.average}<br/>
-                        <strong>Total Units: </strong>{student.totalunits}<br/>
                         <strong>Valid Units: </strong>{student.valideunits}
                       </p>
                       <div className="row">
@@ -298,13 +256,29 @@ const ProfessorBoard = props => {
                     </div>
                   </div>
                 </div>
-                
               );
-            }
-            })}
-    
+            })};
     
           </div>
+          <nav aria-label="Page navigation example">
+            <ul class="pagination">
+              <li class="page-item">
+                <button class="page-link" onClick={gotoPrevious}>Previous</button>
+              </li>
+              <li class="page-item">
+                <button class="page-link" onClick={() => setPageNumber(0)}>1</button>
+              </li>
+              <li class="page-item">
+                <button class="page-link" onClick={() => setPageNumber(1)}>2</button>
+              </li>
+              <li class="page-item">
+                <button class="page-link" onClick={() => setPageNumber(2)}>3</button>
+              </li>
+              <li class="page-item">
+                <button class="page-link" onClick={gotoNext}>Next</button>
+              </li>
+            </ul>
+        </nav>    
           </div>
           ):(
             <div className="container">

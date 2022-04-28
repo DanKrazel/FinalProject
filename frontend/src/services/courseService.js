@@ -49,6 +49,9 @@ class CourseDataService {
         return http.get(`/names`);
     }
 
+    deleteAllCourses(){
+        return http.delete('/deleteAllCourses')
+    }
  
     
 }

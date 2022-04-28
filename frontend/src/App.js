@@ -90,6 +90,11 @@ function App() {
           )}
           {secretariatBoard && (
           <div className="navbar-nav me-auto mb-2 mb-lg-0">
+            <li className="nav-item active">
+                <Link to={"/uploadFiles"} className="nav-link">
+                  Upload Files
+                </Link>
+              </li>
               <li className="nav-item active">
                 <Link to={"/secretariat"} className="nav-link">
                   Secretariat Board

@@ -145,16 +145,15 @@ export default class RequestsController {
   //   }
   // }
 
-  static async apiDeleteRequest(req, res, next) {
+  static async apiDeleteRequestByID(req, res, next) {
     try {
-      const requestID = ObjectId(req.body.requestID)
+      const requestID = req.query.id
+      console.log(requestID)
 
-      const RequestsResponse = await RequestsDAO.deleteRequests(
+      const RequestsResponse = await RequestsDAO.deleteRequestbyID(
         requestID
       )
-      if(RequestsResponse) {
-        res.json({ status: "success" })
-      }
+      res.json({ status: "success" })
     } catch (e) {
       res.status(500).json({ error: e.message })
     }
@@ -167,6 +166,15 @@ export default class RequestsController {
       const requestResponse = await RequestsDAO.deleteRequestByStudentID(
         studentID
       )
+      res.json({ status: "success" })
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  }
+
+  static async apiDeleteAllRequests(req, res, next) {
+    try {
+      const RequestsResponse = await RequestsDAO.deleteAllrequests()
       res.json({ status: "success" })
     } catch (e) {
       res.status(500).json({ error: e.message })

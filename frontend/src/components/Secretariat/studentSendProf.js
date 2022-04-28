@@ -31,9 +31,6 @@ const StudentSendProf = props => {
     name: "",
     average: "",
     valideunits: "",
-    totalunits: "",
-    semester:"",
-    years:"",
     courses: []
   };
 
@@ -77,8 +74,6 @@ const StudentSendProf = props => {
   const getStudent = (id) => {
     StudentDataService.findStudent(id)
       .then(response => {
-        if(response.data.average)
-          response.data.average=Math.round((response.data.average/response.data.totalunits) * 100) / 100
         setStudent(response.data);
 
         console.log(response.data);
@@ -117,6 +112,7 @@ const StudentSendProf = props => {
   
   const exportPDFWithComponent = () => {
       if (pdfExportComponent.current) {
+        console.log(pdfExportComponent.current)
         pdfExportComponent.current.save();
       }
     }
@@ -197,15 +193,13 @@ const StudentSendProf = props => {
         <div >
           <h5>{student.name}</h5>
           {(() => {
-            if ((student.average <60 ) || ( student.years=== 'ב'  && student.totalunits<36) || (( student.years=== 'ג'  && student.totalunits<75 )) || (( student.years=== 'ד'  && student.totalunits<115 )) )
+            if (student.average <60)
               {
                             return (
                                 <p>
                                 <div className="col-sm1 text-white bg-secondary w-40 l-20">
                                   <strong> ת״ז : </strong>{student.student_id}
                                   <strong> | ממוצע : </strong>{student.average}
-                                  <strong> | שנה : </strong>{student.years}
-                                  <strong> | נק״ז : </strong>{student.totalunits} 
                                   <strong> | נק״ז : </strong>{student.valideunits} 
                                   <button class=" d-block  ml-auto" onClick={() => navigate(-1)} >         חריגה </button> <br/> 
                                   </div>        
@@ -217,8 +211,6 @@ const StudentSendProf = props => {
                               <div className="col-sm1 text-white bg-secondary w-40 l-20">
                                 <strong> ת״ז : </strong>{student.student_id}
                                 <strong> | ממוצע : </strong>{student.average}
-                                <strong> | שנה : </strong>{student.years}
-                                <strong> | נק״ז כללי: </strong>{student.totalunits} 
                                 <strong> | נק״ז עובר: </strong>{student.valideunits} 
                                 <strong class=" d-block  ml-auto mr-o " > תקין </strong> 
                                 <br/> 

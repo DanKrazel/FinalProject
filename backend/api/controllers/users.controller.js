@@ -187,9 +187,6 @@ export default class UsersController {
 
       //console.log("decoded")
       const decoded = jwt.verify(token,JWT_SECRET);
-      console.log("decoded")
-      console.log(decoded)
-      console.log("JWT_SECRET",JWT_SECRET)
       if(!decoded){
         return res.status(401).send({ message: "Unauthorized!" });
       }

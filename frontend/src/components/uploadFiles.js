@@ -1,18 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate  } from "react-router-dom";
 import { Redirect, useLocation } from 'react-router'
 import DataTable from 'react-data-table-component';
 import * as XLSX from 'xlsx';
 import CourseDataService from "../services/courseService"
-import FileDataService from "../services/fileService"
 import StudentDataService from "../services/studentService"
+import RequestDataService from "../services/requestsService"
+import UserDataService from "../services/userService"
 import { Link, Navigate } from "react-router-dom";
 import { fileURLToPath } from "url";
 import axios from 'axios';
 import pdfjsLib  from "pdfjs-dist/build/pdf"
+import { Helmet } from "react-helmet"
+import Popup from 'reactjs-popup';
+import 'reactjs-popup/dist/index.css';
+import "../styles/uploadFiles.css";
+
 
 
 const UploadFiles = props => {
+
 
   const initialStudentState = {
     student_id: "",
@@ -37,15 +44,52 @@ const UploadFiles = props => {
   const [selectFile, setSelectFile] = useState([])
   const [dataCSV, setDataCSV] = useState([]);
   const [IDfile, setIDfile] = useState("")
+  const [studentsDeleted, setStudentsDeleted] = useState(false)
+  const [coursesDeleted, setCoursesDeleted] = useState(false)
+  const [uploadedFileName, setUploadedFileName] = useState('');
+  const [content, setContent] = useState(null);
+  const [requests, setRequests] = useState([]);
+
+
+
+
 
   const params = useParams();
 
 
   useEffect(() => {
     //console.log(handlePDfCourse())
+    retrieveContent();
     retrieveCourses();
+    retrieveStudents();
+    retrieveRequests();
+    //customUploadFiles();
   }, [refreshKey]);
 
+  const retrieveContent = () => {
+    UserDataService.getSecretariatBoard()
+    .then(response => {
+        console.log("response",response)
+    })
+    .catch(error => {
+      setContent((error.response &&
+        error.response.data &&
+        error.response.data.message) ||
+        error.message ||
+        error.toString())
+    });
+}
+
+
+  const retrieveRequests = () => {
+    RequestDataService.getAll()
+      .then(response => {
+        setRequests(response.data.requests); 
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
 
   const retrieveCourses = () => {
     CourseDataService.getAll()
@@ -58,6 +102,17 @@ const UploadFiles = props => {
       });
   };
 
+  const retrieveStudents = () => {
+    StudentDataService.getAll()
+      .then(response => {
+        console.log(response.data);
+        setStudents(response.data.students); 
+        console.log("students",students )
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
 
   function multipleExist(arr, values) {
     return values.every(value => {
@@ -122,22 +177,23 @@ const UploadFiles = props => {
 
   // handle file upload
   const handleFileUpload = (e) => {
-    const file = e.target.files[0]
-    const reader = new FileReader();
-    reader.onload = (evt) => {
-      /* Parse data */
-      const bstr = evt.target.result;
-      setCsvReport(bstr)
-      const wb = XLSX.read(bstr, { type: 'binary' });
-      /* Get first worksheet */
-      const wsname = wb.SheetNames[0];
-      const ws = wb.Sheets[wsname];
-      /* Convert array of arrays */
-      const data = XLSX.utils.sheet_to_csv(ws, { header: 1 });
-      processData(data);
-      console.log("data",data)
-    };
-    reader.readAsBinaryString(file);
+    // const file = e.target.files[0]
+    // const reader = new FileReader();
+    // reader.onload = (evt) => {
+    //   /* Parse data */
+    //   const bstr = evt.target.result;
+    //   setCsvReport(bstr)
+    //   const wb = XLSX.read(bstr, { type: 'binary' });
+    //   /* Get first worksheet */
+    //   const wsname = wb.SheetNames[0];
+    //   const ws = wb.Sheets[wsname];
+    //   /* Convert array of arrays */
+    //   const data = XLSX.utils.sheet_to_csv(ws, { header: 1 });
+    //   processData(data);
+    //   console.log("data",data)
+    // };
+    // reader.readAsBinaryString(file);
+    console.log(fileInputCourses.current.files)
   }
 
   /*const uploadFileToDB = e => {
@@ -167,6 +223,18 @@ const UploadFiles = props => {
     //   );
     //   setRefreshKey(oldKey => oldKey +1)
     // }
+    if(courses.length != 0){
+      CourseDataService.deleteAllCourses()
+      .then(response => {
+        setCoursesDeleted(true)
+        console.log(response.data);
+      })
+      alert(
+        `All courses was deleted`
+      );
+      setRefreshKey(oldKey => oldKey +1)
+    }
+    else{
       if(data.file){
         CourseDataService.uploadCoursesAllStudents(formData)
         .then(response => {
@@ -190,6 +258,7 @@ const UploadFiles = props => {
     console.log(submitted)
 
     }
+  }
 
     const handlePostStudentsOnSubmit = e => {
       e.preventDefault();
@@ -199,33 +268,36 @@ const UploadFiles = props => {
         file: fileInputStudents.current.files[0],
       };
       console.log("fileInputStudents.current.files[0]",data.file)
-      if(students.length != 0){
-        StudentDataService.deleteAllStudents()
+      if(data.file){
+        StudentDataService.uploadStudents(formData)
         .then(response => {
+          console.log(response.data);
+        })
+        alert(
+          `Selected file - ${data.file.name} was uploaded`
+        );
+        setRefreshKey(oldKey => oldKey +1)
+        }
+      else{
+        alert(
+          'Selected file - None, choose a file to upload'
+        )
+      }
+    }
+
+    const deleteAllStudent = () => {
+      StudentDataService.deleteAllStudents()
+        .then(response => {
+          RequestDataService.deleteAllRequests()
+            .then(response => {
+              console.log(response.data);
+        })
           console.log(response.data);
         })
         alert(
           `CSV file was deleted`
         );
         setRefreshKey(oldKey => oldKey +1)
-      }
-      else{
-        if(data.file){
-          StudentDataService.uploadStudents(formData)
-          .then(response => {
-            console.log(response.data);
-          })
-          alert(
-            `Selected file - ${data.file.name} was uploaded`
-          );
-          setRefreshKey(oldKey => oldKey +1)
-          }
-        else{
-          alert(
-            'Selected file - None, choose a file to upload'
-          )
-        }
-      }
     }
 
     // async function handlePDfCourse (e) {
@@ -259,81 +331,136 @@ const UploadFiles = props => {
     //   return content.items.map((item) => item.str)
     // }
 
+    const customUploadFiles = () => {
+      const script = document.createElement("script")
+      script.ready(function() {
+          document.getElementById("#myFileCourses").fileinput({
+          rtl: true,
+          dropZoneEnabled: false,
+        })
+      })
+      document.body.appendChild(script)
+    }
+
+
+    const handleDisplayFileDetails = () => {
+      fileInputCourses.current?.files &&
+        setUploadedFileName(fileInputCourses.current.files[0].name);
+    };
 
   let navigate = useNavigate();
   return (
+  <div>
+  {!content ? (
     <div>
       <h3>Upload files</h3>
     <div >
-    <form  onSubmit={handleOnSubmit} encType='multipart/form-data'>
+    <form onSubmit={handleOnSubmit} encType='multipart/form-data'>
+    <div class="input-group mb-3">
     <input
         type="file"
         accept=".csv,.xlsx,.xls,.xml"
+        data-allowed-file-extensions='["csv","xlsx", "xml", "xls"]'
+        class="form-control"
         ref={fileInputCourses}
         id="myFileCourses"
-        //onChange={handleFileUpload}
+        onChange={handleFileUpload}
       />
-    {/* { courses.length != 0 ? (
-            <input
-            className="btn btn-primary" 
-            type="submit"
-            value="Reset csv file"
-          />
-          ) : (            
-            <input
-              className="btn btn-primary" 
-              type="submit"
-              value="Upload csv file"
-            //onClick={redirect}
-            //onClick={() => setSubmitted(!submitted)}
-            //onChange={navigate(`/students/${params.id}`)}
-          />
-          )} */}
-      <input
-              className="btn btn-primary" 
-              type="submit"
-              value="Upload csv file"
-            //onClick={redirect}
-            //onClick={() => setSubmitted(!submitted)}
-            //onChange={navigate(`/students/${params.id}`)}
-          />
+      { courses.length != 0 ? (
+      <button type="submit" className="btn btn-primary" for="myFileCourses">
+        Reset courses file
+      </button>
+      ):(
+        // <input
+        // className="btn btn-primary" 
+        // type="submit"
+        // value="Upload csv file"
+        //   //onClick={redirect}
+        //   //onClick={() => setSubmitted(!submitted)}
+        //   //onChange={navigate(`/students/${params.id}`)}
+        // />
+        <button type="submit" className="btn btn-primary" for="myFileCourses">
+            Upload courses file
+        </button>
+      )}
+    </div>
+
     
-    <DataTable
+    {/* <DataTable
         pagination
         highlightOnHover
         columns={columnsCourses}
         data={data}
-      />
+      /> */}
     </form>  
     </div>
 
     
-    <div >
-    <form  onSubmit={handlePostStudentsOnSubmit} encType='multipart/form-data'>
+    <div class="input-group mb-3">
     <input
         type="file"
+        class="form-control"
         accept=".csv,.xlsx,.xls,.xml"
         ref={fileInputStudents}
+        id="myFileStudents"
         //onChange={handleFileUpload}
       />
     { students.length != 0 ? (
-            <input
-            className="btn btn-primary" 
-            type="submit"
-            value="Reset csv file"
-          />
-          ) : (            
-            <input
-              className="btn btn-primary" 
-              type="submit"
-              value="Upload csv file"
-            //onClick={redirect}
-            //onClick={() => setSubmitted(!submitted)}
-            //onChange={navigate(`/students/${params.id}`)}
-          />
-          )}
-    
-    </form>  
+      requests.length != 0 ? (
+      <Popup trigger={<button type="button" className="btn btn-primary" for="myFileStudents"> Reset students file </button>} 
+        modal
+        nested
+        >
+      {close => (
+      <div className="modals">
+      <button className="close" onClick={close}>
+            &times;
+      </button>
+      <div className="header"> Warning </div>
+      <div className="content">
+            {' '}
+            Alert ! If you delete all students, requests of visualizations from professors
+            will be deleted !
+            <br />
+          </div>
+      <div className="actions">
+        <button
+              className="btn btn-primary" style={{margin:"10px 15px"}} 
+              onClick={() => {
+                console.log('modal closed ');
+                close();
+              }}
+            >
+              Return
+            </button>
+          <Link to="/view-requests" className="btn btn-primary" style={{margin:"10px 15px"}}>
+            Go to the page view requests
+          </Link>
+          <button type="submit" className="btn btn-primary" style={{margin:"10px 15px"}} onClick={deleteAllStudent}>
+            Reset students file
+          </button>
+      </div>
+      </div>
+      )}
+      </Popup>
+      ):(
+        <button type="submit" className="btn btn-primary" onClick={deleteAllStudent}>
+            Reset students file
+        </button>
+      )
+      ):(
+        // <input
+        // className="btn btn-primary" 
+        // type="submit"
+        // value="Upload csv file"
+        //   //onClick={redirect}
+        //   //onClick={() => setSubmitted(!submitted)}
+        //   //onChange={navigate(`/students/${params.id}`)}
+        // />
+        <button type="submit" className="btn btn-primary" for="myFileStudents" onClick={handlePostStudentsOnSubmit}>
+            Upload students file
+          </button>
+      )} 
     </div>
 
     </div>
@@ -341,7 +468,14 @@ const UploadFiles = props => {
     /* <Link to={"/"} class="btn btn-primary">
         Return to previous page
       </Link> */
-   
+      ):(
+        <div className="container">
+          <header className="jumbotron">
+            <h3>{content}</h3>
+          </header>
+        </div>
+                  )}
+    </div>
   );
 };
 export default UploadFiles;

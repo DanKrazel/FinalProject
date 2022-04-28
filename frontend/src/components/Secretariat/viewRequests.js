@@ -11,6 +11,8 @@ const ViewRequests = props => {
    const [content, setContent] = useState("");
    const [requests, setRequests] = useState([]);
    const [students, setStudents] = useState([]);
+   const [refreshKey, setRefreshKey] = useState(0);
+
    let navigate = useNavigate()
     
 //   constructor(props) {
@@ -26,7 +28,7 @@ const ViewRequests = props => {
         //retrieveRequests();
         retrieveStudentByRequest();
         //retrieveProfessorByRequest();
-    }, []);
+    }, [refreshKey]);
 
     const retrieveContent = () => {
       UserDataService.getSecretariatBoard()
@@ -101,6 +103,19 @@ const ViewRequests = props => {
           });
       };
 
+      const deleteRequest = (requestID) => {
+        console.log("check", requestID)
+        RequestDataService.deleteRequest(requestID)
+          .then(response => {
+            console.log(response.data);
+            setRefreshKey(oldKey => oldKey +1)
+
+          })
+          .catch(e => {
+            console.log(e);
+          });
+      };
+
     const sendVisualisation = (id) => {
       navigate(`/Downloadcsv/${id}`)
     }
@@ -118,6 +133,8 @@ const ViewRequests = props => {
                     <th scope="col">Sender</th>
                     <th scope="col">StudentID</th>
                     <th scope="col">Student name</th>
+                    <th scope="col">Send visualisation</th>
+                    <th scope="col">Delete</th>
                 </tr>
             </thead>
         <tbody>
@@ -130,9 +147,14 @@ const ViewRequests = props => {
                     <td>{request.student[0].student_id}</td>
                     <td>{request.student[0].name}</td>
                     <td>
-                        <Link to={"/uploadCSVForProfessor/"+request.student[0]._id+"/"+request.professor[0]._id} className="btn btn-primary col-lg-5 mx-1 mb-1">
+                        <Link to={"/studentSendProf/"+request.student[0]._id+"/"+request.professor[0]._id} className="btn btn-primary col-8">
                             Send visualisation of {request.student[0].name} to {request.sender}
                         </Link>
+                    </td>
+                    <td>
+                        <button className="btn btn-primary" onClick={() => deleteRequest(request._id)}>
+                            Delete request
+                        </button>
                     </td>
                 </tr>
             );

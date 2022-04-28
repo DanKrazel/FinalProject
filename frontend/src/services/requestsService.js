@@ -23,7 +23,7 @@ class RequestDataService {
     }
 
     deleteRequest(requestID) {
-        return http.delete(`/requests`, requestID);
+        return http.delete(`/requests?id=${requestID}`);
     }
 
     getRequestSent(data) {
@@ -34,6 +34,9 @@ class RequestDataService {
         return http.get('/retrievInfoByRequest')
     }
 
+    deleteAllRequests(){
+        return http.delete('/deleteAllRequests')
+    }
 }
      
     export default new RequestDataService();
