@@ -10,7 +10,6 @@ import UserDataService from "../services/userService"
 import { Link, Navigate } from "react-router-dom";
 import { fileURLToPath } from "url";
 import axios from 'axios';
-import pdfjsLib  from "pdfjs-dist/build/pdf"
 import { Helmet } from "react-helmet"
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';

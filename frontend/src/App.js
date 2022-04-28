@@ -4,6 +4,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import AddStudent from "./components/add-student";
 import Student from "./components/students";
 import StudentVisual from "./components/studentsVisual";
+import DynamicVisualisation from "./components/DynamicVisualisation";
+
 import StudentsList from "./components/students-list";
 import Profil from "./components/profil"
 import AuthService from "../src/services/authService"
@@ -20,7 +22,6 @@ import UploadFiles from "./components/uploadFiles"
 import dotenv from "dotenv"
 
 import jwt from"jsonwebtoken"
-
 
 //import { AuthContext } from "./components/context/authContext"
 
@@ -154,6 +155,10 @@ function App() {
           path="/studentsVisual/:id"
             element={<StudentVisual user={currentUser}/> }
         />
+          <Route
+            path="/DynamicVisualisation/:id"
+            element={<DynamicVisualisation user={currentUser} />}
+          />
         <Route 
           path="/login"
           element = { <Login/> }

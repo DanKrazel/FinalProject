@@ -6,7 +6,6 @@ import mongodb from "mongodb"
 import csv from "fast-csv"
 import pdfParse from "pdf-parse"
 import {PdfReader} from "pdfreader"
-import pdfjsLib  from "pdfjs-dist/build/pdf.js"
 
 
 const ObjectId = mongodb.ObjectId

@@ -9,7 +9,6 @@ import StudentDataService from "../services/studentService"
 import { Link, Navigate } from "react-router-dom";
 import { fileURLToPath } from "url";
 import axios from 'axios';
-import pdfjsLib  from "pdfjs-dist/build/pdf"
 
 
 const Downloadcsv = props => {
@@ -193,50 +192,11 @@ const Downloadcsv = props => {
 
   
 
-    const getFile = id => {
-      FileDataService.get(id)
-        .then(response => {
-          setSelectFile(response.data);
-          console.log(response.data);
-        })
-        .catch(e => {
-          console.log(e);
-        });
-    };
-
-    async function handlePDfCourse (e) {
-      e.preventDefault();
-      const formData = new FormData()
-      formData.append('file',fileInput.current.files[0])
-      if(fileInput.current.files[0]){
-        FileDataService.uploadPDF(formData)
-        .then(response => {
-          setSubmitted(!submitted);
-          console.log(response.data);
-          console.log("formdata", formData)
-        })
-        alert(
-          `Selected file - ${fileInput.current.files[0].name} was uploaded`
-        );
-        setRefreshKey(oldKey => oldKey +1)
-        }
-      else{
-        alert(
-          'Selected file - None, choose a file to upload'
-        )
-      }
-      var file = e.target.files[0]
-      console.log("file", file)
-      //const reader = new FileReader();
-      const doc = await pdfjsLib.getDocument(file).promise // note the use of the property promise
-      const page = await doc.getPage(1)
-      var content = page.getTextContent()
-      console.log("filePDF", content)
-      return content.items.map((item) => item.str)
-    }
 
 
-  let navigate = useNavigate();
+ 
+
+
   return (
     <form  onSubmit={handleOnSubmit} encType='multipart/form-data'>
     <div>

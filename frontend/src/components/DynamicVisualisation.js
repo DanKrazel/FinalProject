@@ -1,0 +1,112 @@
+import React from 'react';
+import { useRef, useState } from 'react';
+import Select from 'react-select';
+import { Link } from 'react-router-dom'
+
+import { StyleSheet, View, Text, Button, TouchableOpacity } from 'react-native';
+var arrayCourses = ['חדו"א  - 1', 'אלגברה לינארית לתוכנה-ה', 'לוגיקה ונושאים דיסקרטיים I', 'I ארכיטקטורת מחשבים', 'מבוא למדעי המחשב', 'חדוא 2 להנדסת תוכנה',
+    'פיסיקה להנדסת תוכנה', 'לוגיקה ונושאים דיסקרטיים II', 'לוגיקה ונושאים דיסקרטיים II', 'תכנות מונחה עצמים', 'מבוא להסתברות וסטטיסטיקה', 'מבוא להסתברות וסטטיסטיקה',
+    'יסודות הנדסת תוכנה', 'מבנה נתונים-ה', 'עקרונות שפות תוכנה', 'בדיקות ואיכות בהנדסת תוכנה', 'הנדסת דרישות וניתוח תוכנה', 'אנגלית מדוברת', 'אוטומטים ושפות פורמאליות',
+    'אלגורתמים I', 'מבוא לתקשורת מחשבים', 'אנליזה נומרית', 'רשתות תקשורת מחשבים', 'אבטחת נתונים', 'עיבוד תמונה וראייה ממוחשבת', 'בטיחות תוכנה']
+
+
+const styles = StyleSheet.create({
+    parent: {
+        width: 300,
+        height: 500,
+        backgroundColor: 'red',
+        margin: 50,
+    },
+    button: {
+        flexDirection: 'row',
+        height: 500,
+        backgroundColor: 'yellow',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 50,
+        elevation: 50,
+    },
+    text: {
+        fontSize: 16,
+        fontWeight: 'bold',
+    }
+})
+
+function PreorderDepedency(arrayCourses) {
+    const options = []
+    for (var i = 0; i < arrayCourses.length; i++) {
+        var dict = { value: null, label: arrayCourses[i] }
+        options.push(dict);
+    }
+    return options
+}
+
+function orderDepedency(options, selectedOption, selectedOption2) {
+    var Temp_selectedOption = selectedOption;
+    var Temp_selectedOption2 = selectedOption2
+    console.log(1);
+    console.log("orderDepedency");
+    console.log(Temp_selectedOption);
+    console.log(Temp_selectedOption2);
+    console.log("option-", options);
+    for (var i = 0; i < options.length; i++) {
+        if (options[i].label == Temp_selectedOption.label) {
+            console.log(1);
+            //console.log(options[i].value);
+            options[i].value = Temp_selectedOption2.label;
+            console.log(1);
+            console.log(options[i]);
+
+        }
+        else if (options[i].label == Temp_selectedOption2.label) {
+            console.log(1);
+            options[i].value = Temp_selectedOption.label;
+            console.log(1);
+            console.log(options[i]);
+        }
+
+
+
+    }
+    console.log(options);
+    return options
+}
+
+
+
+const createPost = (selectedOption, selectedOption2) => {
+    const options = PreorderDepedency(arrayCourses);
+    console.log("createPost - Post");
+    console.log(options);
+    orderDepedency(options, selectedOption, selectedOption2);
+}
+
+
+export default function App() {
+    const [selectedOption, setSelectedOption] = useState(null);
+    const [selectedOption2, setSelectedOption2] = useState(null);
+    console.log(selectedOption);
+    console.log(selectedOption2);
+
+
+    return (
+
+        <><div className="App">
+
+            <Select
+                defaultValue={selectedOption}
+                onChange={setSelectedOption}
+                options={PreorderDepedency(arrayCourses)} />
+            <Select
+                defaultValue={selectedOption2}
+                onChange={setSelectedOption2}
+                options={PreorderDepedency(arrayCourses)} />
+
+        </div><div>
+                <button type="button" class="btn btn-primary btn-lg btn-block" onClick={() => createPost(selectedOption, selectedOption2)}>Upload</button>
+
+
+            </div></>
+    );
+
+}
