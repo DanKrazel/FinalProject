@@ -5,11 +5,7 @@ import upload from "../../middleware/upload.js"
 import mongodb from "mongodb"
 import csv from "fast-csv"
 import pdfParse from "pdf-parse"
-import pdfreader from "pdfreader"
-import pdfjsLib  from "pdfjs-dist/build/pdf.js"
-import parsePDF from "../../helpFunction/parsePDF.js"
-import { renderMatrix } from "pdfreader/lib/parseTable.js"
-import Rule from "pdfreader/Rule.js"
+import {PdfReader} from "pdfreader"
 
 
 const ObjectId = mongodb.ObjectId

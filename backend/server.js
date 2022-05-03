@@ -8,16 +8,11 @@ import cookieParser from "cookie-parser"
 const salt = 10;
 
 const app = express()
-
 app.use(bodyparser.urlencoded({extended:true}));
 app.use(cookieParser());
 app.use(cors())
 app.use(express.json())
-
 app.use("/api/v1/students",student)
 app.use("*", (req, res) => res.status(404).json({ error: "not found"}))
-
 app.use("/uploads", express.static("./uploads"));
-
-
 export default app
