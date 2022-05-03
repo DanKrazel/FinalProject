@@ -22,8 +22,8 @@ class UserDataService {
         return http.put("/user-edit", data);
     }
 
-    deleteUser(id, userId) {
-        return http.delete(`/user-delete?id=${id}`, {data:{user_id: userId}});
+    deleteUser(userId) {
+        return http.delete(`/user?id=${userId}`);
     }
 
     getAdminBoard(){

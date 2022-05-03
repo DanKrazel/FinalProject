@@ -153,6 +153,7 @@ export default class RequestsController {
       const RequestsResponse = await RequestsDAO.deleteRequestbyID(
         requestID
       )
+      console.log(RequestsResponse)
       res.json({ status: "success" })
     } catch (e) {
       res.status(500).json({ error: e.message })

@@ -27,6 +27,7 @@ router.route("/testToken").get(UsersCtrl.apiVerifyToken)
 
 router.route("/user").get(UsersCtrl.apiGetUsers)
                      .post(UsersCtrl.apiPostUser)
+                     .delete(UsersCtrl.apiDeleteUserByID)
 
 router.route("/requests").post(RequestsCtrl.apiPostRequest)
                          .get(RequestsCtrl.apiGetRequests)
@@ -61,11 +62,12 @@ router.route("/professor").get(UsersCtrl.apiVerifyToken,
 router.route("/names").get(StudentsCtrl.apiGetStudentName)
 router.route("/getCoursesStudent/:id").get(StudentsCtrl.apiGetCoursesStudentByID)
 router.route("/deleteAllCourses").delete(CoursesCtrl.apiDeleteAllCourses)
+router.route("/getCoursesByStudentName").get(StudentsCtrl.apiGetCoursesByStudentName)
 router.route("/course").post(CoursesCtrl.apiPostCourse)
                        .put(CoursesCtrl.apiUpdateCourse)
                        .delete(CoursesCtrl.apiDeleteCourse)
                        .get(CoursesCtrl.apiGetCourses)
-                       .get(CoursesCtrl.apiGetCoursesByStudentID)
+
 
 
 
@@ -81,6 +83,8 @@ router.route("/uploadCoursesAllStudents").post(upload.single('file'),CoursesCtrl
 
                        
 router.route("/uploadPDF").post(upload.single('file'),FilesCtrl.apiNewTestPostFile)
+
+router.route("/uploadPDFCourses").get(FilesCtrl.apiGetContentPDF)
 
 
 

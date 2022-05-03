@@ -119,6 +119,22 @@ export default class  StudentsController {
     }
   }
 
+  static async apiGetCoursesByStudentName(req, res, next){
+    try {
+      let name = req.query.name
+      console.log('name',name)
+      let students = await StudentsDAO.getCoursesByStudentName(name)
+      if (!students) {
+        res.status(404).json({ error: "Not found" })
+        return
+      }
+      res.json(students)
+    } catch (e) {
+      console.log(`api, ${e}`)
+      res.status(500).json({ error: e })
+    }
+  }
+
   static async apiGetUnitStudent(req, res, next) {
     try {
       let id = req.params.id || {}

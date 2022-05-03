@@ -205,15 +205,18 @@ export default class userDAO {
     }
   }
 
-  // static async verifyToken(token){
-  //   try {
-  //     const decoded = jwt.verify(token,JWT_SECRET);
-  //     return decoded;
-  //   } catch (error) {
-  //     console.log(JSON.stringify(error),"error");
-  //     return false;
-  //   }
-  // }
+    static async deleteUserbyID (userID) {
+    try {
+      const deleteResponse = await users.deleteOne({
+        _id: ObjectId(userID),
+      })
+
+      return await users.deleteOne(deleteResponse)
+    } catch (e) {
+      console.error(`Unable to delete user: ${e}`)
+      return { error: e }
+    }
+  }
 
 
 }

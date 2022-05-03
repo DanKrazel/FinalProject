@@ -1,54 +1,41 @@
-import pdfParse from "pdf-parse"
+import pdfreader from "pdfreader"
 
-export default class parsePDF {
-    static async render_page (file) {
-    //check documents https://mozilla.github.io/pdf.js/
-        let render_options = {
-        //replaces all occurrences of whitespace with standard spaces (0x20). The default value is `false`.
-            normalizeWhitespace: false,
-        //do not attempt to combine same line TextItem's. The default value is `false`.
-            disableCombineTextItems: false
-        }
- 
-    // return pdfParse(file)
-    // .then(textContent => {
-    //   console.log("textcontent", textContent)
-    //     let lastY, text = '';
-    //     for (let i=0; i<textContent.text; i++) {
-    //         // if (lastY == item.transform[5] || !lastY){
-    //         //     text += item.str;
-    //         // }  
-    //         // else{
-    //         //     text += '\n' + item.str;
-    //         // }    
-    //         // lastY = item.transform[5];
-    //         //console.log("item", item)
-    //         if(textContent.text[i]!= '\n')
-    //           text += textContent.text[i]
-    //     }
-    //     //console.log("text", text)
-    //     return text;
-    // });
-    let text = ""
-    try {
-        const parsedFile = await pdfParse(file)
-        for (let i=0; i<parsedFile.text; i++) {
-                    // if (lastY == item.transform[5] || !lastY){
-                    //     text += item.str;
-                    // }  
-                    // else{
-                    //     text += '\n' + item.str;
-                    // }    
-                    // lastY = item.transform[5];
-                    //console.log("item", item)
-                    if(parsedFile.text[i]!= '\n')
-                      text += parsedFile.text[i]
-                }
-                //console.log("text", text)
-        return text;
-    } catch (error) {
-        console.log(error)
-    }
-}
+const parsePDF = () =>{
+
+  const nbCols = 2;
+  const cellPadding = 40; // each cell is padded to fit 40 characters
+  const columnQuantitizer = (item) => parseFloat(item.x) >= 20;
+
+  const padColumns = (array, nb) =>
+    Array.apply(null, { length: nb }).map((val, i) => array[i] || []);
+  // .. because map() skips undefined elements
+
+  const mergeCells = (cells) =>
+  (cells || [])
+    .map((cell) => cell.text)
+    .join("") // merge cells
+    .substr(0, cellPadding)
+    .padEnd(cellPadding, " "); // padding
+
+  const renderMatrix = (matrix) =>
+  (matrix || [])
+    .map((row, y) => padColumns(row, nbCols).map(mergeCells).join(" | "))
+    .join("\n");
+
+  var table = new pdfreader.TableParser();
+
+// new pdfreader.PdfReader().parseFileItems(filename, function (err, item) {
+//   if (!item || item.page) {
+//     // end of file, or page
+//     console.log(renderMatrix(table.getMatrix()));
+//     console.log("PAGE:", item.page);
+//     table = new pdfreader.TableParser(); // new/clear table for next page
+//   } else if (item.text) {
+//     // accumulate text items into rows object, per line
+//     table.processItem(item, columnQuantitizer(item));
+//   }
+// });
 
 }
+
+export default parsePDF;

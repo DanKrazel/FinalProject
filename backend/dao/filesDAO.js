@@ -1,6 +1,5 @@
 import mongodb from "mongodb"
 import pdfParse from "pdf-parse"
-import parsePDF from "../helpFunction/parsePDF.js"
 
 
 

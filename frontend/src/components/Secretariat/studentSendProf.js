@@ -262,22 +262,6 @@ const StudentSendProf = props => {
                     }
                     return (
                       <div className="col-sm text-white " id={(course.codeCourse).toString()}
-                      /*ref={el => {
-                    // el can be null - see https://reactjs.org/docs/refs-and-the-dom.html#caveats-with-callback-refs
-                    if (!el) 
-                      return;  
-                    let coordinate = []     
-                    //console.log(el.id); // prints 200px
-                    if(course.courseName == 'חדו"א  - 1'){
-                      //coordinate = el.getBoundingClientRect()
-                      //console.log("coordinate", coordinate)
-                      setIdCourse(el.id)
-                      console.log(el.id)
-                      //console.log('check',idCourse)
-                    }
-                    //const arrow = arrowLine('#300021', '#300021');
-
-                  }}*/
                   key={course.codeCourses} >                 
                   <div  className="card my-3 ">     
                   <p className='bg-success text-white text-center'>

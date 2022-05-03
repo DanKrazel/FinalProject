@@ -180,8 +180,8 @@ const SecretariatBoard = props => {
             </div>
           </div>
           <div className="row">
-            {students.map((student) => {
-
+          {students.length ? (
+            students.map((student) => {
               return (
                 <div className="col-lg-4 pb-1">
                   <div className="card">
@@ -202,8 +202,13 @@ const SecretariatBoard = props => {
                   </div>
                 </div>
               );
-            })}
-    
+            })
+              ):(
+              <div>
+                <br />
+                  <p>No students found</p>
+              </div>
+            )}
 
           </div>
           <nav aria-label="Page navigation example">
