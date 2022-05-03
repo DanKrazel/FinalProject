@@ -5,39 +5,42 @@ const ObjectId = mongodb.ObjectId
 
 
 
-
 export default class DependenciesController {
 
     static async apiGetDependencies(req, res, next) {
-        const requestsPerPage = req.query.requestsPerPage ? parseInt(req.query.requestsPerPage, 10) : 20
+        const dependenciesPerPage = req.query.dependenciesPerPage ? parseInt(req.query.dependenciesPerPage, 10) : 20
         const page = req.query.page ? parseInt(req.query.page, 10) : 0
 
         let filters = {}
-        if (req.query.DepensencieID) {
-            filters.DepensencieID = ObjectId(req.query.DepensencieID)
+        if (req.query._id) {
+            filters._id = ObjectId(req.query._id)
+        } else if (req.query.DepensencieID) {
+            filters.DepensencieID = req.query.DepensencieID
         } else if (req.query.StartCoursesname) {
             filters.StartCoursesname = req.query.StartCoursesname
         } else if (req.query.EndCoursesname) {
             filters.EndCoursesname = req.query.EndCoursesname
         }
 
-        const { requestsList, totalNumRequestsList } = await RequestsDAO.getRequests({
+        const { dependenciesList, totalNumdependenciesList } = await DependenciesDAO.getDependencies({
             filters,
             page,
-            requestsPerPage,
+            dependenciesPerPage,
         })
 
         let response = {
-            requests: requestsList,
+            dependencies: dependenciesList,
             page: page,
             filters: filters,
-            entries_per_page: requestsPerPage,
-            total_results: totalNumRequestsList,
+            entries_per_page: dependenciesPerPage,
+            total_results: totalNumdependenciesList,
         }
+        console.log(response)
         res.json(response)
     }
 
     static async apiPostDependencies(req, res, next) {
+        console.log("apiPostDependencies");
         try {
             const DepensencieID = ObjectId(req.body.DepensencieID)
             const StartCoursesname = req.body.StartCoursesname

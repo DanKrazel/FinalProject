@@ -17,7 +17,7 @@ import { ReactComponent as HeadSvg } from "../assets/arrowHead-resize.svg";
 import StudentsList from "./students-list";
 const StudentVisual = props => {
   const params = useParams();
-  var countUnitSemesters = 0
+  var countUnitSemesters = 0;
   var countUnitSemester2 = 0;
   console.log(params.id)
   var myState = {
@@ -248,6 +248,7 @@ const StudentVisual = props => {
   const box11Ref = useRef(null);
   const box12Ref = useRef(null);
   const box13Ref = useRef(null);
+  
   return (
     //<form onSubmit={deleteCourseByStudentID(params.id)}>
     <div>
@@ -268,7 +269,7 @@ const StudentVisual = props => {
         </button>
         <button className="k-button" onClick={exportPDFWithComponent}></button>
       </div>
-      <div >
+      <div>
         <PDFExport ref={pdfExportComponent} paperSize="auto" margin={40} fileName={`Report for ${new Date().getFullYear()}`} author="KendoReact Team">
           {student ? (
             <div >
@@ -1066,8 +1067,7 @@ const StudentVisual = props => {
                     if ((course.courseName == 'חדוא 2 להנדסת תוכנה') && (student.courses.find(({ courseName }) => courseName === 'פיסיקה להנדסת תוכנה'))) {
                       if (course.grade > 55) {
                         return (
-                          <div className="col-sm text-white "
-                            key={course.codeCourses}>
+                          <div className="col-sm text-white " key={course.codeCourses}>
                             <div className="card my-3 " id={(course.codeCourse).toString()} ref={box9Ref}>
                               <p className='bg-success text-white text-center'>
                                 <h11>

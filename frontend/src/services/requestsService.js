@@ -7,9 +7,6 @@ class RequestDataService {
     get(id) {
         return http.get(`requests?id=${id}`);
     }
-    
-    
-
     postRequest(data) {
         return http.post("/requests", data);
     }

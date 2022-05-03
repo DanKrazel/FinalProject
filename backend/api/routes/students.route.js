@@ -5,7 +5,7 @@ import CoursesCtrl from "../controllers/course.controller.js"
 import UnitsBySemesterCtrl from "../controllers/unitsBySemester.controller.js"
 import FilesCtrl from "../controllers/files.controller.js"
 import RequestsCtrl from "../controllers/requests.controller.js"
-import DependenciesCtrl from "../controllers/depensencie.controller.js"
+import DependenciesCtrl from "../controllers/dependencie.controller.js"
 
 import upload from "../../middleware/upload.js"
 
@@ -15,9 +15,7 @@ const router = express.Router()
 
 router.route("/").get(StudentsCtrl.apiGetStudents)
                  .post(StudentsCtrl.apiPostStudent)
-
 router.route("/getStudentByID").get(StudentsCtrl.apiGetStudentByID)
-
 router.route("/getUnitStudent/:id").get(StudentsCtrl.apiGetUnitStudent)
 router.route("/getAverageStudent/:id").get(StudentsCtrl.apiGetAverageStudent)
 router.route("/resetAverageStudent").put(StudentsCtrl.apiResetAverageStudent)
@@ -43,7 +41,6 @@ router.route("/deleteAllRequests").delete(RequestsCtrl.apiDeleteAllRequests)
 
 router.route("/dependencies").get(DependenciesCtrl.apiGetDependencies)
 router.route("/dependencies").post(DependenciesCtrl.apiPostDependencies)
-
 
 router.route("/login").post(UsersCtrl.apiLogin)
 router.route("/signup").post(UsersCtrl.apiCheckDuplicateUsernameOrMail, UsersCtrl.apiSignup)

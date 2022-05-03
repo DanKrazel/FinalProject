@@ -1,25 +1,26 @@
 import mongodb from "mongodb"
 const ObjectId = mongodb.ObjectId
-let requests
+let dependecy
 
 export default class DependenciesDAO {
     static async injectDB(conn) {
-        if (requests) {
+        if (dependecy) {
             return
         }
         try {
-            requests = await conn.db(process.env.RESTREVIEWS_NS).collection("dependencies")
+            dependecy = await conn.db(process.env.RESTREVIEWS_NS).collection("dependencies")
+            console.log("dependencies");
         } catch (e) {
             console.error(
-                `Unable to establish a collection handle in requestsDAO: ${e}`,
+                `Unable to establish a collection handle in dependencies: ${e}`,
             )
         }
     }
-    static async getDependencies({ filters = null, page = 0, DependenciesPerPage = 20 } = {}) {
+    static async getDependencies({ filters = null, page = 0, dependenciesPerPage = 20 } = {}) {
         let query
         if (filters) {
-            if ("DepensencieID" in filters) {
-                query = { "DepensencieID": { $eq: filters["DepensencieID"] } }
+            if ("_id" in filters) {
+                query = { "_id": { $eq: filters["_id"] } }
             } else if ("StartCoursesname" in filters) {
                 query = { "StartCoursesname": { $eq: filters["StartCoursesname"] } }
             } else if ("EndCoursesname" in filters) {
@@ -30,52 +31,49 @@ export default class DependenciesDAO {
         let cursor
 
         try {
-            cursor = await requests.find(query)
+            cursor = await dependecy.find(query)
         } catch (e) {
             console.error(`Unable to issue find command, ${e}`)
-            return { requestsList: [], totalNumRequestsList: 0 }
+            return { dependenciesList: [], totalNumdependenciesList: 0 }
         }
 
-        const displayCursor = cursor.limit(DependenciesPerPage).skip(DependenciesPerPage * page)
+        const displayCursor = cursor.limit(dependenciesPerPage).skip(dependenciesPerPage * page)
 
         try {
-            const requestsList = await displayCursor.toArray()
-            const totalNumRequestsList = await requests.countDocuments(query)
+            const dependenciesList = await displayCursor.toArray()
+            const totalNumdependenciesList = await dependecy.countDocuments(query)
 
-            return { requestsList, totalNumRequestsList }
+            return { dependenciesList, totalNumdependenciesList }
         } catch (e) {
             console.error(
                 `Unable to convert cursor to array or problem counting documents, ${e}`,
             )
-            return { requestsList: [], totalNumRequestsList: 0 }
+            return { dependenciesList: [], totalNumdependenciesList: 0 }
         }
     }
-    static async postDependencies(DepensencieID,StartCoursesname, EndCoursesname) {
+    static async postDependencies(DependencyID,StartCoursesname, EndCoursesname) {
         try {
             const requestsDoc = {
-                DepensencieID: DepensencieID,
                 StartCoursesname: StartCoursesname,
                 EndCoursesname: EndCoursesname,
             }
-            return await requests.insertOne(requestsDoc)
+            return await dependecy.insertOne(requestsDoc)
         } catch (e) {
             console.error(`Unable to post request: ${e}`)
             return { error: e }
         }
     }
-    static async findDependencies(DepensencieID, StartCoursesname, EndCoursesname) {
+    static async findDependencies( StartCoursesname, EndCoursesname) {
         try {
             const requestsDoc = {
-                DepensencieID: DepensencieID,
                 StartCoursesname: StartCoursesname,
                 EndCoursesname: EndCoursesname
             }
             let query = {
-                "DepensencieID": { $eq: DepensencieID },
                 "StartCoursesname": { $eq: StartCoursesname },
                 "EndCoursesname": { $eq: EndCoursesname },
             }
-            return await requests.findOne(query)
+            return await dependecy.findOne(query)
         } catch (error) {
             console.error(`Unable to find request: ${e}`)
             return { error: e }

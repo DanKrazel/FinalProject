@@ -5,7 +5,7 @@ import AddStudent from "./components/add-student";
 import Student from "./components/students";
 import StudentVisual from "./components/studentsVisual";
 import DynamicVisualisation from "./components/DynamicVisualisation";
-
+import DynamicVisual from "./components/DynamicVisual";
 import StudentsList from "./components/students-list";
 import Profil from "./components/profil"
 import AuthService from "../src/services/authService"
@@ -158,6 +158,10 @@ function App() {
           <Route
             path="/DynamicVisualisation/:id"
             element={<DynamicVisualisation user={currentUser} />}
+          />
+          <Route
+            path="/DynamicVisual/:id"
+            element={<DynamicVisual user={currentUser} />}
           />
         <Route 
           path="/login"

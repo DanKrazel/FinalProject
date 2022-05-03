@@ -20,8 +20,7 @@ export default class StudentsDAO {
       )
     }
   }
-  static async getStudents({filters = null,page = 0,studentsPerPage = 20,
-  } = {}) {
+  static async getStudents({filters = null,page = 0,studentsPerPage = 20,} = {}) {
     let query
     if (filters) {
       if ("_id" in filters) {
@@ -62,6 +61,9 @@ export default class StudentsDAO {
       return { studentsList: [], totalNumStudents: 0 }
     }
   }
+
+
+  
   static async getStudentByID(studentID) {
     try {
       const studentDoc = {
