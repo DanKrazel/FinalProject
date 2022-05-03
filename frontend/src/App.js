@@ -150,6 +150,10 @@ function App() {
           path="/students/:id"
           element = { <Student user={currentUser}/> }
         />
+        {/* <Route 
+          path="/students/:name"
+          element = { <Student user={currentUser}/> }
+        /> */}
         <Route 
           path="/studentsVisual/:id"
             element={<StudentVisual user={currentUser}/> }

@@ -20,6 +20,11 @@ class StudentDataService {
     findStudent(id){
         return http.get(`getCoursesStudent/${id}`);
     }
+
+    getCoursesByStudentName(name){
+        return http.get(`getCoursesByStudentName?name=${name}`);
+    }
+    
     
     updateStudent(data) {
         return http.put("/student-edit", data);

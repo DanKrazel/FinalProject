@@ -174,6 +174,7 @@ export default class CoursesController {
     }
   }
 
+
   static async apiUploadCoursesToDB(req, res, next){
     console.log("heybackend")
     try {

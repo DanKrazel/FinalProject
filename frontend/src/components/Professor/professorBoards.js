@@ -238,7 +238,8 @@ const ProfessorBoard = props => {
             </div>
             
           <div className="row">
-            {students.map((student,i) => {
+            {students.length ? (
+             students.map((student,i) => {
               return (
                 <div className="col-lg-4 pb-1 " key={student._id}>
                   <div className="card">
@@ -257,8 +258,13 @@ const ProfessorBoard = props => {
                   </div>
                 </div>
               );
-            })};
-    
+            })
+            ):(
+              <div>
+                <br />
+                  <p>No students found</p>
+              </div>
+            )}
           </div>
           <nav aria-label="Page navigation example">
             <ul class="pagination">

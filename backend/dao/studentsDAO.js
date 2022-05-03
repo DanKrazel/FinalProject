@@ -142,6 +142,53 @@ export default class StudentsDAO {
         throw e
       }
   }
+
+  static async getCoursesByStudentName(studentName) {
+    try {
+      const pipeline = [
+        {
+            $match: {
+                name: studentName,
+            },
+        },
+        {
+          $lookup: {
+              from: "courses",
+              let: {
+                  name: "$name",
+              },
+              pipeline: [
+                  {
+                      $match: {
+                          $expr: {
+                              $eq: ["$studentName", "$$name"],
+                          },
+                      },
+                  },
+                  {
+                      $sort: {
+                          date: -1,
+                      },
+                  },
+              ],
+              as: "courses",
+          },
+      },
+      {
+          $addFields: {
+              courses: "$courses",
+          },
+      },
+          ]
+        console.log(pipeline)
+      return await students.aggregate(pipeline).next()
+    } catch (e) {
+      console.log("test")
+      console.error(`Something went wrong in getCoursesByStudentName: ${e}`)
+      throw e
+    }
+  }
+  
 //good
   static async updateUnitsStudent(studentID) {
   try {

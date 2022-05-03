@@ -32,6 +32,7 @@ const Downloadcsv = props => {
   const [submitted, setSubmitted] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [student, setStudent] = useState(initialStudentState)
+  const [studentCourses, setStudentCourses] = useState([])
   const [selectFile, setSelectFile] = useState([])
   const [dataCSV, setDataCSV] = useState([]);
   const [IDfile, setIDfile] = useState("")
@@ -56,11 +57,23 @@ const Downloadcsv = props => {
       });
   };
 
+  const getStudentWithCourses = (name) => {
+    StudentDataService.getCoursesByStudentName(name)
+      .then(response => {
+        console.log(response.data);
+        setStudentCourses(response.data);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
+
   const findStudent = () => {
     StudentDataService.find(params.id,"_id")
     .then(response => {
       console.log(response.data);
       setStudent(response.data.students[0]); 
+      getStudentWithCourses(response.data.students[0].name)
     })
     .catch(e => {
       console.log(e);
@@ -240,45 +253,16 @@ const Downloadcsv = props => {
   return (
     <form  onSubmit={handleOnSubmit} encType='multipart/form-data'>
     <div>
-      <h3>Upload grades student - {student.name}</h3>
-      <input
-        type="file"
-        accept=".csv,.xlsx,.xls,.xml"
-        ref={fileInput}
-        onChange={handleFileUpload}
-      />
+      <h3>Student visualisation - {student.name}</h3>
     <div className="btn-group" role="group" aria-label="Basic example">
-    { courses.length != 0 ? (
-            <input
-            className="btn btn-primary" 
-            type="submit"
-            value="Reset csv file"
-          />
-          ) : (            
-            <input
-              className="btn btn-primary" 
-              type="submit"
-              value="Upload csv file"
-            //onClick={redirect}
-            //onClick={() => setSubmitted(!submitted)}
-            //onChange={navigate(`/students/${params.id}`)}
-          />
-          )}
-
-      <Link to={"/studentsVisual/"+params.id} className="btn btn-primary">
+      <Link to={"/students/"+student._id} className="btn btn-primary">
         View student visualisation
       </Link>     
-      <Link to={"/"} class="btn btn-primary">
+      <Link to={"/"} className="btn btn-primary">
         Return to previous page
       </Link>
 
     </div>
-      <DataTable
-        pagination
-        highlightOnHover
-        columns={columns}
-        data={data}
-      />
     </div>
     </form>     
   );

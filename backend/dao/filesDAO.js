@@ -1,7 +1,6 @@
 import mongodb from "mongodb"
 import pdfjsLib  from "pdfjs-dist/build/pdf.js"
 import pdfParse from "pdf-parse"
-import parsePDF from "../helpFunction/parsePDF.js"
 
 
 

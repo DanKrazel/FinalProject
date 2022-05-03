@@ -116,19 +116,6 @@ const RegisterUser = props =>{
     }
 
 
-    function Copyright() {
-      return (
-        <Typography variant="body2" color="textSecondary" align="center">
-          {"Copyright © "}
-          <Link color="inherit" href="https://material-ui.com/">
-            Your Website
-          </Link>{" "}
-          {new Date().getFullYear()}
-          {"."}
-        </Typography>
-      );
-    }
-
     const useStyles = makeStyles(theme => ({
       paper: {
         marginTop: theme.spacing(8),
@@ -331,9 +318,6 @@ const RegisterUser = props =>{
                       Submit
                     </Button>
                 </div>
-                <Box mt={5}>
-                  <Copyright />
-                </Box>
               </Container>
               
             )}

@@ -5,8 +5,11 @@ import upload from "../../middleware/upload.js"
 import mongodb from "mongodb"
 import csv from "fast-csv"
 import pdfParse from "pdf-parse"
-import {PdfReader} from "pdfreader"
+import pdfreader from "pdfreader"
 import pdfjsLib  from "pdfjs-dist/build/pdf.js"
+import parsePDF from "../../helpFunction/parsePDF.js"
+import { renderMatrix } from "pdfreader/lib/parseTable.js"
+import Rule from "pdfreader/Rule.js"
 
 
 const ObjectId = mongodb.ObjectId
@@ -35,72 +38,95 @@ export default class FilesController {
 
    
 
-    static async apiPostPDF(req, res) {
+    static async apiParsePDF(req, res) {
       try{
         let file = req.body.filePath
         console.log("file",file)
-          // let file = req.file.path
-          // console.log("FileResponse:")
-          // console.log(file)
-          // // res.json({ status: "success",
-          // //            FileResponse: FileResponse })
-          // res.status(200).send({ status: "success",
-          //                        file: file
-          //              });
-          
-          // const FileResponse = await FilesDAO.getItemsPDF(
-          //   file, 
-          //   )
-          // if (!file) {
-          //   res.status(400);
-          //   res.end();
-          // }
-    
-  
-
-          const FileResponse = await FilesDAO.postDataPDF(file);
-          let text = ""
-          for (let i=0; i<FileResponse.text.length; i++) {
-              if(FileResponse.text[i]!= '\n'){
-                  text += FileResponse.text[i]
-              }
-              else if(FileResponse.text[i] == '(A)' || FileResponse.text[i] == '(B)' || FileResponse.text[i] == '(C)' || FileResponse.text[i] == '(D)'
-              || FileResponse.text[i] == '(E)' || FileResponse.text[i] == '(F)')
-                text += '\n'
+        const FileResponse = await FilesDAO.postDataPDF(file);
+        let text = ""
+        let column = {}
+        for (let i=0; i<FileResponse.text.length; i++) {
+          if(FileResponse.text[i]!= '\n'){
+            text += FileResponse.text[i]
           }
-          // new PdfReader().parseFileItems(file, (err, item) => {
-          //   if (err) console.error("error:", err);
-          //   else if (!item) 
-          //     console.warn("end of file");
-          //   else if (item.text) 
-          //     //console.log(item.text);
-          //     var item = item.text
-          // });
+          if(FileResponse.text[i] == ')'){
+            text += '\n';
+          }
+        }
           FileResponse.text = text
-          res.json({ FileResponse: FileResponse} )
-
-          //console.log("FileResponse:", FileResponse)
-          //res.json({ file: file})
+          console.log(FileResponse.text)
+          res.json({ FileResponse: FileResponse.text} )
         } catch (e) {
-          console.log("heybackend")
           console.log(`api, ${e}`)
           res.status(500).json({ error: e })
         }
     }
     
+    
+
+    // renderMatrix (matrix) {
+    //   return (matrix || [])
+    //   .map((row, y) => padColumns(row, nbCols).map(mergeCells).join(" | "))
+    //   .join("\n");
+    // }
+
     static async apiGetContentPDF(req, res, next) {
-      let render_options = {
-        //replaces all occurrences of whitespace with standard spaces (0x20). The default value is `false`.
-        normalizeWhitespace: false,
-        //do not attempt to combine same line TextItem's. The default value is `false`.
-        disableCombineTextItems: false
-    }
       let file = req.body.filePath
-      console.log("file",file)
-      const doc = await pdfjsLib.getDocument(file).promise // note the use of the property promise
-      const page = await doc.getPage(1)
-      const content = await page.getTextContent(render_options)
-      res.json({content: content})
+      var rows = {}; 
+      var table = new pdfreader.TableParser()
+      const nbCols = 2;
+      const cellPadding = 40; // each cell is padded to fit 40 characters
+      const columnQuantitizer = (item) => parseFloat(item.x) >= 20;
+
+      // function printRows() {
+      //   Object.keys(rows) // => array of y-positions (type: float)
+      //     .sort((y1, y2) => parseFloat(y1) - parseFloat(y2)) // sort float positions
+      //     .forEach((y) => console.log((rows[y] || []).join('')));
+      // }
+
+
+      const padColumns = (array, nb) =>
+        Array.apply(null, {length: nb}).map((val, i) => array[i] || []);
+  // .. because map() skips undefined elements
+
+      const mergeCells = (cells) => (cells || [])
+        .map((cell) => cell.text).join('') // merge cells
+        .substr(0, cellPadding).padEnd(cellPadding, ' '); // padding
+
+      const renderMatrix = (matrix) => (matrix || [])
+        .map((row, y) => padColumns(row, nbCols)
+        .map(mergeCells)
+        .join(' | ')
+          ).join('\n');
+
+          new pdfreader.PdfReader().parseFileItems(file, function(err, item){
+            if (!item ) {
+              // end of file, or page
+              console.log(renderMatrix(table.getMatrix()));
+              res.json({content:renderMatrix(table.getMatrix())})
+            } else if (item.text) {
+              // accumulate text items into rows object, per line
+              table.processItem(item, columnQuantitizer(item));
+            }
+          });  
+        // pdfBuffer contains the file content
+      // new pdfreader.PdfReader().parseFileItems(file, function (err, item) {
+      //     if (err) 
+      //       console.error("error:", err);
+      //     else if (!item){
+      //       printRows();
+      //       console.warn("end of buffer");
+      //       //console.log(arrItems)
+      //       res.json({content: rows})
+      //     }
+      //     else if (item.text){
+      //       //console.log('1',item.text);
+      //       //table.processItem(item, columnQuantitizer(item));
+      //       //processItem(item)
+      //       (rows[item.y] = rows[item.y] || []).push(item.text);
+      //     }
+      //     console.log(item)
+      //   });
     }
   
 

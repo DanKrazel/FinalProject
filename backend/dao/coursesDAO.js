@@ -157,6 +157,7 @@ export default class CoursesDAO {
       return { coursesList: [], totalNumCourses: 0 }
     }
   }
+  
   static async getCoursesByStudentID(id) {
     try {
       const pipeline = [
@@ -202,6 +203,12 @@ export default class CoursesDAO {
       throw e
     }
   }
+
+
+
+  
+
+
   static async uploadCourses (fileName, studentID) {
     // CSV file name
       //const fileName = "sample.csv";
@@ -357,7 +364,7 @@ export default class CoursesDAO {
             englishUnits: parseInt(source[j]['ש"ס']),
             units: parseFloat(source[j]["נ.זיכוי"]),
             grade: parseInt(source[j]["ציון"]),
-            studentName: workBook.SheetNames[i]
+            studentName: workBook.SheetNames[i].slice(0,workBook.SheetNames[i].length - 2)
           };
           //console.log(oneRow)
           
@@ -381,47 +388,4 @@ export default class CoursesDAO {
       fs.unlinkSync(filePath);
   }
       
-      // console.log("workbook", workBook.Sheets[workBook.SheetNames[0]])
-      // fs.createReadStream(filePath)
-      //   .pipe(csv(["קוד קורס","סמס","שם קורס","סוג","שם מרצה",'ש"ס',"נ.זיכוי","ציון"],false))
-      //   .on('data', (row) => {
-      //         var oneRow = {
-      //           codeCourse: row["קוד קורס"],
-      //           semesterOfLearning: row["סמס"],
-      //           courseName: row["שם קורס"],
-      //           typeOfCourse: row["סוג"],
-      //           profName: row["שם מרצה"],
-      //           englishUnits: parseInt(row['ש"ס']),
-      //           units: parseFloat(row["נ.זיכוי"]),
-      //           grade: parseInt(row["ציון"]),
-      //         };
-      //         //console.log(oneRow)
-      //         //arrayToInsert.push(oneRow);
-      //         //students.updateOne({units:units+courseUnits})
-      //         //StudentsDAO.updateUnitsStudent(studentID, source[i]["נזיכוי"])
-      //         if(oneRow.codeCourse != ''){
-      //           results.push(oneRow)
-      //         }
-      //         else {
-      //           console.log('check')
-      //         }
-      //   })
-      //   .on('end', () => {      
-      //   console.log("results",results);
-      //   courses.insertMany(results, (err, result) => {
-      //     if (err){
-      //       console.log(err);
-      //       //fs.unlinkSync(filePath);
-      //     }
-      //     if(result){
-      //         console.log("Import CSV into database successfully.");
-      //         fs.unlinkSync(filePath);
-      //     }
-      //    //inserting into the table "courses"    
-      //   });
-      //   });
-      
-      //console.log(arrayToInsert)
-
-
 }

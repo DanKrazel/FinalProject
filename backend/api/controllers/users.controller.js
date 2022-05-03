@@ -283,6 +283,21 @@ export default class UsersController {
 
   };
 
+  static async apiDeleteUserByID(req, res, next) {
+    try {
+      const userID = req.query.id
+      console.log(userID)
+
+      const UsersResponse = await UsersDAO.deleteUserbyID(
+        userID
+      )
+      console.log(UsersResponse)
+      res.json({ status: "success" })
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  }
+
 
 
   
