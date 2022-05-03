@@ -26,8 +26,8 @@ const DynamicVisual = props => {
     courses: []
   };
   const params = useParams();
-  const [elRefs, setElRefs] = useState([]);
   const [dependencies, setDependencies]= useState([]);
+  
   const [student, setStudent] = useState(initialStudentState);
   const [unitsBySemester, setUnitsBySemester] = useState([])
   var countUnitSemesters = 0;
@@ -134,31 +134,46 @@ const DynamicVisual = props => {
         console.log(e);
       });
   };
-  console.log(refs.current);
+
+ // console.log(refs.current);
   //console.log(refs.current.find(({ key }) => key === 'חדו"א  - 1'));
 
+  const startf = (dependencies.map(function (a) { return a.StartCoursesname; }));
+  const endf= (dependencies.map(function (a) { return a.EndCoursesname; }));
+  let zipped = startf.map((x, i) => [x, endf[i]]);
+  console.log(zipped[0]);
   return (
     <><div className="card text-center ">
     </div> <div className="row">
-        {dependencies.map((dependency,index) => {
+
+        {zipped.map((dependency,index) => {
             return (
               <><div className="col-lg-4 pb-1">
                 <div className="card">
                   <div className="card-body" key={index} id={dependency.start}  >
                     <h5 className="card-title">{dependency.id}</h5>
                     <p className="card-text">
-                      <strong>Name: </strong>{dependency.StartCoursesname}<br />
-                      <strong>Valid Units: </strong>{dependency.EndCoursesname}
-                    </p>
-                  
-
+                      <strong>Name: </strong>{dependency}<br />
+                    </p>                
                   </div>
-                 
+
+
+                  {
+
+                    <Xarrow curveness={0} path="grid" strokeWidth={3} headShape={{ svgElem: <HeadSvg />, offsetForward: 1 }}
+                      startAnchor={'lebottomft'}
+                      start={dependency[0]}  //can be react ref
+                      end={dependency[1]} //or an id
+                    />
+                  }
                 </div>
               </div></>
             );
          
-        })}
+        }
+        
+        
+        )}
 
         <div>
           <PDFExport ref={pdfExportComponent} paperSize="auto" margin={40} fileName={`Report for ${new Date().getFullYear()}`} author="KendoReact Team">
@@ -211,6 +226,65 @@ const DynamicVisual = props => {
             )}
           </PDFExport>
         </div>
+        <div className="row">
+          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
+            <div>
+            </div>
+          </div>
+
+        <div className="col-sm text-white ">
+          <div className="card my-3 " id={'חדו"א  - 1'}>
+            <p className='bg-secondary text-white text-center'>
+              <h11>
+                חדו"א  - 1<br />
+                None <br />
+                5 <br />
+              </h11>
+            </p>
+          </div>
+        </div>
+          <div className="col-sm text-white ">
+            <div className="card my-3 " id={'לוגיקה ונושאים דיסקרטיים I'}>
+              <p className='bg-secondary text-white text-center'>
+                <h11>
+                  לוגיקה ונושאים דיסקרטיים I<br />
+                  None <br />
+                  5 <br />
+                </h11>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
+            <div>
+            </div>
+          </div>
+
+          <div className="col-sm text-white ">
+            <div className="card my-3 " id={'חדוא 2 להנדסת תוכנה'}>
+              <p className='bg-secondary text-white text-center'>
+                <h11>
+                  חדוא 2 להנדסת תוכנה<br />
+                  None <br />
+                  5 <br />
+                </h11>
+              </p>
+            </div>
+          </div>
+          <div className="col-sm text-white ">
+            <div className="card my-3 " id={'לוגיקה ונושאים דיסקרטיים II'}>
+              <p className='bg-secondary text-white text-center'>
+                <h11>
+                  לוגיקה ונושאים דיסקרטיים II<br />
+                  None <br />
+                  5 <br />
+                </h11>
+              </p>
+            </div>
+          </div>
+        </div>
 
 
       </div></>
@@ -218,12 +292,6 @@ const DynamicVisual = props => {
       
   );
 
-  {
-    <Xarrow curveness={0} path="grid" strokeWidth={3} headShape={{ svgElem: <HeadSvg />, offsetForward: 1 }}
-      start={refs.current.pop(0)} //can be react ref
-      end={refs.current[4]} //or an id
-    />
-  }
 
 };
 export default DynamicVisual;
