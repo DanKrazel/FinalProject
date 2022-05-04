@@ -128,8 +128,8 @@ export default class CoursesDAO {
         query = { "typeOfCourse": { $eq: filters["typeOfCourse"] } }
       } else if ("courseBefore" in filters) {
         query = { "courseBefore": { $eq: filters["courseBefore"] } }
-      } else if ("studentID" in filters) {
-        query = { "studentID": { $eq: filters["studentID"] } }
+      } else if ("studentName" in filters) {
+        query = { "studentName": { $eq: filters["studentName"] } }
       }
     }
 
@@ -176,7 +176,7 @@ export default class CoursesDAO {
                   {
                       $match: {
                           $expr: {
-                              $eq: ["$studentID", "$$id"],
+                          $eq: ["$studentName", "$$id"],
                           },
                       },
                   },

@@ -232,7 +232,7 @@ const Downloadcsv = props => {
           />
           )}
 
-      <Link to={"/DynamicVisualisation/"+params.id} className="btn btn-primary">
+      <Link to={"/AddDependencies/"+params.id} className="btn btn-primary">
         Add dependencies
       </Link>     
       <Link to={"/"} className="btn btn-primary">

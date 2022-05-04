@@ -15,9 +15,7 @@ const router = express.Router()
 
 router.route("/").get(StudentsCtrl.apiGetStudents)
                  .post(StudentsCtrl.apiPostStudent)
-
 router.route("/getStudentByID").get(StudentsCtrl.apiGetStudentByID)
-
 router.route("/getUnitStudent/:id").get(StudentsCtrl.apiGetUnitStudent)
 router.route("/getAverageStudent/:id").get(StudentsCtrl.apiGetAverageStudent)
 router.route("/resetAverageStudent").put(StudentsCtrl.apiResetAverageStudent)
@@ -44,7 +42,6 @@ router.route("/deleteAllRequests").delete(RequestsCtrl.apiDeleteAllRequests)
 
 router.route("/dependencies").get(DependenciesCtrl.apiGetDependencies)
                              .post(DependenciesCtrl.apiPostDependencies)
-
 
 router.route("/login").post(UsersCtrl.apiLogin)
 router.route("/signup").post(UsersCtrl.apiCheckDuplicateUsernameOrMail, UsersCtrl.apiSignup)

@@ -36,23 +36,8 @@ const StudentVisual = props => {
     years: "",
     courses: []
   };
-  const DraggableBox = ({ id }) => {
-    const updateXarrow = useXarrow();
-    return (
-      <Draggable onDrag={updateXarrow} onStop={updateXarrow}>
-        <div id={id} style={boxStyle}>
-          {id}
-        </div>
-      </Draggable>
-    );
-  };
   const boxStyle = { border: 'grey solid 2px', borderRadius: '10px', padding: '5px' };
-  const rootStyle = { display: 'flex', justifyContent: 'center' };
-  const rowStyle = { margin: '200px 0', display: 'flex', justifyContent: 'space-between' };
   const [student, setStudent] = useState(initialStudentState);
-  //const [refreshKey, setRefreshKey] = useState(0);
-  const [countUnitSemester1, setCountUnitSemester1] = useState(0)
-  const [countUnitBySemester, setCountUnitBySemester] = useState(0)
   const [unitsBySemester, setUnitsBySemester] = useState([])
   const [idCourse, setIdCourse] = useState()
 

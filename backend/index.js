@@ -7,6 +7,8 @@ import CoursesDAO from "./dao/coursesDAO.js"
 import FilesDAO from "./dao/filesDAO.js"
 import UnitsBySemesterDAO from "./dao/unitsBySemesterDAO.js"
 import RequestsDAO from "./dao/requestsDAO.js"
+import DependenciesDAO from "./dao/dependenciesDAO.js"
+
 
 dotenv.config()
 const MongoClient = mongodb.MongoClient
@@ -32,6 +34,8 @@ MongoClient.connect(
     await FilesDAO.injectDB(client)
     await UnitsBySemesterDAO.injectDB(client)
     await RequestsDAO.injectDB(client)
+    await RequestsDAO.injectDB(client)
+    await DependenciesDAO.injectDB(client)
     app.listen(port, () => {
       console.log(`listening on port ${port}`)
     })

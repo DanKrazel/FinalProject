@@ -1,6 +1,6 @@
 import mongodb from "mongodb"
 const ObjectId = mongodb.ObjectId
-let requests
+let dependencies
 
 export default class DependenciesDAO {
     static async injectDB(conn) {
@@ -11,11 +11,11 @@ export default class DependenciesDAO {
             dependencies = await conn.db(process.env.RESTREVIEWS_NS).collection("dependencies")
         } catch (e) {
             console.error(
-                `Unable to establish a collection handle in requestsDAO: ${e}`,
+                `Unable to establish a collection handle in dependencies: ${e}`,
             )
         }
     }
-    static async getDependencies({ filters = null, page = 0, DependenciesPerPage = 20 } = {}) {
+    static async getDependencies({ filters = null, page = 0, dependenciesPerPage = 20 } = {}) {
         let query
         if (filters) {
             if ("_id" in filters) {
@@ -33,21 +33,21 @@ export default class DependenciesDAO {
             cursor = await dependencies.find(query)
         } catch (e) {
             console.error(`Unable to issue find command, ${e}`)
-            return { requestsList: [], totalNumRequestsList: 0 }
+            return { dependenciesList: [], totalNumdependenciesList: 0 }
         }
 
-        const displayCursor = cursor.limit(DependenciesPerPage).skip(DependenciesPerPage * page)
+        const displayCursor = cursor.limit(dependenciesPerPage).skip(dependenciesPerPage * page)
 
         try {
             const requestsList = await displayCursor.toArray()
             const totalNumRequestsList = await dependencies.countDocuments(query)
 
-            return { requestsList, totalNumRequestsList }
+            return { dependenciesList, totalNumdependenciesList }
         } catch (e) {
             console.error(
                 `Unable to convert cursor to array or problem counting documents, ${e}`,
             )
-            return { requestsList: [], totalNumRequestsList: 0 }
+            return { dependenciesList: [], totalNumdependenciesList: 0 }
         }
     }
     static async postDependencies(StartCoursesname, EndCoursesname) {
@@ -74,7 +74,7 @@ export default class DependenciesDAO {
                 "StartCoursesname": { $eq: StartCoursesname },
                 "EndCoursesname": { $eq: EndCoursesname },
             }
-            return await requests.findOne(query)
+            return await dependecy.findOne(query)
         } catch (error) {
             console.error(`Unable to find request: ${e}`)
             return { error: e }
