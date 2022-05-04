@@ -8,7 +8,13 @@ class RequestDataService {
         return http.get(`requests?id=${id}`);
     }
     
-    
+    getAll(page = 0) {
+        return http.get(`requests?page=${page}`);
+    }
+
+    find(query, by, page = 0) {
+        return http.get(`requests?${by}=${query}&page=${page}`);
+    } 
 
     postRequest(data) {
         return http.post("/requests", data);

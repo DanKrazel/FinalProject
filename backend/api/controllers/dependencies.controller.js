@@ -13,8 +13,8 @@ export default class DependenciesController {
         const page = req.query.page ? parseInt(req.query.page, 10) : 0
 
         let filters = {}
-        if (req.query.DepensencieID) {
-            filters.DepensencieID = ObjectId(req.query.DepensencieID)
+        if (req.query._id) {
+            filters._id = ObjectId(req.query._id)
         } else if (req.query.StartCoursesname) {
             filters.StartCoursesname = req.query.StartCoursesname
         } else if (req.query.EndCoursesname) {
@@ -39,18 +39,14 @@ export default class DependenciesController {
 
     static async apiPostDependencies(req, res, next) {
         try {
-            const DepensencieID = ObjectId(req.body.DepensencieID)
             const StartCoursesname = req.body.StartCoursesname
             const EndCoursesname = req.body.EndCoursesname
-            const RequestsResponse = await DependenciesDAO.postDependencies(
-                DepensencieID,
+            const DependenciesResponse = await DependenciesDAO.postDependencies(
                 StartCoursesname,
                 EndCoursesname,
             )
-            console.log("RequestsResponse", RequestsResponse)
-            if (RequestsResponse) {
-                res.json({ status: "success" })
-            }
+            console.log("DependenciesResponse", DependenciesResponse)
+            res.json({ status: "success" })
         } catch (e) {
             res.status(500).json({ error: e.message })
         }

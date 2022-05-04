@@ -18,7 +18,7 @@ import RegisterUser from "./components/Admin/RegisterUser";
 import ViewRequests from "./components/Secretariat/viewRequests";
 import UploadCSVForProfessor from "./components/Secretariat/uploadCSVForProfessor";
 import StudentSendProf from "./components/Secretariat/studentSendProf";
-import UploadFiles from "./components/uploadFiles"
+import UploadFiles from "./components/Secretariat/uploadFiles"
 import dotenv from "dotenv"
 
 import jwt from"jsonwebtoken"

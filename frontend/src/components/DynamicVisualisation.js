@@ -1,18 +1,28 @@
 import React from 'react';
 import { useRef, useState } from 'react';
 import Select from 'react-select';
-import { Link } from 'react-router-dom'
+import { Link, useParams, useNavigate  } from 'react-router-dom'
 import DependenciesDataService from "../services/dependencieService"
 
 import { StyleSheet, View, Text, Button, TouchableOpacity } from 'react-native';
-var arrayCourses = ['חדו"א  - 1', 'אלגברה לינארית לתוכנה-ה', 'לוגיקה ונושאים דיסקרטיים I', 'I ארכיטקטורת מחשבים', 'מבוא למדעי המחשב', 'חדוא 2 להנדסת תוכנה',
+
+
+export default function App() {
+    const [selectedOption, setSelectedOption] = useState(null);
+    const [selectedOption2, setSelectedOption2] = useState(null);
+    console.log(selectedOption);
+    console.log(selectedOption2);
+
+    const params = useParams();
+
+    var arrayCourses = ['חדו"א  - 1', 'אלגברה לינארית לתוכנה-ה', 'לוגיקה ונושאים דיסקרטיים I', 'I ארכיטקטורת מחשבים', 'מבוא למדעי המחשב', 'חדוא 2 להנדסת תוכנה',
     'פיסיקה להנדסת תוכנה', 'לוגיקה ונושאים דיסקרטיים II', 'לוגיקה ונושאים דיסקרטיים II', 'תכנות מונחה עצמים', 'מבוא להסתברות וסטטיסטיקה', 'מבוא להסתברות וסטטיסטיקה',
     'יסודות הנדסת תוכנה', 'מבנה נתונים-ה', 'עקרונות שפות תוכנה', 'בדיקות ואיכות בהנדסת תוכנה', 'הנדסת דרישות וניתוח תוכנה', 'אנגלית מדוברת', 'אוטומטים ושפות פורמאליות',
     'אלגורתמים I', 'מבוא לתקשורת מחשבים', 'אנליזה נומרית', 'רשתות תקשורת מחשבים', 'אבטחת נתונים', 'עיבוד תמונה וראייה ממוחשבת', 'בטיחות תוכנה']
 
 
-const styles = StyleSheet.create({
-    parent: {
+    const styles = StyleSheet.create({
+        parent: {
         width: 300,
         height: 500,
         backgroundColor: 'red',
@@ -32,6 +42,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     }
 })
+
+
 /*
 const handleSendRequests = (event, index) => {
     event.preventDefault()
@@ -57,30 +69,30 @@ const handleSendRequests = (event, index) => {
 }
 */
 
-function PreorderDepedency(arrayCourses) {
-    const options = []
-    for (var i = 0; i < arrayCourses.length; i++) {
-        var dict = { value: null, label: arrayCourses[i] }
-        options.push(dict);
+    function PreorderDepedency(arrayCourses) {
+        const options = []
+        for (var i = 0; i < arrayCourses.length; i++) {
+            var dict = { value: null, label: arrayCourses[i] }
+            options.push(dict);
     }
-    return options
+        return options
 }
 
-function orderDepedency(options, selectedOption, selectedOption2) {
-    var Temp_selectedOption = selectedOption;
-    var Temp_selectedOption2 = selectedOption2
-    console.log(1);
-    console.log("orderDepedency");
-    console.log(Temp_selectedOption);
-    console.log(Temp_selectedOption2);
-    console.log("option-", options);
-    for (var i = 0; i < options.length; i++) {
-        if (options[i].label == Temp_selectedOption.label) {
-            console.log(1);
-            //console.log(options[i].value);
-            options[i].value = Temp_selectedOption2.label;
-            console.log(1);
-            console.log(options[i]);
+    function orderDepedency(options, selectedOption, selectedOption2) {
+        var Temp_selectedOption = selectedOption;
+        var Temp_selectedOption2 = selectedOption2
+        console.log(1);
+        console.log("orderDepedency");
+        console.log(Temp_selectedOption);
+        console.log(Temp_selectedOption2);
+        console.log("option-", options);
+        for (var i = 0; i < options.length; i++) {
+            if (options[i].label == Temp_selectedOption.label) {
+                console.log(1);
+                //console.log(options[i].value);
+                options[i].value = Temp_selectedOption2.label;
+                console.log(1);
+                console.log(options[i]);
 
         }
         else if (options[i].label == Temp_selectedOption2.label) {
@@ -96,19 +108,12 @@ function orderDepedency(options, selectedOption, selectedOption2) {
     console.log(options);
     return options
 }
-const createPost = (selectedOption, selectedOption2) => {
-    const options = PreorderDepedency(arrayCourses);
-    console.log("createPost - Post");
-    console.log(options);
-    orderDepedency(options, selectedOption, selectedOption2);
+    const createPost = (selectedOption, selectedOption2) => {
+        const options = PreorderDepedency(arrayCourses);
+        console.log("createPost - Post");
+        console.log(options);
+        orderDepedency(options, selectedOption, selectedOption2);
 }
-
-
-export default function App() {
-    const [selectedOption, setSelectedOption] = useState(null);
-    const [selectedOption2, setSelectedOption2] = useState(null);
-    console.log(selectedOption);
-    console.log(selectedOption2);
 
 
     return (
@@ -124,11 +129,16 @@ export default function App() {
                 onChange={setSelectedOption2}
                 options={PreorderDepedency(arrayCourses)} />
 
-        </div><div>
-                <button type="button" class="btn btn-primary btn-lg btn-block" onClick={() => createPost(selectedOption, selectedOption2)}>Upload</button>
+        </div>
+        <div>
+                <button type="button" class="btn btn-primary" onClick={() => createPost(selectedOption, selectedOption2)}>Upload
+                </button>
+                <Link to={"/studentsVisual/"+params.id} className="btn btn-primary">
+                    View student visualisation
+                </Link> 
+       </div></>
 
-
-            </div></>
+        
     );
 
 }

@@ -3,17 +3,17 @@ import { useParams, useNavigate  } from "react-router-dom";
 import { Redirect, useLocation } from 'react-router'
 import DataTable from 'react-data-table-component';
 import * as XLSX from 'xlsx';
-import CourseDataService from "../services/courseService"
-import StudentDataService from "../services/studentService"
-import RequestDataService from "../services/requestsService"
-import UserDataService from "../services/userService"
+import CourseDataService from "../../services/courseService"
+import StudentDataService from "../../services/studentService"
+import RequestDataService from "../../services/requestsService"
+import UserDataService from "../../services/userService"
 import { Link, Navigate } from "react-router-dom";
 import { fileURLToPath } from "url";
 import axios from 'axios';
 import { Helmet } from "react-helmet"
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
-import "../styles/uploadFiles.css";
+import "../../styles/uploadFiles.css";
 
 
 
@@ -83,6 +83,7 @@ const UploadFiles = props => {
   const retrieveRequests = () => {
     RequestDataService.getAll()
       .then(response => {
+        console.log(response.data)
         setRequests(response.data.requests); 
       })
       .catch(e => {

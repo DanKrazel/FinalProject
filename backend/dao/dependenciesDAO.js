@@ -4,11 +4,11 @@ let requests
 
 export default class DependenciesDAO {
     static async injectDB(conn) {
-        if (requests) {
+        if (dependencies) {
             return
         }
         try {
-            requests = await conn.db(process.env.RESTREVIEWS_NS).collection("dependencies")
+            dependencies = await conn.db(process.env.RESTREVIEWS_NS).collection("dependencies")
         } catch (e) {
             console.error(
                 `Unable to establish a collection handle in requestsDAO: ${e}`,
@@ -18,8 +18,8 @@ export default class DependenciesDAO {
     static async getDependencies({ filters = null, page = 0, DependenciesPerPage = 20 } = {}) {
         let query
         if (filters) {
-            if ("DepensencieID" in filters) {
-                query = { "DepensencieID": { $eq: filters["DepensencieID"] } }
+            if ("_id" in filters) {
+                query = { "_id": { $eq: filters["_id"] } }
             } else if ("StartCoursesname" in filters) {
                 query = { "StartCoursesname": { $eq: filters["StartCoursesname"] } }
             } else if ("EndCoursesname" in filters) {
@@ -30,7 +30,7 @@ export default class DependenciesDAO {
         let cursor
 
         try {
-            cursor = await requests.find(query)
+            cursor = await dependencies.find(query)
         } catch (e) {
             console.error(`Unable to issue find command, ${e}`)
             return { requestsList: [], totalNumRequestsList: 0 }
@@ -40,7 +40,7 @@ export default class DependenciesDAO {
 
         try {
             const requestsList = await displayCursor.toArray()
-            const totalNumRequestsList = await requests.countDocuments(query)
+            const totalNumRequestsList = await dependencies.countDocuments(query)
 
             return { requestsList, totalNumRequestsList }
         } catch (e) {
@@ -50,28 +50,27 @@ export default class DependenciesDAO {
             return { requestsList: [], totalNumRequestsList: 0 }
         }
     }
-    static async postDependencies(DepensencieID,StartCoursesname, EndCoursesname) {
+    static async postDependencies(StartCoursesname, EndCoursesname) {
         try {
-            const requestsDoc = {
-                DepensencieID: DepensencieID,
+            const dependenciesDoc = {
                 StartCoursesname: StartCoursesname,
                 EndCoursesname: EndCoursesname,
             }
-            return await requests.insertOne(requestsDoc)
+            return await dependencies.insertOne(dependenciesDoc)
         } catch (e) {
             console.error(`Unable to post request: ${e}`)
             return { error: e }
         }
     }
-    static async findDependencies(DepensencieID, StartCoursesname, EndCoursesname) {
+    static async findDependencies(id, StartCoursesname, EndCoursesname) {
         try {
             const requestsDoc = {
-                DepensencieID: DepensencieID,
+                id: id,
                 StartCoursesname: StartCoursesname,
                 EndCoursesname: EndCoursesname
             }
             let query = {
-                "DepensencieID": { $eq: DepensencieID },
+                "_id": { $eq: _id },
                 "StartCoursesname": { $eq: StartCoursesname },
                 "EndCoursesname": { $eq: EndCoursesname },
             }

@@ -232,8 +232,8 @@ const Downloadcsv = props => {
           />
           )}
 
-          <Link to={"/DynamicVisualisation/"+params.id} className="btn btn-primary">
-        View student visualisation
+      <Link to={"/DynamicVisualisation/"+params.id} className="btn btn-primary">
+        Add dependencies
       </Link>     
       <Link to={"/"} className="btn btn-primary">
         Return to previous page

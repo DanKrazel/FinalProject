@@ -50,18 +50,23 @@ const Student = props => {
     return new Promise((resolve) => setTimeout(resolve, time)
     )
   }
+
   const getStudent = (id) => {
     StudentDataService.findStudent(id)
       .then(response => {
-        response.data.average = Math.round((response.data.average / response.data.totalunits) * 100) / 100
-        setStudent(response.data);
-        console.log(response.data);
-        console.log("student", student)
+        StudentDataService.getCoursesByStudentName(response.data.name).then(response => {
+          console.log('response.data', response.data)
+          setStudent(response.data);
+        })
+        .catch(e => {
+          console.log(e);
+        });
       })
       .catch(e => {
         console.log(e);
       });
   };
+
   const getUnitsBySemester = (id) => {
     UnitsBySemesterDataService.findUnitsBySemester(id)
       .then(response => {
@@ -73,6 +78,7 @@ const Student = props => {
         console.log(e);
       });
   };
+
   const container = React.useRef(null);
   const pdfExportComponent = React.useRef(null);
   const exportPDFWithComponent = () => {

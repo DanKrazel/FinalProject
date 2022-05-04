@@ -5,7 +5,7 @@ import CoursesCtrl from "../controllers/course.controller.js"
 import UnitsBySemesterCtrl from "../controllers/unitsBySemester.controller.js"
 import FilesCtrl from "../controllers/files.controller.js"
 import RequestsCtrl from "../controllers/requests.controller.js"
-import DependenciesCtrl from "../controllers/depensencie.controller.js"
+import DependenciesCtrl from "../controllers/dependencies.controller.js"
 
 import upload from "../../middleware/upload.js"
 
@@ -43,7 +43,7 @@ router.route("/deleteAllRequests").delete(RequestsCtrl.apiDeleteAllRequests)
 
 
 router.route("/dependencies").get(DependenciesCtrl.apiGetDependencies)
-router.route("/dependencies").post(DependenciesCtrl.apiPostDependencies)
+                             .post(DependenciesCtrl.apiPostDependencies)
 
 
 router.route("/login").post(UsersCtrl.apiLogin)
