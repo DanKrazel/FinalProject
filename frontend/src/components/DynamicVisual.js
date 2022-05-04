@@ -41,6 +41,7 @@ const DynamicVisual = props => {
     getUnitsBySemester(params.id);
     updateTotalUnitForEachSemester();
 }, []);
+
   const updateTotalUnitForEachSemester = () => {
     for (let i = 0; i < unitsBySemester.length; i++) {
       if (unitsBySemester[i].yearOfLearning == 'א') {
@@ -71,22 +72,19 @@ const DynamicVisual = props => {
   const getStudent = (id) => {
     StudentDataService.findStudent(id)
       .then(response => {
-        response.data.average = Math.round((response.data.average / response.data.totalunits) * 100) / 100
-        console.log(response)
-        if (response.data.courses != null) {
-          response.data.courses = orderarray(response.data["courses"]);
+        StudentDataService.getCoursesByStudentName(response.data.name).then(response => {
+          console.log('response.data', response.data)
           setStudent(response.data);
-        }
-        else {
-          setStudent(response.data);
-        }
-        console.log(response.data);
-        console.log("student", student)
+        })
+        .catch(e => {
+          console.log(e);
+        });
       })
       .catch(e => {
         console.log(e);
       });
   };
+  
   const getUnitsBySemester = (id) => {
     UnitsBySemesterDataService.findUnitsBySemester(id)
       .then(response => {

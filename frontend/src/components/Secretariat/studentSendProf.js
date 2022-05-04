@@ -74,10 +74,13 @@ const StudentSendProf = props => {
   const getStudent = (id) => {
     StudentDataService.findStudent(id)
       .then(response => {
-        setStudent(response.data);
-
-        console.log(response.data);
-        console.log("student", student)
+        StudentDataService.getCoursesByStudentName(response.data.name).then(response => {
+          console.log('response.data', response.data)
+          setStudent(response.data);
+        })
+        .catch(e => {
+          console.log(e);
+        });
       })
       .catch(e => {
         console.log(e);
