@@ -231,6 +231,20 @@ export default class CoursesController {
       res.status(500).json({ error: e })
     }
   }
+
+  static async apiUploadDetailsCourses(req, res) {
+    try{
+      const CoursesResponse = await CoursesDAO.uploadDetailsCourses(
+        req.file.path, 
+        )
+      console.log("CoursesResponse:", CoursesResponse)
+      res.json({ status: "success" })
+    } catch (e) {
+      console.log("heybackend")
+      console.log(`api, ${e}`)
+      res.status(500).json({ error: e })
+    }
+  }
   
 
 }

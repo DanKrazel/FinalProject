@@ -7,6 +7,7 @@ import CourseDataService from "../../services/courseService"
 import StudentDataService from "../../services/studentService"
 import RequestDataService from "../../services/requestsService"
 import UserDataService from "../../services/userService"
+import CourseDetailsDataService from "../../services/courseDetailsService"
 import { Link, Navigate } from "react-router-dom";
 import { fileURLToPath } from "url";
 import axios from 'axios';
@@ -33,9 +34,8 @@ const UploadFiles = props => {
   const [columnsCourses, setColumnsCourses] = useState([]);
   const [data, setData] = useState([]);
   const [courses, setCourses] = useState([]);
+  const [coursesDetails, setCoursesDetails] = useState([]);
   const [CsvReport, setCsvReport] = useState([])
-  const fileInputCourses = React.createRef();
-  const fileInputStudents = React.createRef();
   const [selectedFile, setSelectedFile] = useState()
   const [submitted, setSubmitted] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -49,7 +49,9 @@ const UploadFiles = props => {
   const [content, setContent] = useState(null);
   const [requests, setRequests] = useState([]);
 
-
+  const fileInputCourses = React.createRef();
+  const fileInputCoursesDetails = React.createRef();
+  const fileInputStudents = React.createRef();
 
 
 
@@ -62,6 +64,7 @@ const UploadFiles = props => {
     retrieveCourses();
     retrieveStudents();
     retrieveRequests();
+    retrieveCoursesDetails();
     //customUploadFiles();
   }, [refreshKey]);
 
@@ -96,6 +99,17 @@ const UploadFiles = props => {
       .then(response => {
         console.log(response.data);
         setCourses(response.data.courses); 
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
+
+  const retrieveCoursesDetails = () => {
+    CourseDetailsDataService.getAll()
+      .then(response => {
+        console.log('Courses details', response.data);
+        setCoursesDetails(response.data.coursesDetails); 
       })
       .catch(e => {
         console.log(e);
@@ -203,7 +217,7 @@ const UploadFiles = props => {
   }*/
 
   // handle click event of the upload button
-  const handleOnSubmit = e => {
+  const handlePostCoursesForStudent = e => {
     e.preventDefault();
     const formData = new FormData()
     formData.append('file',fileInputCourses.current.files[0])
@@ -212,17 +226,6 @@ const UploadFiles = props => {
       file: fileInputCourses.current.files[0],
     };
     console.log("fileInputCourses.current.files",data.file)
-    // if(courses.length != 0){
-    //   params.average=0;
-    //   CourseDataService.deleteCourseByStudentID(params.id)
-    //   .then(response => {
-    //     console.log(response.data);
-    //   })
-    //   alert(
-    //     `CSV file was deleted`
-    //   );
-    //   setRefreshKey(oldKey => oldKey +1)
-    // }
     if(courses.length != 0){
       CourseDataService.deleteAllCourses()
       .then(response => {
@@ -253,14 +256,48 @@ const UploadFiles = props => {
         )
       }
 
-    //setSubmitted(true);
-    //let navigate = useNavigate();
     console.log(submitted)
 
     }
   }
 
-    const handlePostStudentsOnSubmit = e => {
+  const handlePostCoursesDetails = e => {
+    e.preventDefault();
+    const formData = new FormData()
+    formData.append('file',fileInputCoursesDetails.current.files[0])
+    var data = {
+      file: fileInputCoursesDetails.current.files[0],
+    };
+    if(coursesDetails.length != 0){
+      CourseDetailsDataService.deleteAllCoursesDetails()
+      .then(response => {
+        console.log(response.data);
+      })
+      alert(
+        `All courses was deleted`
+      );
+      setRefreshKey(oldKey => oldKey +1)
+    }
+    else{
+      if(data.file){
+        CourseDetailsDataService.uploadDetailsCourses(formData)
+        .then(response => {
+          console.log('response upload details courses', response.data);
+        })
+        alert(
+          `Selected file - ${data.file.name} was uploaded`
+        );
+        setRefreshKey(oldKey => oldKey +1)
+        }
+      else{
+        alert(
+          'Selected file - None, choose a file to upload'
+        )
+      }
+    }
+  }
+
+    const handlePostStudents = e => {
       e.preventDefault();
       const formData = new FormData()
       formData.append('file',fileInputStudents.current.files[0])
@@ -298,6 +335,20 @@ const UploadFiles = props => {
           `CSV file was deleted`
         );
         setRefreshKey(oldKey => oldKey +1)
+    }
+
+    const deleteAllCoursesDetails = () => {
+      CourseDetailsDataService.deleteAllCoursesDetails()
+        .then(response => {
+          console.log('deleteAllCourse',response)
+          alert(
+            `CSV file was deleted`
+          );
+          setRefreshKey(oldKey => oldKey +1)
+        })
+        .catch(e => {
+          console.log(e);
+        });
     }
 
     // async function handlePDfCourse (e) {
@@ -355,7 +406,7 @@ const UploadFiles = props => {
     <div>
       <h3>Upload files</h3>
     <div >
-    <form onSubmit={handleOnSubmit} encType='multipart/form-data'>
+    <form onSubmit={handlePostCoursesForStudent} encType='multipart/form-data'>
     <div class="input-group mb-3">
     <input
         type="file"
@@ -381,6 +432,48 @@ const UploadFiles = props => {
         // />
         <button type="submit" className="btn btn-primary" for="myFileCourses">
             Upload courses file
+        </button>
+      )}
+    </div>
+
+    
+    {/* <DataTable
+        pagination
+        highlightOnHover
+        columns={columnsCourses}
+        data={data}
+      /> */}
+    </form>  
+    </div>
+
+    {/* Upload course details */}
+    <div>
+    <form onSubmit={handlePostCoursesDetails} encType='multipart/form-data'>
+    <div class="input-group mb-3">
+    <input
+        type="file"
+        accept=".csv,.xlsx,.xls,.xml"
+        data-allowed-file-extensions='["csv","xlsx", "xml", "xls"]'
+        class="form-control"
+        ref={fileInputCoursesDetails}
+        id="myFileCourses"
+        onChange={handleFileUpload}
+      />
+      { coursesDetails.length != 0 ? (
+      <button type="submit" className="btn btn-primary" for="myFileCourses">
+        Reset courses details file
+      </button>
+      ):(
+        // <input
+        // className="btn btn-primary" 
+        // type="submit"
+        // value="Upload csv file"
+        //   //onClick={redirect}
+        //   //onClick={() => setSubmitted(!submitted)}
+        //   //onChange={navigate(`/students/${params.id}`)}
+        // />
+        <button type="submit" className="btn btn-primary" for="myFileCourses">
+            Upload courses details file
         </button>
       )}
     </div>
@@ -457,7 +550,7 @@ const UploadFiles = props => {
         //   //onClick={() => setSubmitted(!submitted)}
         //   //onChange={navigate(`/students/${params.id}`)}
         // />
-        <button type="submit" className="btn btn-primary" for="myFileStudents" onClick={handlePostStudentsOnSubmit}>
+        <button type="submit" className="btn btn-primary" for="myFileStudents" onClick={handlePostStudents}>
             Upload students file
           </button>
       )} 

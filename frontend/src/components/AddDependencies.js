@@ -112,7 +112,7 @@ const AddDependencies = () => {
         //getRequestSent(dataRequest)
         DependenciesDataService.postDependency(dataDependecy)
             .then(response => {
-                console.log("postDependecy", response)
+                console.log(response.data)
                 setRefreshKey(oldKey => oldKey + 1)
             })
             .catch(error => {
