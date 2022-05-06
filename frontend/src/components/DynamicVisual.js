@@ -10,6 +10,7 @@ import Xarrow, { useXarrow, Xwrapper } from 'react-xarrows';
 import { ReactComponent as HeadSvg } from "../assets/arrowHead-resize.svg";
 import DependenciesDataService from "../services/dependencieService"
 import CourseDataService from "../services/courseService"
+import CourseDetailsDataService from "../services/courseDetailsService"
 
 const DynamicVisual = props => {
   var arrayCourses = ['חדו"א  - 1', 'אלגברה לינארית לתוכנה-ה', 'לוגיקה ונושאים דיסקרטיים I', 'I ארכיטקטורת מחשבים', 'מבוא למדעי המחשב', 'חדוא 2 להנדסת תוכנה',
@@ -30,6 +31,7 @@ const DynamicVisual = props => {
   const [dependencies, setDependencies]= useState([]);
   
   const [student, setStudent] = useState(initialStudentState);
+  const [coursesDetails, setCoursesDetails] = useState([])
   const [unitsBySemester, setUnitsBySemester] = useState([])
   var countUnitSemesters = 0;
   const pdfExportComponent = React.useRef(null);
@@ -37,6 +39,7 @@ const DynamicVisual = props => {
 
   useEffect(() => {
     retrieveDependencies();
+    retrieveCoursesDetails();
     console.log("useEffect student")
     getStudent(params.id);
     getUnitsBySemester(params.id);
@@ -75,6 +78,7 @@ const DynamicVisual = props => {
       .then(responseStudent => {
           CourseDataService.getCoursesDetailsByCodeCourse(responseStudent.data.name).then(responseDetails => {
             responseStudent.data.courses = responseDetails.data
+            console.log('responseStudent.data', responseStudent.data)
             setStudent(responseStudent.data);
           })
           .catch(e => {
@@ -85,6 +89,19 @@ const DynamicVisual = props => {
         console.log(e);
       });
   };
+
+  const retrieveCoursesDetails = () => {
+    CourseDetailsDataService.getAll()
+      .then(response => {
+        console.log("responseDetails",response.data.coursesDetails)
+        setCoursesDetails(response.data.coursesDetails)
+        })
+      .catch(e => {
+        console.log(e);
+      });
+  };
+
+
   
   const getUnitsBySemester = (id) => {
     UnitsBySemesterDataService.findUnitsBySemester(id)
