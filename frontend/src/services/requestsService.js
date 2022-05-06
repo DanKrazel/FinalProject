@@ -33,7 +33,7 @@ class RequestDataService {
     }
 
     retrieveStudentByRequest() {
-        return http.get('/retrievInfoByRequest')
+        return http.get('/retrieveInfoByRequest')
     }
 
     deleteAllRequests(){

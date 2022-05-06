@@ -426,4 +426,49 @@ export default class CoursesDAO {
       fs.unlinkSync(filePath);
   }
       
+  static async getCoursesDetails(studentName) {
+    try {
+      const pipeline = [
+        {
+            $match: {
+              // codeCourse: codeCourse,
+              studentName: studentName
+            },
+        },
+        {
+          $lookup: {
+              from: "coursesDetails",
+              let: {
+                codeCourse: "$codeCourse",
+              },
+              pipeline: [
+                  {
+                      $match: {
+                          $expr: {
+                              $eq: ["$codeCourse", "$$codeCourse"],
+                          },
+                      },
+                  },
+                  {
+                      $sort: {
+                          date: -1,
+                      },
+                  },
+              ],
+              as: "coursesDetails",
+          },
+      },
+      {
+          $addFields: {
+            coursesDetails: "$coursesDetails",
+          },
+      },
+          ]
+      return await courses.aggregate(pipeline).toArray()
+    } catch (e) {
+      console.error(`Something went wrong in getCoursesDetails: ${e}`)
+      throw e
+    }
+  }
+
 }

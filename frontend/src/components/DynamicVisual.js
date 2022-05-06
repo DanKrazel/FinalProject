@@ -9,6 +9,7 @@ import "../App.css";
 import Xarrow, { useXarrow, Xwrapper } from 'react-xarrows';
 import { ReactComponent as HeadSvg } from "../assets/arrowHead-resize.svg";
 import DependenciesDataService from "../services/dependencieService"
+import CourseDataService from "../services/courseService"
 
 const DynamicVisual = props => {
   var arrayCourses = ['חדו"א  - 1', 'אלגברה לינארית לתוכנה-ה', 'לוגיקה ונושאים דיסקרטיים I', 'I ארכיטקטורת מחשבים', 'מבוא למדעי המחשב', 'חדוא 2 להנדסת תוכנה',
@@ -71,15 +72,15 @@ const DynamicVisual = props => {
 
   const getStudent = (id) => {
     StudentDataService.findStudent(id)
-      .then(response => {
-        StudentDataService.getCoursesByStudentName(response.data.name).then(response => {
-          console.log('response.data', response.data)
-          setStudent(response.data);
+      .then(responseStudent => {
+          CourseDataService.getCoursesDetailsByCodeCourse(responseStudent.data.name).then(responseDetails => {
+            responseStudent.data.courses = responseDetails.data
+            setStudent(responseStudent.data);
+          })
+          .catch(e => {
+            console.log(e);
+          });
         })
-        .catch(e => {
-          console.log(e);
-        });
-      })
       .catch(e => {
         console.log(e);
       });
@@ -124,7 +125,7 @@ const DynamicVisual = props => {
   const retrieveDependencies = () => {
     DependenciesDataService.getAll()
       .then(response => {
-        console.log(response.data);
+        console.log("responseDependencies", response.data);
         setDependencies(response.data.dependencies);
         console.log("Dependency", dependencies);
       })

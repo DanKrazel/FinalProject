@@ -53,6 +53,10 @@ class CourseDataService {
     deleteAllCourses(){
         return http.delete('/deleteAllCourses')
     }
+
+    getCoursesDetailsByCodeCourse(studentName) {
+        return http.get(`/getCoursesDetails?studentName=${studentName}`);
+    }
  
     
 }

@@ -246,5 +246,20 @@ export default class CoursesController {
     }
   }
   
+  static async apiGetCoursesDetail(req, res, next){
+    try {
+      //let codeCourse = req.query.codeCourse
+      let studentName = req.query.studentName
+      let courses = await CoursesDAO.getCoursesDetails(studentName)
+      if (!courses) {
+        res.status(404).json({ error: "Not found" })
+        return
+      }
+      res.json(courses)
+    } catch (e) {
+      console.log(`api, ${e}`)
+      res.status(500).json({ error: e })
+    }
+  }
 
 }

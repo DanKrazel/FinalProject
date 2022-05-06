@@ -39,8 +39,8 @@ export default class DependenciesDAO {
         const displayCursor = cursor.limit(dependenciesPerPage).skip(dependenciesPerPage * page)
 
         try {
-            const requestsList = await displayCursor.toArray()
-            const totalNumRequestsList = await dependencies.countDocuments(query)
+            const dependenciesList = await displayCursor.toArray()
+            const totalNumdependenciesList = await dependencies.countDocuments(query)
 
             return { dependenciesList, totalNumdependenciesList }
         } catch (e) {
