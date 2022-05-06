@@ -1,15 +1,14 @@
 import mongodb from "mongodb"
 const ObjectId = mongodb.ObjectId
-let dependecy
+let dependencies
 
 export default class DependenciesDAO {
     static async injectDB(conn) {
-        if (dependecy) {
+        if (dependencies) {
             return
         }
         try {
-            dependecy = await conn.db(process.env.RESTREVIEWS_NS).collection("dependencies")
-            console.log("dependencies");
+            dependencies = await conn.db(process.env.RESTREVIEWS_NS).collection("dependencies")
         } catch (e) {
             console.error(
                 `Unable to establish a collection handle in dependencies: ${e}`,
@@ -31,7 +30,7 @@ export default class DependenciesDAO {
         let cursor
 
         try {
-            cursor = await dependecy.find(query)
+            cursor = await dependencies.find(query)
         } catch (e) {
             console.error(`Unable to issue find command, ${e}`)
             return { dependenciesList: [], totalNumdependenciesList: 0 }
@@ -41,7 +40,7 @@ export default class DependenciesDAO {
 
         try {
             const dependenciesList = await displayCursor.toArray()
-            const totalNumdependenciesList = await dependecy.countDocuments(query)
+            const totalNumdependenciesList = await dependencies.countDocuments(query)
 
             return { dependenciesList, totalNumdependenciesList }
         } catch (e) {
@@ -51,25 +50,27 @@ export default class DependenciesDAO {
             return { dependenciesList: [], totalNumdependenciesList: 0 }
         }
     }
-    static async postDependencies(DependencyID,StartCoursesname, EndCoursesname) {
+    static async postDependencies(StartCoursesname, EndCoursesname) {
         try {
-            const requestsDoc = {
+            const dependenciesDoc = {
                 StartCoursesname: StartCoursesname,
                 EndCoursesname: EndCoursesname,
             }
-            return await dependecy.insertOne(requestsDoc)
+            return await dependencies.insertOne(dependenciesDoc)
         } catch (e) {
             console.error(`Unable to post request: ${e}`)
             return { error: e }
         }
     }
-    static async findDependencies( StartCoursesname, EndCoursesname) {
+    static async findDependencies(id, StartCoursesname, EndCoursesname) {
         try {
             const requestsDoc = {
+                id: id,
                 StartCoursesname: StartCoursesname,
                 EndCoursesname: EndCoursesname
             }
             let query = {
+                "_id": { $eq: _id },
                 "StartCoursesname": { $eq: StartCoursesname },
                 "EndCoursesname": { $eq: EndCoursesname },
             }

@@ -387,5 +387,88 @@ export default class CoursesDAO {
       }
       fs.unlinkSync(filePath);
   }
+
+  static async uploadDetailsCourses (filePath) {
+      console.log(filePath)
+      const workBook = XLSX.readFile(filePath);
+      XLSX.writeFile(workBook, filePath, { bookType: "csv" });
+      csvtojson()    
+      .fromString(filePath)
+      .then(source => {
+        // Fetching the all data from each row
+        for (var j = 0; j < source.length; j++) {
+          if(source[j]["קוד קורס"] != "תשפב" && source[j]["קוד קורס"] != "קוד קורס" ){
+          var oneRow = {
+            codeCourse: source[j]["קוד קורס"],
+            courseName: source[j]["שם קורס"],
+            yearOfLearning: source[j]["שנה"],
+            semesterOfLearning: source[j]["סמס"],          
+          };
+          //console.log(oneRow)
+          
+          arrayToInsert.push(oneRow);
+        }
+      }
+        courses.insertMany(arrayToInsert,{ordered:false},(err, result) => {
+          if (err){
+            console.log(err);
+            //fs.unlinkSync(filePath);
+          }
+          if(result){
+              console.log(result)
+              console.log("Import CSV into database successfully.");
+          }
+         //inserting into the table "courses"    
+        });
+        //console.log(arrayToInsert)
+         });
+
+      fs.unlinkSync(filePath);
+  }
       
+  static async getCoursesDetails(studentName) {
+    try {
+      const pipeline = [
+        {
+            $match: {
+              // codeCourse: codeCourse,
+              studentName: studentName
+            },
+        },
+        {
+          $lookup: {
+              from: "coursesDetails",
+              let: {
+                codeCourse: "$codeCourse",
+              },
+              pipeline: [
+                  {
+                      $match: {
+                          $expr: {
+                              $eq: ["$codeCourse", "$$codeCourse"],
+                          },
+                      },
+                  },
+                  {
+                      $sort: {
+                          date: -1,
+                      },
+                  },
+              ],
+              as: "coursesDetails",
+          },
+      },
+      {
+          $addFields: {
+            coursesDetails: "$coursesDetails",
+          },
+      },
+          ]
+      return await courses.aggregate(pipeline).toArray()
+    } catch (e) {
+      console.error(`Something went wrong in getCoursesDetails: ${e}`)
+      throw e
+    }
+  }
+
 }

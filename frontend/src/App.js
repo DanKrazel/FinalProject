@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import AddStudent from "./components/add-student";
 import Student from "./components/students";
 import StudentVisual from "./components/studentsVisual";
-import DynamicVisualisation from "./components/DynamicVisualisation";
+import AddDependencies from "./components/AddDependencies";
 import DynamicVisual from "./components/DynamicVisual";
 import StudentsList from "./components/students-list";
 import Profil from "./components/profil"
@@ -18,7 +18,7 @@ import RegisterUser from "./components/Admin/RegisterUser";
 import ViewRequests from "./components/Secretariat/viewRequests";
 import UploadCSVForProfessor from "./components/Secretariat/uploadCSVForProfessor";
 import StudentSendProf from "./components/Secretariat/studentSendProf";
-import UploadFiles from "./components/uploadFiles"
+import UploadFiles from "./components/Secretariat/uploadFiles"
 import dotenv from "dotenv"
 
 import jwt from"jsonwebtoken"
@@ -160,8 +160,8 @@ function App() {
             element={<StudentVisual user={currentUser}/> }
         />
           <Route
-            path="/DynamicVisualisation/:id"
-            element={<DynamicVisualisation user={currentUser} />}
+            path="/AddDependencies/:id"
+            element={<AddDependencies user={currentUser} />}
           />
           <Route
             path="/DynamicVisual/:id"

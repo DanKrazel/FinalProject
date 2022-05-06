@@ -231,6 +231,35 @@ export default class CoursesController {
       res.status(500).json({ error: e })
     }
   }
+
+  static async apiUploadDetailsCourses(req, res) {
+    try{
+      const CoursesResponse = await CoursesDAO.uploadDetailsCourses(
+        req.file.path, 
+        )
+      console.log("CoursesResponse:", CoursesResponse)
+      res.json({ status: "success" })
+    } catch (e) {
+      console.log("heybackend")
+      console.log(`api, ${e}`)
+      res.status(500).json({ error: e })
+    }
+  }
   
+  static async apiGetCoursesDetail(req, res, next){
+    try {
+      //let codeCourse = req.query.codeCourse
+      let studentName = req.query.studentName
+      let courses = await CoursesDAO.getCoursesDetails(studentName)
+      if (!courses) {
+        res.status(404).json({ error: "Not found" })
+        return
+      }
+      res.json(courses)
+    } catch (e) {
+      console.log(`api, ${e}`)
+      res.status(500).json({ error: e })
+    }
+  }
 
 }

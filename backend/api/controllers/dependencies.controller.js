@@ -3,8 +3,6 @@ import mongodb from "mongodb"
 const ObjectId = mongodb.ObjectId
 
 
-
-
 export default class DependenciesController {
 
     static async apiGetDependencies(req, res, next) {
@@ -42,18 +40,14 @@ export default class DependenciesController {
     static async apiPostDependencies(req, res, next) {
         console.log("apiPostDependencies");
         try {
-            const DepensencieID = ObjectId(req.body.DepensencieID)
             const StartCoursesname = req.body.StartCoursesname
             const EndCoursesname = req.body.EndCoursesname
-            const RequestsResponse = await DependenciesDAO.postDependencies(
-                DepensencieID,
+            const DependenciesResponse = await DependenciesDAO.postDependencies(
                 StartCoursesname,
                 EndCoursesname,
             )
-            console.log("RequestsResponse", RequestsResponse)
-            if (RequestsResponse) {
-                res.json({ status: "success" })
-            }
+            console.log("DependenciesResponse", DependenciesResponse)
+            res.json({ status: "success" })
         } catch (e) {
             res.status(500).json({ error: e.message })
         }

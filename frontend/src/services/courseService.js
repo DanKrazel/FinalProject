@@ -29,6 +29,7 @@ class CourseDataService {
         return http.post('/uploadCoursesAllStudents', data);
     }
 
+
     // uploadFile(data, id){
     //     return http.post(`/uploadFile/${id}`, data);
     // }
@@ -51,6 +52,10 @@ class CourseDataService {
 
     deleteAllCourses(){
         return http.delete('/deleteAllCourses')
+    }
+
+    getCoursesDetailsByCodeCourse(studentName) {
+        return http.get(`/getCoursesDetails?studentName=${studentName}`);
     }
  
     

@@ -15,6 +15,7 @@ import Draggable from 'react-draggable';
 import { ReactComponent as TailSvg } from "../assets/redcross-resize.svg";
 import { ReactComponent as HeadSvg } from "../assets/arrowHead-resize.svg";
 import StudentsList from "./students-list";
+import Student from "./students";
 const StudentVisual = props => {
   const params = useParams();
   var countUnitSemesters = 0;
@@ -39,35 +40,47 @@ const StudentVisual = props => {
   const [student, setStudent] = useState(initialStudentState);
   const [unitsBySemester, setUnitsBySemester] = useState([])
   const [idCourse, setIdCourse] = useState()
+
   useEffect(() => {
     console.log("useEffect student")
     getStudent(params.id);
     getUnitsBySemester(params.id);
     updateTotalUnitForEachSemester();
   }, []);
+
+
   function sleep(time) {
     return new Promise((resolve) => setTimeout(resolve, time)
     )
   }
+
   const getStudent = (id) => {
     StudentDataService.findStudent(id)
       .then(response => {
-        response.data.average = Math.round((response.data.average / response.data.totalunits) * 100) / 100
-        console.log(response)
-        if (response.data.courses != null) {
-          //response.data.courses = orderarray(response.data["courses"]);
+        // response.data.average = Math.round((response.data.average / response.data.totalunits) * 100) / 100
+        // console.log(response)
+        // if (response.data.courses != null) {
+        //   response.data.courses = orderarray(response.data["courses"]);
+        //   setStudent(response.data);
+        // }
+        // else {
+        //   setStudent(response.data);
+        // }
+        // console.log(response.data);
+        // console.log("student", student)
+        StudentDataService.getCoursesByStudentName(response.data.name).then(response => {
+          console.log('response.data', response.data)
           setStudent(response.data);
-        }
-        else {
-          setStudent(response.data);
-        }
-        console.log(response.data);
-        console.log("student", student)
+        })
+        .catch(e => {
+          console.log(e);
+        });
       })
       .catch(e => {
         console.log(e);
       });
   };
+
   const getUnitsBySemester = (id) => {
     UnitsBySemesterDataService.findUnitsBySemester(id)
       .then(response => {
@@ -79,18 +92,21 @@ const StudentVisual = props => {
         console.log(e);
       });
   };
+
   function courseChoicearray(courses, coursesChoice) {
     if (courses.find(({ courseName }) => courseName === 'עיבוד תמונה וראייה ממוחשבת')) {
       coursesChoice.push(courses.find(({ courseName }) => courseName === 'עיבוד תמונה וראייה ממוחשבת'));
     }
     return coursesChoice;
   }
+
   function courseGeneralarray(courses, coursesChoice) {
     if (courses.find(({ courseName }) => courseName === 'טניס')) {
       coursesChoice.push(courses.find(({ courseName }) => courseName === 'טניס'));
     }
     return coursesChoice;
   }
+
   function orderarray(courses) {
     var arrayToInserttemp = [];
     var k = 0;
@@ -192,6 +208,7 @@ const StudentVisual = props => {
       pdfExportComponent.current.save();
     }
   }
+  
   const updateTotalUnitForEachSemester = () => {
     for (let i = 0; i < unitsBySemester.length; i++) {
       if (unitsBySemester[i].yearOfLearning == 'א') {
@@ -238,21 +255,13 @@ const StudentVisual = props => {
     //<form onSubmit={deleteCourseByStudentID(params.id)}>
     <div>
       <div className="example-config">
-        <button className="k-button" onClick={exportPDFWithComponent}>
+        <button className="btn btn-secondary" onClick={exportPDFWithComponent}>
           Export PDF
         </button>
-        &nbsp;
-        <button className="k-button" onClick={exportPDFWithComponent}>
-          Send PDF to verification
-        </button>
-        <button className="k-button" onClick={exportPDFWithComponent}>
-          Save PDF to Blockchain
-        </button>
-        
-        <button class="position-absolute top-right" onClick={() => navigate(-1)} >
+        &nbsp;      
+        <button class="btn btn-secondary" onClick={() => navigate(-1)} >
           Return to previous page
         </button>
-        <button className="k-button" onClick={exportPDFWithComponent}></button>
       </div>
       <div>
         <PDFExport ref={pdfExportComponent} paperSize="auto" margin={40} fileName={`Report for ${new Date().getFullYear()}`} author="KendoReact Team">

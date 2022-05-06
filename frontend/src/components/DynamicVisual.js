@@ -9,6 +9,7 @@ import "../App.css";
 import Xarrow, { useXarrow, Xwrapper } from 'react-xarrows';
 import { ReactComponent as HeadSvg } from "../assets/arrowHead-resize.svg";
 import DependenciesDataService from "../services/dependencieService"
+import CourseDataService from "../services/courseService"
 
 const DynamicVisual = props => {
   var arrayCourses = ['חדו"א  - 1', 'אלגברה לינארית לתוכנה-ה', 'לוגיקה ונושאים דיסקרטיים I', 'I ארכיטקטורת מחשבים', 'מבוא למדעי המחשב', 'חדוא 2 להנדסת תוכנה',
@@ -41,6 +42,7 @@ const DynamicVisual = props => {
     getUnitsBySemester(params.id);
     updateTotalUnitForEachSemester();
 }, []);
+
   const updateTotalUnitForEachSemester = () => {
     for (let i = 0; i < unitsBySemester.length; i++) {
       if (unitsBySemester[i].yearOfLearning == 'א') {
@@ -70,23 +72,20 @@ const DynamicVisual = props => {
 
   const getStudent = (id) => {
     StudentDataService.findStudent(id)
-      .then(response => {
-        response.data.average = Math.round((response.data.average / response.data.totalunits) * 100) / 100
-        console.log(response)
-        if (response.data.courses != null) {
-          response.data.courses = orderarray(response.data["courses"]);
-          setStudent(response.data);
-        }
-        else {
-          setStudent(response.data);
-        }
-        console.log(response.data);
-        console.log("student", student)
-      })
+      .then(responseStudent => {
+          CourseDataService.getCoursesDetailsByCodeCourse(responseStudent.data.name).then(responseDetails => {
+            responseStudent.data.courses = responseDetails.data
+            setStudent(responseStudent.data);
+          })
+          .catch(e => {
+            console.log(e);
+          });
+        })
       .catch(e => {
         console.log(e);
       });
   };
+  
   const getUnitsBySemester = (id) => {
     UnitsBySemesterDataService.findUnitsBySemester(id)
       .then(response => {
@@ -126,7 +125,7 @@ const DynamicVisual = props => {
   const retrieveDependencies = () => {
     DependenciesDataService.getAll()
       .then(response => {
-        console.log(response.data);
+        console.log("responseDependencies", response.data);
         setDependencies(response.data.dependencies);
         console.log("Dependency", dependencies);
       })

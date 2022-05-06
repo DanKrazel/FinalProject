@@ -7,6 +7,15 @@ class RequestDataService {
     get(id) {
         return http.get(`requests?id=${id}`);
     }
+    
+    getAll(page = 0) {
+        return http.get(`requests?page=${page}`);
+    }
+
+    find(query, by, page = 0) {
+        return http.get(`requests?${by}=${query}&page=${page}`);
+    } 
+
     postRequest(data) {
         return http.post("/requests", data);
     }
@@ -24,7 +33,7 @@ class RequestDataService {
     }
 
     retrieveStudentByRequest() {
-        return http.get('/retrievInfoByRequest')
+        return http.get('/retrieveInfoByRequest')
     }
 
     deleteAllRequests(){

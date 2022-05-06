@@ -5,7 +5,8 @@ import CoursesCtrl from "../controllers/course.controller.js"
 import UnitsBySemesterCtrl from "../controllers/unitsBySemester.controller.js"
 import FilesCtrl from "../controllers/files.controller.js"
 import RequestsCtrl from "../controllers/requests.controller.js"
-import DependenciesCtrl from "../controllers/dependencie.controller.js"
+import DependenciesCtrl from "../controllers/dependencies.controller.js"
+import CourseDetailsCtrl from "../controllers/coursesDetails.controller.js"
 
 import upload from "../../middleware/upload.js"
 
@@ -36,12 +37,12 @@ router.route("/requests").post(RequestsCtrl.apiPostRequest)
 //router.route("/requests/:id").delete(RequestsCtrl.apiDeleteRequestBystudentID)
 router.route("/requests/:id").delete(RequestsCtrl.apiDeleteRequestBystudentID)
 router.route("/requestSent").get(RequestsCtrl.apiGetRequestSent)
-router.route("/retrievInfoByRequest").get(RequestsCtrl.apiRetrieveinfoByRequest)
+router.route("/retrieveInfoByRequest").get(RequestsCtrl.apiRetrieveinfoByRequest)
 router.route("/deleteAllRequests").delete(RequestsCtrl.apiDeleteAllRequests)
 
 
 router.route("/dependencies").get(DependenciesCtrl.apiGetDependencies)
-router.route("/dependencies").post(DependenciesCtrl.apiPostDependencies)
+                             .post(DependenciesCtrl.apiPostDependencies)
 
 router.route("/login").post(UsersCtrl.apiLogin)
 router.route("/signup").post(UsersCtrl.apiCheckDuplicateUsernameOrMail, UsersCtrl.apiSignup)
@@ -62,12 +63,23 @@ router.route("/professor").get(UsersCtrl.apiVerifyToken,
 router.route("/names").get(StudentsCtrl.apiGetStudentName)
 router.route("/getCoursesStudent/:id").get(StudentsCtrl.apiGetCoursesStudentByID)
 router.route("/deleteAllCourses").delete(CoursesCtrl.apiDeleteAllCourses)
-router.route("/getCoursesByStudentName").get(StudentsCtrl.apiGetCoursesByStudentName)
+router.route("/getCoursesByStudentName").get(StudentsCtrl.apiGetCoursesByStudentName)                             
+router.route("/uploadCourses/:id").post(upload.single('file'),CoursesCtrl.apiUploadCourses)
+router.route("/uploadCoursesAllStudents").post(upload.single('file'),CoursesCtrl.apiUploadCoursesAllStudents)
+router.route("/getCoursesDetails").get(CoursesCtrl.apiGetCoursesDetail)
 router.route("/course").post(CoursesCtrl.apiPostCourse)
                        .put(CoursesCtrl.apiUpdateCourse)
                        .delete(CoursesCtrl.apiDeleteCourse)
                        .get(CoursesCtrl.apiGetCourses)
 
+
+
+router.route("/uploadDetailsCourses").post(upload.single('file'),CourseDetailsCtrl.apiUploadDetailsCourses)
+router.route("/deleteAllCoursesDetails").delete(CourseDetailsCtrl.apiDeleteAllCoursesDetails)
+router.route("/courseDetails").post(CourseDetailsCtrl.apiPostCourseDetails)
+                              .put(CourseDetailsCtrl.apiUpdateCourse)
+                              .delete(CourseDetailsCtrl.apiDeleteCourseDetails)
+                              .get(CourseDetailsCtrl.apiGetCoursesDetails)
 
 
 
@@ -77,10 +89,6 @@ router.route("/course/:id").delete(CoursesCtrl.apiDeleteCourseBystudentID)
 router.route("/unitsBySemester").get(UnitsBySemesterCtrl.apiGetUnitsBySemester)
                                 .put(UnitsBySemesterCtrl.apiUpdateUnitsSemesters)
 router.route("/unitsBySemester/:id").delete(UnitsBySemesterCtrl.apiDeleteUnitsBySemesterStudentID)
-                                    
-router.route("/uploadCourses/:id").post(upload.single('file'),CoursesCtrl.apiUploadCourses)
-router.route("/uploadCoursesAllStudents").post(upload.single('file'),CoursesCtrl.apiUploadCoursesAllStudents)
-
                        
 router.route("/uploadPDF").post(upload.single('file'),FilesCtrl.apiNewTestPostFile)
 

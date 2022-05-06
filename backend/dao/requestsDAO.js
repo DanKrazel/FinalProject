@@ -189,7 +189,6 @@ export default class RequestsDAO {
           },
       },
           ]
-        console.log(pipeline)
       return await requests.aggregate(pipeline).toArray()
     } catch (e) {
       console.error(`Something went wrong in retrieveStudentByRequest: ${e}`)
