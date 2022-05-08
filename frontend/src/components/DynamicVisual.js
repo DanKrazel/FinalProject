@@ -14,7 +14,7 @@ import CourseDetailsDataService from "../services/courseDetailsService"
 
 const DynamicVisual = props => {
   var arrayCourses = ['חדו"א  - 1', 'אלגברה לינארית לתוכנה-ה', 'לוגיקה ונושאים דיסקרטיים I', 'I ארכיטקטורת מחשבים', 'מבוא למדעי המחשב', 'חדוא 2 להנדסת תוכנה',
-    'פיסיקה להנדסת תוכנה','לוגיקה ונושאים דיסקרטיים II', 'תכנות מונחה עצמים', 'מבוא להסתברות וסטטיסטיקה', 'מבוא להסתברות וסטטיסטיקה',
+    'פיסיקה להנדסת תוכנה', 'לוגיקה ונושאים דיסקרטיים II', 'תכנות מונחה עצמים', 'מבוא להסתברות וסטטיסטיקה', 'מבוא להסתברות וסטטיסטיקה',
     'יסודות הנדסת תוכנה', 'מבנה נתונים-ה', 'עקרונות שפות תוכנה', 'בדיקות ואיכות בהנדסת תוכנה', 'הנדסת דרישות וניתוח תוכנה', 'אנגלית מדוברת', 'אוטומטים ושפות פורמאליות',
     'אלגורתמים I', 'מבוא לתקשורת מחשבים', 'אנליזה נומרית', 'רשתות תקשורת מחשבים', 'אבטחת נתונים', 'עיבוד תמונה וראייה ממוחשבת', 'בטיחות תוכנה']
   const initialStudentState = {
@@ -28,14 +28,12 @@ const DynamicVisual = props => {
     courses: []
   };
   const params = useParams();
-  const [dependencies, setDependencies]= useState([]);
-  
+  const [dependencies, setDependencies] = useState([]);
   const [student, setStudent] = useState(initialStudentState);
   const [coursesDetails, setCoursesDetails] = useState([])
   const [unitsBySemester, setUnitsBySemester] = useState([])
   var countUnitSemesters = 0;
   const pdfExportComponent = React.useRef(null);
-  const refs = useRef([])
 
   useEffect(() => {
     retrieveDependencies();
@@ -44,8 +42,7 @@ const DynamicVisual = props => {
     getStudent(params.id);
     getUnitsBySemester(params.id);
     updateTotalUnitForEachSemester();
-}, []);
-
+  }, []);
   const updateTotalUnitForEachSemester = () => {
     for (let i = 0; i < unitsBySemester.length; i++) {
       if (unitsBySemester[i].yearOfLearning == 'א') {
@@ -72,73 +69,22 @@ const DynamicVisual = props => {
       }
     }
   }
-
   const getStudent = (id) => {
     StudentDataService.findStudent(id)
       .then(responseStudent => {
-          CourseDataService.getCoursesDetailsByCodeCourse(responseStudent.data.name).then(responseDetails => {
-            responseStudent.data.courses = responseDetails.data
-            console.log('responseStudent.data', responseStudent.data)
-            setStudent(responseStudent.data);
-          })
+        CourseDataService.getCoursesDetailsByCodeCourse(responseStudent.data.name).then(responseDetails => {
+          responseStudent.data.courses = responseDetails.data
+          console.log('responseStudent.data', responseStudent.data)
+          setStudent(responseStudent.data);
+        })
           .catch(e => {
             console.log(e);
           });
-        })
-      .catch(e => {
-        console.log(e);
-      });
-  };
-
-  const retrieveCoursesDetails = () => {
-    CourseDetailsDataService.getAll()
-      .then(response => {
-        console.log("responseDetails",response.data.coursesDetails)
-        setCoursesDetails(response.data.coursesDetails)
-        })
-      .catch(e => {
-        console.log(e);
-      });
-  };
-
-
-  
-  const getUnitsBySemester = (id) => {
-    UnitsBySemesterDataService.findUnitsBySemester(id)
-      .then(response => {
-        setUnitsBySemester(response.data.unitsBySemester);
-        console.log(response.data.unitsBySemester);
-        console.log("unitsBySemester", unitsBySemester);
       })
       .catch(e => {
         console.log(e);
       });
   };
-
-  function getKeyByValue(object, key) {
-    console.log(Object.keys(object).find(value => object[key] === value));
-    return Object.keys(object).find(value => object[key] === value);
-  }
-
-  function orderarray(dependencies) {
-    var k = 'box';
-    var i = 0;
-   
-    var k = 0;
-    var p = dependencies.length;
-    const options = []
-    for (var i = 0; i < dependencies.length; i++) {
-      var dict = {
-        value: dependencies[i].StartCoursesname, label: null
-      }
-      options.push(dict);
-    }
-    console.log(options);
-    return options
-   
-  }
-
-
   const retrieveDependencies = () => {
     DependenciesDataService.getAll()
       .then(response => {
@@ -150,165 +96,184 @@ const DynamicVisual = props => {
         console.log(e);
       });
   };
-
- // console.log(refs.current);
-  //console.log(refs.current.find(({ key }) => key === 'חדו"א  - 1'));
-
+  const exportPDFWithComponent = () => {
+    if (pdfExportComponent.current) {
+      pdfExportComponent.current.save();
+    }
+  }
+  const retrieveCoursesDetails = () => {
+    CourseDetailsDataService.getAll()
+      .then(response => {
+        console.log("responseDetails", response.data.coursesDetails)
+        setCoursesDetails(response.data.coursesDetails)
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
+  const getUnitsBySemester = (id) => {
+    UnitsBySemesterDataService.findUnitsBySemester(id)
+      .then(response => {
+        setUnitsBySemester(response.data.unitsBySemester);
+        console.log(response.data.unitsBySemester);
+        console.log("unitsBySemester", unitsBySemester);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
+  function uniqBy(a, key) {
+    var seen = {};
+    return a.filter(function (item) {
+      var k = key(item);
+      return seen.hasOwnProperty(k) ? false : (seen[k] = true);
+    })
+  }
+  let semesters = uniqBy(coursesDetails.map(function (a) { return a.semesterOfLearning; }), JSON.stringify);
+  let years = uniqBy(coursesDetails.map(function (a) { return a.yearOfLearning; }), JSON.stringify);
   const startf = (dependencies.map(function (a) { return a.StartCoursesname; }));
-  const endf= (dependencies.map(function (a) { return a.EndCoursesname; }));
+  const endf = (dependencies.map(function (a) { return a.EndCoursesname; }));
   let zipped = startf.map((x, i) => [x, endf[i]]);
-  console.log(zipped[0]);
+  let navigate = useNavigate()
   return (
-    <><div className="card text-center ">
-    </div> <div className="row">
+    //<form onSubmit={deleteCourseByStudentID(params.id)}>
+    <div>
+      <div className="example-config">
+        <button className="btn btn-secondary" onClick={exportPDFWithComponent}>
+          Export PDF
+        </button>
+        &nbsp;
+        <button class="btn btn-secondary" onClick={() => navigate(-1)} >
+          Return to previous page
+        </button>
+      </div>
+      <div>
+        <PDFExport ref={pdfExportComponent} paperSize="auto" margin={40} fileName={`Report for ${new Date().getFullYear()}`} author="KendoReact Team">
+          {student ? (
+            <div >
+              <h5>{student.name}</h5>
+              {(() => {
+                if ((student.average < 60) || (student.years === 'ב' && student.totalunits < 36) || ((student.years === 'ג' && student.totalunits < 75)) || ((student.years === 'ד' && student.totalunits < 115))) {
+                  return (
+                    <p>
+                      <div className="col-sm1 text-white bg-secondary w-40 l-20">
+                        <strong> ת״ז : </strong>{student.student_id}
+                        <strong> | ממוצע : </strong>{student.average}
+                        <strong> | שנה : </strong>{student.years}
+                        <strong> | נק״ז : </strong>{student.totalunits}
+                        <strong> | נק״ז : </strong>{student.valideunits}
 
-        {zipped.map((dependency,index) => {
-            return (
-              <><div className="col-lg-4 pb-1">
-                <div className="card">
-                  <div className="card-body" key={index} id={dependency.start}  >
-                    <h5 className="card-title">{dependency.id}</h5>
-                    <p className="card-text">
-                      <strong>Name: </strong>{dependency}<br />
-                    </p>                
-                  </div>
+                      </div>
+                    </p>
+                  )
+                } else {
+                  return (
+                    <p>
+                      <div className="col-sm1 text-white bg-secondary w-40 l-20">
+                        <strong> ת״ז : </strong>{student.student_id}
+                        <strong> | ממוצע : </strong>{student.average}
+                        <strong> | שנה : </strong>{student.years}
+                        <strong> | נק״ז כללי: </strong>{student.totalunits}
+                        <strong> | נק״ז עובר: </strong>{student.valideunits}
+                        <strong class=" d-block  ml-auto mr-o " > תקין </strong>
+                        <Link to={"/students/" + student._id} className="btn btn-primary col-lg-5 mx-1 mb-1">
+                          View Students
+                        </Link>
+                        <br />
+                      </div>
+                    </p>
+                  )
+                }
+              })()
+              }
+              <>
+                {zipped.map((dependency, index) => {
+                  return (
+                    <>
+                      <div className="col-lg-4 pb-1">
+                        <div className="card">
 
-
-                  {
-
-                    <Xarrow curveness={0} path="grid" strokeWidth={3} headShape={{ svgElem: <HeadSvg />, offsetForward: 1 }}
-                      startAnchor={'lebottomft'}
-                      start={dependency[0]}  //can be react ref
-                      end={dependency[1]} //or an id
-                    />
-                  }
-                </div>
-              </div></>
-            );
-         
-        }
-        
-        
-        )}
-
-        <div>
-          <PDFExport ref={pdfExportComponent} paperSize="auto" margin={40} fileName={`Report for ${new Date().getFullYear()}`} author="KendoReact Team">
-            {student ? (
-              <div>
-                <h5>{student.name}</h5>
-                {(() => {
-                  if ((student.average < 60) || (student.years === 'ב' && student.totalunits < 36) || ((student.years === 'ג' && student.totalunits < 75)) || ((student.years === 'ד' && student.totalunits < 115))) {
-                    return (
-                      <p>
-                        <div className="col-sm1 text-white bg-secondary w-40 l-20">
-                          <strong> ת״ז: </strong>{student.student_id}
-                          <strong> | ממוצע: </strong>{student.average}
-                          <strong> | שנה: </strong>{student.years}
-                          <strong> | נק״ז: </strong>{student.totalunits}
-                          <strong> | נק״ז: </strong>{student.valideunits}
-
+                          {
+                            <Xarrow curveness={0} path="grid" strokeWidth={3} headShape={{ svgElem: <HeadSvg />, offsetForward: 1 }} endAnchor={'top'} startAnchor={'left'}
+                              start={dependency[0]}  //can be react ref
+                              end={dependency[1]} //or an id
+                            />
+                          }
                         </div>
-                      </p>
-                    );
-                  } else {
-                    return (
-                      <p>
-                        <div className="col-sm1 text-white bg-secondary w-40 l-20">
-                          <strong> ת״ז: </strong>{student.student_id}
-                          <strong> | ממוצע: </strong>{student.average}
-                          <strong> | שנה: </strong>{student.years}
-                          <strong> | נק״ז כללי: </strong>{student.totalunits}
-                          <strong> | נק״ז עובר: </strong>{student.valideunits}
-                          <strong class=" d-block  ml-auto mr-o "> תקין </strong>
-                          <Link to={"/students/" + student._id} className="btn btn-primary col-lg-5 mx-1 mb-1">
-                            View Students
-                          </Link>
-                          <br />
-                        </div>
-                      </p>
-                    );
-                  }
-                })()}
-                <div className="card text-center ">
-                </div>
-              
+                      </div></>
+                  );
 
-              </div>
-            ) : (
-              <div>
-                <br />
-                <p>No student selected.</p>
-              </div>
-            )}
-          </PDFExport>
-        </div>
-        <div className="row">
-          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
+                }
+
+
+                )}
+                {years.map((year, index) => {
+                  return (
+                    <>
+                      <div className="row">
+                        {semesters.map((semester, index3) => {
+                          return (
+                            <div className="row">
+                              {coursesDetails.map((course, index2) => {
+                                const f = student.courses.find(({ courseName }) => courseName === course.courseName)
+                                if ((!f) && (course.yearOfLearning == year) && (course.semesterOfLearning == semester)) {
+                                  return (
+                                    <>
+                                      <div className="col-sm text-white "
+                                        key={course.codeCourses}>
+                                        <div className="card my-3 " id={(course.courseName).toString()}>
+                                          <p className='bg-secondary text-white text-center'>
+                                            <h11>
+                                              {course.courseName}<br />
+                                              {course.units}
+                                            </h11>
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </>
+
+                                  );
+                                }
+                                else if ((course.yearOfLearning == year) && f && f.semesterOfLearning == semester) {
+                                  return (
+                                      <div className="col-sm text-white "
+                                        key={course.codeCourses}>
+                                        <div className="card my-3 " id={(f.courseName).toString()}>
+                                          <p className='bg-success text-white text-center'>
+                                            <h11>
+                                              {f.courseName}<br />
+                                              {f.grade}<br />
+                                              {f.units}
+                                            </h11>
+                                          </p>
+                                        </div>
+                                      </div>
+                                  );
+
+                                }
+                              })
+                              }
+                            </div>
+                          );
+
+                        })}
+                      </div>
+                    </>
+                  );
+                })}
+
+              </>
+            </div>
+          ) : (
             <div>
+              <br />
+              <p>No student selected.</p>
             </div>
-          </div>
-
-        <div className="col-sm text-white ">
-          <div className="card my-3 " id={'חדו"א  - 1'}>
-            <p className='bg-secondary text-white text-center'>
-              <h11>
-                חדו"א  - 1<br />
-                None <br />
-                5 <br />
-              </h11>
-            </p>
-          </div>
-        </div>
-          <div className="col-sm text-white ">
-            <div className="card my-3 " id={'לוגיקה ונושאים דיסקרטיים I'}>
-              <p className='bg-secondary text-white text-center'>
-                <h11>
-                  לוגיקה ונושאים דיסקרטיים I<br />
-                  None <br />
-                  5 <br />
-                </h11>
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
-            <div>
-            </div>
-          </div>
-
-          <div className="col-sm text-white ">
-            <div className="card my-3 " id={'חדוא 2 להנדסת תוכנה'}>
-              <p className='bg-secondary text-white text-center'>
-                <h11>
-                  חדוא 2 להנדסת תוכנה<br />
-                  None <br />
-                  5 <br />
-                </h11>
-              </p>
-            </div>
-          </div>
-          <div className="col-sm text-white ">
-            <div className="card my-3 " id={'לוגיקה ונושאים דיסקרטיים II'}>
-              <p className='bg-secondary text-white text-center'>
-                <h11>
-                  לוגיקה ונושאים דיסקרטיים II<br />
-                  None <br />
-                  5 <br />
-                </h11>
-              </p>
-            </div>
-          </div>
-        </div>
-
-
-      </div></>
-
-      
+          )}
+        </PDFExport>
+      </div>
+    </div>
   );
-
-
 };
 export default DynamicVisual;
 
