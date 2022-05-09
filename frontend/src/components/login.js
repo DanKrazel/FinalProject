@@ -41,10 +41,8 @@ const Login = props => {
     event.preventDefault()
     const data = {username,password}
     const response = await AuthService.login(data)
-    console.log("response.data",response.data)
-    if(response.data.status == "success" && response.data.accessToken){
-      localStorage.setItem("user", JSON.stringify(response.data));
-      console.log("localStorage user :", localStorage.getItem('user'))
+    console.log("response.data.login",response.data)
+    if(response.status == "success"){
       //alert('Login successful')
       setUser(data);
       //props.login(user)
@@ -54,7 +52,7 @@ const Login = props => {
 			alert('Please check your username and password')
 		}
     
-    console.log(response.data.status)
+    console.log(response.status)
   // do something when no error
   }
 

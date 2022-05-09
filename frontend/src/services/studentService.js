@@ -1,64 +1,64 @@
-import http from "../http-common";
+import instance from "../http-common";
 
 class StudentDataService {
     getAll(page = 0) {
-        return http.get(`?page=${page}`);
+        return instance.get(`?page=${page}`);
     }
     
     get(id) {
-        return http.get(`?id=${id}`);
+        return instance.get(`?id=${id}`);
     }
     
     find(query, by = "student_id", page = 0) {
-        return http.get(`?${by}=${query}&page=${page}`);
+        return instance.get(`?${by}=${query}&page=${page}`);
     } 
 
     createStudent(data) {
-        return http.post("/student-new", data);
+        return instance.post("/student-new", data);
     }
 
     findStudent(id){
-        return http.get(`getCoursesStudent/${id}`);
+        return instance.get(`getCoursesStudent/${id}`);
     }
 
     getCoursesByStudentName(name){
-        return http.get(`getCoursesByStudentName?name=${name}`);
+        return instance.get(`getCoursesByStudentName?name=${name}`);
     }
     
     
     updateStudent(data) {
-        return http.put("/student-edit", data);
+        return instance.put("/student-edit", data);
     }
     
     deleteStudent(id, userId) {
-        return http.delete(`/student-delete?id=${id}`, {data:{user_id: userId}});
+        return instance.delete(`/student-delete?id=${id}`, {data:{user_id: userId}});
     }
     
     getNames(id) {
-        return http.get(`/names`);
+        return instance.get(`/names`);
     }
 
     updateUnitStudent(data) {
-        return http.put("/updateUnitStudent", data);
+        return instance.put("/updateUnitStudent", data);
     }
     updateAverageStudent(data) {
-        return http.put("/updateAverageStudent", data);
+        return instance.put("/updateAverageStudent", data);
     }
     resetAverageStudent(data) {
-        return http.put("/resetAverageStudent", data);
+        return instance.put("/resetAverageStudent", data);
     }
     
     
     findUnitsBySemester(query, by = "studentID") {
-        return http.get(`unitsBySemester?${by}=${query}`);
+        return instance.get(`unitsBySemester?${by}=${query}`);
     } 
 
     uploadStudents(data){
-        return http.post('/uploadStudents',data)
+        return instance.post('/uploadStudents',data)
     }
 
     deleteAllStudents(){
-        return http.delete('/deleteAllStudents')
+        return instance.delete('/deleteAllStudents')
     }
 }
     

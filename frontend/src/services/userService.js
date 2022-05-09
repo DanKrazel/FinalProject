@@ -1,43 +1,45 @@
-import http from "../http-common";
+import instance from "../http-common";
 import authHeader from './auth-header';
 
 class UserDataService {
     getAll(page = 0) {
-        return http.get(`user?page=${page}`);
+        return instance.get(`user?page=${page}`);
     }
     
     get(id) {
-        return http.get(`user?id=${id}`);
+        return instance.get(`user?id=${id}`);
     }
     
     find(query, by, page = 0) {
-        return http.get(`user?${by}=${query}&page=${page}`);
+        return instance.get(`user?${by}=${query}&page=${page}`);
     } 
 
     createUser(data) {
-        return http.post("/user-new", data);
+        return instance.post("/user-new", data);
     }
     
     updateUser(data) {
-        return http.put("/user-edit", data);
+        return instance.put("/user-edit", data);
     }
 
     deleteUser(userId) {
-        return http.delete(`/user?id=${userId}`);
+        return instance.delete(`/user?id=${userId}`);
     }
 
     getAdminBoard(){
-        return http.get('/admin', { headers: authHeader() });
+        return instance.get('/admin');
     }
     
     getSecretariatBoard(){
-        return http.get('/secretariat', { headers: authHeader() });
+        return instance.get('/secretariat');
     }
 
+    // getProfessorBoard(){
+    //     return http.get('/professor', { headers: authHeader() });
+    // }
     getProfessorBoard(){
-        return http.get('/professor', { headers: authHeader() });
+        return instance.get('/professor');
     }
-    
 
 }
      

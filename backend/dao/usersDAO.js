@@ -2,12 +2,14 @@ import mongodb from "mongodb"
 import jwt from "jsonwebtoken"
 import bcrypt from "bcryptjs"
 import 'dotenv/config'
-
+import {v4 as uuidv4} from "uuid"
+import config from "../config/auth.config.js"
 
 
 const JWT_SECRET = process.env.JWT
 const ObjectId = mongodb.ObjectId
 let users
+let refreshTokens
 
 export default class userDAO {
   static async injectDB(conn) {
@@ -16,6 +18,7 @@ export default class userDAO {
     }
     try {
       users = await conn.db(process.env.RESTREVIEWS_NS).collection("users")
+      refreshTokens = await conn.db(process.env.RESTREVIEWS_NS).collection("refreshTokens")
     } catch (e) {
       console.error(
         `Unable to establish a collection handle in usersDAO: ${e}`,
@@ -177,9 +180,9 @@ export default class userDAO {
         const user = await users.findOne(userDoc)
         if(user && await bcrypt.compare(password,user.password)){
             // creating a JWT token
-            var token = jwt.sign({id:user._id,username:user.username},JWT_SECRET,{ expiresIn: '2h'})
+            var token = jwt.sign({id:user._id,username:user.username},JWT_SECRET,{ expiresIn: config.jwtExpiration})
             return {status:'success',
-                    id: user.user_id,
+                    id: user._id,
                     username: user.username,
                     mail: user.mail,
                     role: user.role,
@@ -191,7 +194,55 @@ export default class userDAO {
         console.log(e);
         return { error : e }
     }
-}
+  }
+
+  static async createRefreshToken (user_id) {
+    try {
+      let expiredAt = new Date();
+      expiredAt.setSeconds(expiredAt.getSeconds() + config.jwtRefreshExpiration);
+      let _token = uuidv4();
+      const refreshTokenDoc = {
+        token: _token,
+        user: user_id,
+        expiryDate: expiredAt.getTime(),
+      }
+      
+      await refreshTokens.insertOne(refreshTokenDoc);
+      return refreshTokenDoc
+    } catch (error) {
+      console.log(e);
+      return { error : e }
+    }
+  }
+
+
+  static async getRefreshTokens(token){
+    try {
+      const refreshTokenDoc = {
+        token:token
+      }
+
+      return await refreshTokens.findOne(refreshTokenDoc);
+    } catch (error) {
+      console.log(e);
+      return { error : e }
+    }
+  }
+
+
+  static async deleteRefreshTokenByID(id) {
+    try {
+      const deleteResponse = {
+        _id: ObjectId(id),
+      }
+
+      return await refreshTokens.deleteOne(deleteResponse)
+    } catch (e) {
+      console.error(`Unable to delete token: ${e}`)
+      return { error: e }
+    }
+  }
+
 
   static async findUser(userID){
     try {
@@ -207,9 +258,9 @@ export default class userDAO {
 
     static async deleteUserbyID (userID) {
     try {
-      const deleteResponse = await users.deleteOne({
+      const deleteResponse = {
         _id: ObjectId(userID),
-      })
+      }
 
       return await users.deleteOne(deleteResponse)
     } catch (e) {
@@ -217,6 +268,7 @@ export default class userDAO {
       return { error: e }
     }
   }
+
 
 
 }

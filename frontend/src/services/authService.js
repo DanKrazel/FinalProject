@@ -1,22 +1,27 @@
-import http from "../http-common";
-
+import instance from "../http-common";
+import TokenService from "./tokenService"
 
 class AuthService {
 
     signUp(data) {
-        return http.post('/signup', data)
+        return instance.post('/signup', data)
     }
 
-    login(data) {
-        return http.post('/login', data)
+    async login(data) {
+        const response = await instance.post('/login', data);
+        console.log('responseLogin', response)
+        if (response.data.accessToken) {
+            TokenService.setUser(response.data);
+        }
+        return response.data;
     }
 
     logout() {
-        localStorage.removeItem('user');
+        TokenService.removeUser();
     }
 
     getCurrentUser() {
-        return JSON.parse(localStorage.getItem('user'));;
+        return TokenService.getUser()    
     }
 }
 

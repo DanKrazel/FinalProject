@@ -59,6 +59,8 @@ router.route("/secretariat").get(UsersCtrl.apiVerifyToken,
 router.route("/professor").get(UsersCtrl.apiVerifyToken,
                             UsersCtrl.apiIsProfessor, 
                             UsersCtrl.apiProfessorBoard)
+
+router.route("/refreshToken").post(UsersCtrl.apiRefreshToken)
                            
 router.route("/names").get(StudentsCtrl.apiGetStudentName)
 router.route("/getCoursesStudent/:id").get(StudentsCtrl.apiGetCoursesStudentByID)

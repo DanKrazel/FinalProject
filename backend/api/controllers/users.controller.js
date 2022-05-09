@@ -4,6 +4,8 @@ import bcrypt from "bcryptjs"
 import 'dotenv/config'
 import mongodb from "mongodb"
 import emailjs from '@emailjs/browser';
+import config from "../../config/auth.config.js"
+
 
 const ObjectId = mongodb.ObjectId
 
@@ -155,6 +157,8 @@ export default class UsersController {
       // we made a function to verify our user login
       console.log("testapi")
       const response = await UsersDAO.verifyUserLogin(username,password);
+      const refreshToken = await UsersDAO.createRefreshToken(response.id)
+      console.log('refreshToken', refreshToken)
       console.log(response)
       if(response.status == "success"){
           // storing our JWT web token as a cookie in our browser
@@ -166,7 +170,8 @@ export default class UsersController {
                                  username: response.username,
                                  mail: response.mail,
                                  role: response.role,
-                                 accessToken: response.accessToken
+                                 accessToken: response.accessToken,
+                                 refreshToken: refreshToken.token
                                   });
       }else{
         res.status(200).send({ status: "username or password not found" });
@@ -177,29 +182,69 @@ export default class UsersController {
 
   }
 
+  static async apiRefreshToken (req, res, next){
+    try {
+      const requestToken  = req.body.refreshToken;
+      if (requestToken == null) {
+        return res.status(403).json({ message: "Refresh Token is required!" });
+      }
+      let refreshToken = await UsersDAO.getRefreshTokens(requestToken)
+      if (!refreshToken) {
+        res.status(403).json({ message: "Refresh token is not in database!" });
+        return;
+      }
+      if (refreshToken.expiryDate < new Date().getTime()) {
+        const deleteResponse = await UsersDAO.deleteRefreshTokenByID(refreshToken._id);       
+        res.status(403).json({
+          message: "Refresh token was expired. Please make a new login request",
+        });
+        return;
+      }
+
+      let newAccessToken = jwt.sign({ id: refreshToken.user }, JWT_SECRET, {
+        expiresIn: config.jwtExpiration,
+      });
+      return res.status(200).json({
+        accessToken: newAccessToken,
+        refreshToken: refreshToken.token,
+      });
+    } catch (err) {
+      return res.status(500).send({ error: err.message });
+    }
+  }
+
   static async apiVerifyToken(req, res, next) {
     try {
+      const { TokenExpiredError } = jwt;
+      const catchError = (err, res) => {
+        if (err instanceof TokenExpiredError) {
+          return res.status(401).send({ message: "Unauthorized! Access Token was expired!" });
+        }
+        return res.status(401).send({ message: "Unauthorized!" });
+      }
       let token = req.headers["x-access-token"];
       if (!token) {
         return res.status(403).send({ message: "No token provided!" });
       }
-      //console.log("access token", token)
+      
 
       //console.log("decoded")
-      const decoded = jwt.verify(token,JWT_SECRET);
-      if(!decoded){
-        return res.status(401).send({ message: "Unauthorized!" });
-      }
-      req.userId = decoded.id;
-      next();
+      jwt.verify(token, JWT_SECRET, (err, decoded) => {
+        if (err) {
+          return catchError(err, res);
+        }
+        req.userId = decoded.id;
+        next();
+      });
     } catch (e) {
-      res.status(500).json({ error: e })
+      console.log('api',e)
+      res.status(500).json({ error: e.message })
     }
   }
 
   static async apiIsAdmin(req, res, next){
     try {
-      console.log("testIsAdmin")
+      
       const response = await UsersDAO.findUser(req.userId)
       console.log("response", response)
       if(response.role == 'Admin'){
@@ -207,23 +252,23 @@ export default class UsersController {
         return;
       }
       res.status(403).send({ message: "Require Admin Role!" });
-      return;
     } catch (e) {
-      res.status(500).json({ error: e})
+      res.status(500).json({ error: e.message})
     }
   }
 
   static async apiIsSecretariat(req, res, next){
     try {
       const response = await UsersDAO.findUser(req.userId)
+      console.log('testSecretariat',req.userId)
+      //console.log('testSecretariat',response)
       if(response.role == 'Secretariat'){
         next();
         return;
       }
-      res.status(403).send({ message: "Require Secretariat Role!" });
-      return;
+      return res.status(403).send({ message: "Require Secretariat Role!" });
     } catch (e) {
-      res.status(500).json({ error: e })
+      return res.status(500).json({ error: e.message })
     }
   }
 
@@ -235,8 +280,7 @@ export default class UsersController {
         next();
         return;
       }
-      res.status(403).send({ message: "Require Professor Role!" });
-      return;
+      return res.status(403).send({ message: "Require Professor Role!" });
     } catch (e) {
       res.status(500).json({ error: e })
     }
@@ -254,7 +298,7 @@ export default class UsersController {
 
   static async apiSecretariatBoard(req, res, next) {
     try {
-      res.status(200).send("Secretariat Content.");
+      return res.status(200).send("Secretariat Content.");
     } catch (e) {
       res.status(500).json({ error: e })
     }
