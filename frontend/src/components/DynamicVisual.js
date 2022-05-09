@@ -187,26 +187,7 @@ const DynamicVisual = props => {
               })()
               }
               <>
-                {zipped.map((dependency, index) => {
-                  return (
-                    <>
-                      <div className="col-lg-4 pb-1">
-                        <div className="card">
-
-                          {
-                            <Xarrow curveness={0} path="grid" strokeWidth={3} headShape={{ svgElem: <HeadSvg />, offsetForward: 1 }} endAnchor={'top'} startAnchor={'left'}
-                              start={dependency[0]}  //can be react ref
-                              end={dependency[1]} //or an id
-                            />
-                          }
-                        </div>
-                      </div></>
-                  );
-
-                }
-
-
-                )}
+                
                 {years.map((year, index) => {
                   return (
                     <>
@@ -251,6 +232,7 @@ const DynamicVisual = props => {
                                   );
 
                                 }
+                                
                               })
                               }
                             </div>
@@ -261,15 +243,37 @@ const DynamicVisual = props => {
                     </>
                   );
                 })}
+                
+                <div>
+                  {zipped.map((dependency, index) => {
+                    return (
+                      <div className="col-lg-4 pb-1">
+                        <div className="card">
+                          {
+                            <Xarrow curveness={0} path="grid" strokeWidth={3} headShape={{ svgElem: <HeadSvg />, offsetForward: 1 }}
+                              start={dependency[0].toString()}  //can be react ref
+                              end={dependency[1].toString()} //or an id
+                            />
+                          }
+                        </div>
+                      </div>
+                    );
 
+                  })}
+                </div>
+           
               </>
+
             </div>
+            
+            
           ) : (
             <div>
               <br />
               <p>No student selected.</p>
             </div>
           )}
+         
         </PDFExport>
       </div>
     </div>
