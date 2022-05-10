@@ -13,10 +13,6 @@ import CourseDataService from "../services/courseService"
 import CourseDetailsDataService from "../services/courseDetailsService"
 
 const DynamicVisual = props => {
-  var arrayCourses = ['חדו"א  - 1', 'אלגברה לינארית לתוכנה-ה', 'לוגיקה ונושאים דיסקרטיים I', 'I ארכיטקטורת מחשבים', 'מבוא למדעי המחשב', 'חדוא 2 להנדסת תוכנה',
-    'פיסיקה להנדסת תוכנה', 'לוגיקה ונושאים דיסקרטיים II', 'תכנות מונחה עצמים', 'מבוא להסתברות וסטטיסטיקה', 'מבוא להסתברות וסטטיסטיקה',
-    'יסודות הנדסת תוכנה', 'מבנה נתונים-ה', 'עקרונות שפות תוכנה', 'בדיקות ואיכות בהנדסת תוכנה', 'הנדסת דרישות וניתוח תוכנה', 'אנגלית מדוברת', 'אוטומטים ושפות פורמאליות',
-    'אלגורתמים I', 'מבוא לתקשורת מחשבים', 'אנליזה נומרית', 'רשתות תקשורת מחשבים', 'אבטחת נתונים', 'עיבוד תמונה וראייה ממוחשבת', 'בטיחות תוכנה']
   const initialStudentState = {
     student_id: null,
     name: "",
@@ -186,8 +182,21 @@ const DynamicVisual = props => {
                 }
               })()
               }
-              <>
-                
+              <>     
+                {zipped.map((dependency, index) => {
+                  return (
+                    <div className="col-lg-4 pb-1">
+                      <div className="card">
+                        {
+                          <Xarrow curveness={0} path="grid" strokeWidth={3} headShape={{ svgElem: <HeadSvg />, offsetForward: 1 }}
+                            start={dependency[0].toString()}  //can be react ref
+                            end={dependency[1].toString()} //or an id
+                          />
+                        }
+                      </div>
+                    </div>
+                  );
+                })}      
                 {years.map((year, index) => {
                   return (
                     <>
@@ -242,31 +251,9 @@ const DynamicVisual = props => {
                       </div>
                     </>
                   );
-                })}
-                
-                <div>
-                  {zipped.map((dependency, index) => {
-                    return (
-                      <div className="col-lg-4 pb-1">
-                        <div className="card">
-                          {
-                            <Xarrow curveness={0} path="grid" strokeWidth={3} headShape={{ svgElem: <HeadSvg />, offsetForward: 1 }}
-                              start={dependency[0].toString()}  //can be react ref
-                              end={dependency[1].toString()} //or an id
-                            />
-                          }
-                        </div>
-                      </div>
-                    );
-
-                  })}
-                </div>
-           
+                })}               
               </>
-
             </div>
-            
-            
           ) : (
             <div>
               <br />
