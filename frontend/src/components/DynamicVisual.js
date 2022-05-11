@@ -125,18 +125,24 @@ const DynamicVisual = props => {
       return seen.hasOwnProperty(k) ? false : (seen[k] = true);
     })
   }
+
+  var startf = useRef(null);
+  var endf = useRef(null);
   let semesters = uniqBy(coursesDetails.map(function (a) { return a.semesterOfLearning; }), JSON.stringify);
   let years = uniqBy(coursesDetails.map(function (a) { return a.yearOfLearning; }), JSON.stringify);
-  const startf = (dependencies.map(function (a) { return a.StartCoursesname; }));
-  const endf = (dependencies.map(function (a) { return a.EndCoursesname; }));
+  startf = (dependencies.map(function (a) { return a.StartCoursesname; }));
+  endf = (dependencies.map(function (a) { return a.EndCoursesname; }));
   let zipped = startf.map((x, i) => [x, endf[i]]);
   let navigate = useNavigate()
+
+
+
   return (
     //<form onSubmit={deleteCourseByStudentID(params.id)}>
     <div>
       <div className="example-config">
         <button className="btn btn-secondary" onClick={exportPDFWithComponent}>
-          Export PDF
+          Export Image
         </button>
         &nbsp;
         <button class="btn btn-secondary" onClick={() => navigate(-1)} >
@@ -155,7 +161,6 @@ const DynamicVisual = props => {
                       <div className="col-sm1 text-white bg-secondary w-40 l-20">
                         <strong> ת״ז : </strong>{student.student_id}
                         <strong> | ממוצע : </strong>{student.average}
-                        <strong> | שנה : </strong>{student.years}
                         <strong> | נק״ז : </strong>{student.totalunits}
                         <strong> | נק״ז : </strong>{student.valideunits}
 
@@ -168,10 +173,9 @@ const DynamicVisual = props => {
                       <div className="col-sm1 text-white bg-secondary w-40 l-20">
                         <strong> ת״ז : </strong>{student.student_id}
                         <strong> | ממוצע : </strong>{student.average}
-                        <strong> | שנה : </strong>{student.years}
-                        <strong> | נק״ז כללי: </strong>{student.totalunits}
                         <strong> | נק״ז עובר: </strong>{student.valideunits}
                         <strong class=" d-block  ml-auto mr-o " > תקין </strong>
+
                         <Link to={"/students/" + student._id} className="btn btn-primary col-lg-5 mx-1 mb-1">
                           View Students
                         </Link>
@@ -182,21 +186,19 @@ const DynamicVisual = props => {
                 }
               })()
               }
-              <>     
+              <>
                 {zipped.map((dependency, index) => {
                   return (
-                    <div className="col-lg-4 pb-1">
-                      <div className="card">
-                        {
-                          <Xarrow curveness={0} path="grid" strokeWidth={3} headShape={{ svgElem: <HeadSvg />, offsetForward: 1 }}
-                            start={dependency[0].toString()}  //can be react ref
-                            end={dependency[1].toString()} //or an id
-                          />
-                        }
-                      </div>
+                    <div >
+                      {
+                        <Xarrow curveness={0} path="grid" strokeWidth={3} headShape={{ svgElem: <HeadSvg />, offsetForward: 1 }}
+                          start={dependency[0].toString()}  //can be react ref
+                          end={dependency[1].toString()} //or an id
+                        />
+                      }
                     </div>
                   );
-                })}      
+                })}
                 {years.map((year, index) => {
                   return (
                     <>
@@ -211,7 +213,7 @@ const DynamicVisual = props => {
                                     <>
                                       <div className="col-sm text-white "
                                         key={course.codeCourses}>
-                                        <div className="card my-3 " id={(course.courseName).toString()}>
+                                        <div className="card my-3 " id={(course.courseName).toString()} >
                                           <p className='bg-secondary text-white text-center'>
                                             <h11>
                                               {course.courseName}<br />
@@ -222,10 +224,12 @@ const DynamicVisual = props => {
                                       </div>
                                     </>
 
+
                                   );
                                 }
                                 else if ((course.yearOfLearning == year) && f && f.semesterOfLearning == semester) {
-                                  return (
+                                  if (f.grade > 55) {
+                                    return (
                                       <div className="col-sm text-white "
                                         key={course.codeCourses}>
                                         <div className="card my-3 " id={(f.courseName).toString()}>
@@ -238,11 +242,46 @@ const DynamicVisual = props => {
                                           </p>
                                         </div>
                                       </div>
-                                  );
+                                    );
+                                  }
+                                  else if (f.grade > 1) {
+                                    return (
+                                      <div className="col-sm text-white "
+                                        key={course.codeCourses}>
+                                        <div className="card my-3 " id={(f.courseName).toString()}>
+                                          <p className='bg-danger text-white text-center'>
+                                            <h11>
+                                              {f.courseName}<br />
+                                              {f.grade}<br />
+                                              {f.units}
+                                            </h11>
+                                          </p>
+                                        </div>
+                                      </div>
+                                    );
+                                  }
+                                  else {
+                                    return (
+                                      <div className="col-sm text-white "
+                                        key={course.codeCourses}>
+                                        <div className="card my-3 " id={(f.courseName).toString()}>
+                                          <p className='bg-success text-white text-center'>
+                                            <h11>
+                                              {f.courseName}<br />
+                                              {f.grade}<br />
+                                              {f.units}
+                                            </h11>
+                                          </p>
+                                        </div>
+                                      </div>
+                                    );
+                                  }
+
 
                                 }
-                                
+
                               })
+
                               }
                             </div>
                           );
@@ -251,7 +290,7 @@ const DynamicVisual = props => {
                       </div>
                     </>
                   );
-                })}               
+                })}
               </>
             </div>
           ) : (
@@ -260,7 +299,7 @@ const DynamicVisual = props => {
               <p>No student selected.</p>
             </div>
           )}
-         
+
         </PDFExport>
       </div>
     </div>
