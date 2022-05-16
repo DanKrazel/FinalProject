@@ -8,7 +8,7 @@ export default class RequestsDAO {
       return
     }
     try {
-        requests = await conn.db(process.env.RESTREVIEWS_NS).collection("requests")
+        requests = await conn.db(process.env.STUDREVIEWS_NS).collection("requests")
     } catch (e) {
       console.error(
         `Unable to establish a collection handle in requestsDAO: ${e}`,
@@ -83,11 +83,11 @@ export default class RequestsDAO {
 
   static async deleteRequestbyID (requestID) {
     try {
-      const deleteResponse = await requests.deleteOne({
+      const requestDoc= {
         _id: ObjectId(requestID),
-      })
+      }
 
-      return await requests.deleteOne(deleteResponse)
+      return await requests.deleteOne(requestDoc)
     } catch (e) {
       console.error(`Unable to delete request: ${e}`)
       return { error: e }

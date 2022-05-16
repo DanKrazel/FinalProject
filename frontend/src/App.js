@@ -19,6 +19,7 @@ import ViewRequests from "./components/Secretariat/viewRequests";
 import UploadCSVForProfessor from "./components/Secretariat/uploadCSVForProfessor";
 import StudentSendProf from "./components/Secretariat/studentSendProf";
 import UploadFiles from "./components/Secretariat/uploadFiles"
+import ViewListVisualisation from "./components/Professor/ViewListVisualisation"
 import dotenv from "dotenv"
 
 import jwt from"jsonwebtoken"
@@ -115,7 +116,12 @@ function App() {
                 Professor Board
               </Link>
             </li>
-          </div>
+          <li className="nav-item active">
+            <Link to={"/ViewListVisualisation"} className="nav-link">
+              View visualization from Regina
+            </Link>
+          </li>
+        </div>
         )}
           { currentUser ? (
           <div className="nav navbar-nav navbar-right">
@@ -210,6 +216,10 @@ function App() {
         <Route 
           path="/uploadFiles"
           element = { <UploadFiles user={currentUser}/> } 
+        />
+        <Route 
+          path="/ViewListVisualisation"
+          element = { <ViewListVisualisation user={currentUser}/> } 
         />
         </Routes>
     </div>

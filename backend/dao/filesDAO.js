@@ -23,7 +23,7 @@ export default class filesDAO {
       return
     }
     try {
-        files = await conn.db(process.env.RESTREVIEWS_NS).collection("files")
+        files = await conn.db(process.env.STUDREVIEWS_NS).collection("files")
     } catch (e) {
       console.error(`Unable to establish collection handles in fileDAO: ${e}`)
     }

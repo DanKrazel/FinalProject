@@ -13,7 +13,7 @@ export default class CoursesDAO {
       return
     }
     try {
-        unitsBySemester = await conn.db(process.env.RESTREVIEWS_NS).collection("unitsBySemester")
+        unitsBySemester = await conn.db(process.env.STUDREVIEWS_NS).collection("unitsBySemester")
     } catch (e) {
       console.error(`Unable to establish collection handles in unitsBySemesterrDAO: ${e}`)
     }

@@ -17,8 +17,8 @@ export default class userDAO {
       return
     }
     try {
-      users = await conn.db(process.env.RESTREVIEWS_NS).collection("users")
-      refreshTokens = await conn.db(process.env.RESTREVIEWS_NS).collection("refreshTokens")
+      users = await conn.db(process.env.STUDREVIEWS_NS).collection("users")
+      refreshTokens = await conn.db(process.env.STUDREVIEWS_NS).collection("refreshTokens")
     } catch (e) {
       console.error(
         `Unable to establish a collection handle in usersDAO: ${e}`,
@@ -72,19 +72,6 @@ export default class userDAO {
     }
   }
 
-  static async addUser (userID, username, password, phone, mail) {
-    try {
-      const userDoc = { 
-          user_id: userID,
-          username: username,
-          password: password,
-          mail: mail,}
-      return await users.insertOne(userDoc)
-    } catch (e) {
-      console.error(`Unable to post user: ${e}`)
-      return { error: e }
-    }
-  }
 
   static async updateUser (userID, username, password, mail) {
     try {
@@ -116,17 +103,6 @@ export default class userDAO {
     }
   }
 
-  static async checkAuthentification (username, password) {
-    try {
-      const userDoc = { 
-        username: username,
-        password: password}
-      return await users.findOne(userDoc)
-    } catch (e) {
-      console.error(`Unable to find user: ${e}`)
-      return { error: e }
-    }
-  }
 
   static async checkDuplicateUsername (username) {
     // Username

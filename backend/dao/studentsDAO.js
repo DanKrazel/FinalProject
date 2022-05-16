@@ -13,7 +13,7 @@ export default class StudentsDAO {
       return
     }
     try {
-        students = await conn.db(process.env.RESTREVIEWS_NS).collection("students")
+        students = await conn.db(process.env.STUDREVIEWS_NS).collection("students")
     } catch (e) {
       console.error(
         `Unable to establish a collection handle in studentsDAO: ${e}`,

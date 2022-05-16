@@ -7,6 +7,7 @@ import FilesCtrl from "../controllers/files.controller.js"
 import RequestsCtrl from "../controllers/requests.controller.js"
 import DependenciesCtrl from "../controllers/dependencies.controller.js"
 import CourseDetailsCtrl from "../controllers/coursesDetails.controller.js"
+import ImageVisualizationCtrl from "../controllers/imageVisualization.controller.js"
 
 import upload from "../../middleware/upload.js"
 
@@ -34,6 +35,11 @@ router.route("/requests").post(RequestsCtrl.apiPostRequest)
                          .get(RequestsCtrl.apiGetRequests)
                          .delete(RequestsCtrl.apiDeleteRequestByID)
 
+router.route("/imageVisualization").post(upload.single('file'),ImageVisualizationCtrl.apiPostImageVisualization)
+                                   .get(ImageVisualizationCtrl.apiGetImageVisualization)
+                                   .delete(ImageVisualizationCtrl.apiDeleteImageVisualizationByID)
+router.route("/retrieveStudentInfo").get(ImageVisualizationCtrl.apiRetrieveStudentinfo)
+
 //router.route("/requests/:id").delete(RequestsCtrl.apiDeleteRequestBystudentID)
 router.route("/requests/:id").delete(RequestsCtrl.apiDeleteRequestBystudentID)
 router.route("/requestSent").get(RequestsCtrl.apiGetRequestSent)
@@ -45,8 +51,8 @@ router.route("/dependencies").get(DependenciesCtrl.apiGetDependencies)
                              .post(DependenciesCtrl.apiPostDependencies)
 
 router.route("/login").post(UsersCtrl.apiLogin)
-router.route("/signup").post(UsersCtrl.apiCheckDuplicateUsernameOrMail, UsersCtrl.apiSignup)
-router.route("/checkDuplicateUsernameOrEmail").get(UsersCtrl.apiCheckAuthentification)
+router.route("/signup").post(UsersCtrl.apiCheckDuplicateUsernameOrMail, 
+                            UsersCtrl.apiSignup)
 
 router.route("/admin").get(UsersCtrl.apiVerifyToken,
                            UsersCtrl.apiIsAdmin, 

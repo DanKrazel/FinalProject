@@ -18,7 +18,7 @@ export default class CoursesDAO {
       return
     }
     try {
-        courses = await conn.db(process.env.RESTREVIEWS_NS).collection("courses")
+        courses = await conn.db(process.env.STUDREVIEWS_NS).collection("courses")
     } catch (e) {
       console.error(`Unable to establish collection handles in courseDAO: ${e}`)
     }

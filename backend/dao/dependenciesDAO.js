@@ -8,7 +8,7 @@ export default class DependenciesDAO {
             return
         }
         try {
-            dependencies = await conn.db(process.env.RESTREVIEWS_NS).collection("dependencies")
+            dependencies = await conn.db(process.env.STUDREVIEWS_NS).collection("dependencies")
         } catch (e) {
             console.error(
                 `Unable to establish a collection handle in dependencies: ${e}`,

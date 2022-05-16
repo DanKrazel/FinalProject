@@ -9,13 +9,16 @@ import UnitsBySemesterDAO from "./dao/unitsBySemesterDAO.js"
 import RequestsDAO from "./dao/requestsDAO.js"
 import DependenciesDAO from "./dao/dependenciesDAO.js"
 import CoursesDetailsDAO from "./dao/coursesDetailsDAO.js"
+import ImageVisualizationDAO from "./dao/ImageVisualizationDAO.js"
 
 
 dotenv.config()
 const MongoClient = mongodb.MongoClient
 
 const port = process.env.PORT || 8000
-const JWT_SECRET=process.env.JWT;
+let database = process.env.MONGO_URI;
+const JWT_SECRET = process.env.JWT;
+
 
 MongoClient.connect(
   process.env.STUDREVIEWS_DB_URI,
@@ -38,9 +41,12 @@ MongoClient.connect(
     await RequestsDAO.injectDB(client)
     await DependenciesDAO.injectDB(client)
     await CoursesDetailsDAO.injectDB(client)
+    await ImageVisualizationDAO.injectDB(client)
     app.listen(port, () => {
       console.log(`listening on port ${port}`)
     })
   })
+
+
 
   

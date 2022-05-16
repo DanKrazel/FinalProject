@@ -72,23 +72,6 @@ export default class UsersController {
     }
   }
 
-  static async apiCheckAuthentification(req, res, next) {
-    try {
-      const username = req.body.username
-      const password = req.body.password
-      const UsersResponse = await UsersDAO.checkAuthentification(
-        username,
-        password
-      )
-      if(UsersResponse) {
-        res.json({ status: "success" })
-      } else 
-        res.json({ status: "failed" })
-    } catch (e) {
-      res.status(500).json({ error: e.message })
-    }
-
-  }
 
   static async apiCheckDuplicateUsernameOrMail(req, res, next){
     try {
@@ -142,7 +125,7 @@ export default class UsersController {
       )
       console.log(UsersResponse)
       if(UsersResponse ) {
-        res.json({ status: "success" })
+        res.status(200).json({ status: "success" })
       }
     } catch (e) {
       res.status(500).json({ error: e.message })
@@ -190,13 +173,13 @@ export default class UsersController {
       }
       let refreshToken = await UsersDAO.getRefreshTokens(requestToken)
       if (!refreshToken) {
-        res.status(403).json({ message: "Refresh token is not in database!" });
+        res.status(403).json({ message: "Your session was expired. Please make a new login request" });
         return;
       }
       if (refreshToken.expiryDate < new Date().getTime()) {
         const deleteResponse = await UsersDAO.deleteRefreshTokenByID(refreshToken._id);       
         res.status(403).json({
-          message: "Refresh token was expired. Please make a new login request",
+          message: "Your session was expired. Please make a new login request",
         });
         return;
       }

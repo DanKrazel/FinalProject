@@ -12,6 +12,14 @@ import styles from "../../index.css"
 //import getCoordinate from "./../getCoordinate.js";
 import Xarrow from "react-xarrows";
 import emailjs from '@emailjs/browser';
+import {
+  exportComponentAsJPEG,
+  exportComponentAsPDF,
+  exportComponentAsPNG
+} from "react-component-export-image";
+import html2canvas from "html2canvas"
+import ImageVisualizationDataService from "../../services/imageVisualizationService";
+
 
 
 
@@ -42,6 +50,16 @@ const StudentSendProf = props => {
     role:"",
   };
 
+  const initialUserState = {
+    _id: "",
+    user_id:"",
+    username: "",
+    mail: "",
+    role:"",
+  };
+
+
+
   
 
   const rootStyle = { display: 'flex', justifyContent: 'center' };
@@ -55,16 +73,23 @@ const StudentSendProf = props => {
   const [idCourse, setIdCourse] = useState()
   const [professor, setProfessor] = useState(initialProfessorState)
   const [submittedVisualisation, setSubmittedVisualisation] = useState(false)
+  const [image, setImage] = useState()
+  const [user, setUser] = useState(initialUserState)
+  const [imageVisualization, setImageVizualisation] = useState([])
+  const [refreshKey, setRefreshKey] = useState(0);
+  const componentRef = useRef();
+  const ImageInput = React.createRef();
+
 
 
   
   useEffect(() => {
-    console.log("useEffect student")
     getStudent(params.studentID);
     getUnitsBySemester(params.studentID);
     updateTotalUnitForEachSemester();
     findProfessor();
-  }, []);
+    retrieveImageVisualisation();
+  }, [refreshKey]);
 
   function sleep(time){
       return new Promise((resolve)=>setTimeout(resolve,time)
@@ -86,6 +111,8 @@ const StudentSendProf = props => {
         console.log(e);
       });
   };
+
+
 
   const getUnitsBySemester = (id) => {
     UnitsBySemesterDataService.findUnitsBySemester(id)
@@ -109,6 +136,14 @@ const StudentSendProf = props => {
       console.log(e);
     });
   };
+
+
+  const exportAsImage = async (element) => {
+    const canvas = await html2canvas(element);
+    console.log(canvas)
+    const image = canvas.toDataURL("image/png", 1.0);
+    // download the image
+    };
 
   const container = React.useRef(null);
   const pdfExportComponent = React.useRef(null);
@@ -166,32 +201,8 @@ const StudentSendProf = props => {
       });
   };
 
-  let navigate = useNavigate()
-  const box1Ref = useRef(null);
-  return (
-    //<form onSubmit={deleteCourseByStudentID(params.id)}>
-    <div>
-      <div className="example-config">
-        <button className="btn btn-secondary " onClick={exportPDFWithComponent}>
-         Export PDF
-        </button>
-      &nbsp;
-      {!submittedVisualisation ? (      
-      <button type="button" onClick={sendEmailVisualisationToProfessor} className="btn btn-secondary">
-        Send student visualisation to {professor.username} by email
-      </button>  
-      ):(
-        <button type="button" className="btn btn-success">
-            Submitted !
-      </button>  
-      )}
-      &nbsp;
-      <button class="btn btn-secondary " onClick={() => navigate(-1)} >
-        Return to previous page
-      </button>
-    </div>
-    <div >
-    <PDFExport ref={pdfExportComponent} paperSize="auto" margin={40} fileName={`Report for ${new Date().getFullYear()}`} author="KendoReact Team">
+  const ComponentToPrint = React.forwardRef((props, ref) => (
+    <div id="capture" ref={ref} paperSize="auto" margin={40} >
       {student ? (  
         <div >
           <h5>{student.name}</h5>
@@ -1180,9 +1191,162 @@ const StudentSendProf = props => {
           <p>No student selected.</p>
         </div>
       )}
-      </PDFExport>
       </div>
+  ));
+
+  let navigate = useNavigate()
+  const box1Ref = useRef(null);
+  const onImageChange = event => {
+    setImage(event.target.files[0]);
+  };
+
+  
+    
+  const htmlToCanvas = (id) => {
+    const formData = new FormData();
+    html2canvas(document.querySelector(id))
+    .then(canvas => {
+      //document.body.appendChild(canvas)
+      const data = canvas.toDataURL('jpeg')
+      data = data.replace('data:' + 'jpeg' + ';base64,', '');
+      setImage(data)
+      console.log('image', canvas)
+      console.log('image', data)
+    })
+  }
+
+  const exportImage = (id) => {
+    html2canvas(document.querySelector(id), {allowTaint: true})
+    .then(canvas => {
+      //document.body.appendChild(canvas)
+      var link = document.createElement("a");
+      document.body.appendChild(link);
+      link.download = "html_image.jpg";
+      link.href = canvas.toDataURL();
+      link.target = '_blank';
+      link.click();
+    })
+  }
+
+  const retrieveImageVisualisation = () => {
+    ImageVisualizationDataService.getAll()
+        .then(response => {
+          console.log("ImageVisualization",response.data);
+          setImageVizualisation(response.data.imageVisualization); 
+          //console.log("requests",requests )
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    };
+
+  const handlePostCanvas = (id) => {
+    //url, name, fn, 
+    //var data = canvas.toDataURL(type);
+    //e.preventDefault();
+    const formData = new FormData()
+    html2canvas(document.querySelector(id), {allowTaint: true})
+    .then(canvas => {
+      //document.body.appendChild(canvas)
+      var link = document.createElement("a");
+      link.download = "html_image.jpg";
+      link.href = canvas.toDataURL();
+      var image = canvas.toDataURL("image/jpeg");
+
+      //image = image.substring(image.indexOf(",") + 1)
+      //var decode = decodeFileBase64(image)
+      
+
+      formData.append('file', image)
+      //data = data.replace('data:' + 'jpeg' + ';base64,', '');
+      // setImage(data)
+      // //console.log('image', canvas)
+      // console.log('image', data)
+      var data = {
+        sender: props.user.username,
+        receiver: professor.username,
+        imagePath: image,
+        studentID: student._id
+      }
+      ImageVisualizationDataService.postImageVisualization(data)
+      .then(response => {
+        console.log(response)
+        setRefreshKey(oldKey => oldKey +1)
+      })
+      .catch(e => {
+        console.log("error", e);
+      });
+    
+    })
+
+    const decodeFileBase64 = (base64String) => {
+      // From Bytestream to Percent-encoding to Original string
+      return decodeURIComponent(
+        atob(base64String)
+          .split("")
+          .map(function (c) {
+            return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+          })
+          .join("")
+      );
+    };
+  
+    // const decodeBase64 = decodeFileBase64(
+    //   fileBase64String.substring(fileBase64String.indexOf(",") + 1)
+    // );
+    //console.log("data.file", formData)
+
+    // var xhr = new XMLHttpRequest();
+    // xhr.open('POST', url, true);
+    // var boundary = 'ohaiimaboundary';
+    // xhr.setRequestHeader(
+    //   'Content-Type', 'multipart/form-data; boundary=' + boundary);
+    // xhr.sendAsBinary([
+    //   '--' + boundary,
+    //   'Content-Disposition: form-data; name="' + name + '"; filename="' + fn + '"',
+    //   'Content-Type: ' + type,
+    //   '',
+    //   atob(data),
+    //   '--' + boundary + '--'
+    // ].join(''));
+  }
+
+  const renderButtonsSentOrView = () => {
+    let content = <button type="button" ref={ImageInput} onClick={() => handlePostCanvas("#capture")} className="btn btn-secondary">
+    Send student visualisation to {professor.username}
+  </button>  
+    for(let i = 0; i<imageVisualization.length; i++){
+      if(imageVisualization[i].studentID == student._id ){
+          content = <div className="btn btn-success">
+              Visualization sent !
+            </div>
+        break;
+      }
+    }
+    return content;
+  }
+
+
+  return (
+    //<form onSubmit={deleteCourseByStudentID(params.id)}>
+    <React.Fragment>
+    <div>
+      <div className="example-config">
+        <button className="btn btn-secondary " 
+        onChange = {onImageChange}
+        onClick={() => exportImage("#capture")} >
+         Export Visualisation
+        </button>
+      &nbsp;
+      {renderButtonsSentOrView()}
+      &nbsp;
+      <button class="btn btn-secondary " onClick={() => navigate(-1)} >
+        Return to previous page
+      </button>
+    </div>
       </div>
+      <ComponentToPrint ref={componentRef} />
+      </React.Fragment>
 
   );
 };
