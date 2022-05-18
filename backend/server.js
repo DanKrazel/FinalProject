@@ -8,7 +8,6 @@ import path from "path"
 
 
 const app = express()
-
 app.use(bodyparser.json({limit: '50mb'}));
 app.use(bodyparser.urlencoded({limit: '50mb', extended:true}));
 app.use(cookieParser());

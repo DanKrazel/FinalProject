@@ -4,8 +4,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import AddStudent from "./components/add-student";
 import Student from "./components/students";
 import StudentVisual from "./components/studentsVisual";
-import AddDependencies from "./components/AddDependencies";
-import DynamicVisual from "./components/DynamicVisual";
+import AddDependencies from "./components/Secretariat/AddDependencies";
+import DynamicVisual from "./components/Secretariat/DynamicVisual";
 import StudentsList from "./components/students-list";
 import Profil from "./components/profil"
 import AuthService from "../src/services/authService"
@@ -72,16 +72,11 @@ function App() {
   return (
     <div>
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-      <Link to="/" className="navbar-brand">
-          Students List
-      </Link>
           {adminBoard && (
           <div className="navbar-nav me-auto mb-2 mb-lg-0 ">
-              <li className="nav-item active">
-                <Link to={"/admin"} className="nav-link">
-                  Admin Board
-                </Link>
-              </li>
+              <Link to="/" className="navbar-brand">
+                Admin Board
+              </Link>
               <li className="nav-item active">
                 <Link to={"/signup"} className="nav-link">
                   Register users
@@ -90,16 +85,14 @@ function App() {
             </div>
               
           )}
-          {secretariatBoard && (
+          {secretariatBoard && (         
           <div className="navbar-nav me-auto mb-2 mb-lg-0">
-            <li className="nav-item active">
-                <Link to={"/uploadFiles"} className="nav-link">
+                <Link to="/uploadFiles" className="navbar-brand">
                   Upload Files
                 </Link>
-              </li>
               <li className="nav-item active">
                 <Link to={"/secretariat"} className="nav-link">
-                  Secretariat Board
+                  Student List
                 </Link>
               </li>
             <li className="nav-item active">
@@ -111,11 +104,9 @@ function App() {
           )}
           {professorBoard && (
           <div className="navbar-nav me-auto mb-2 mb-lg-0">
-            <li className="nav-item active">
-              <Link to={"/professor"} className="nav-link">
+              <Link to={"/professor"} className="navbar-brand">
                 Professor Board
               </Link>
-            </li>
           <li className="nav-item active">
             <Link to={"/ViewListVisualisation"} className="nav-link">
               View visualization from Regina
@@ -166,7 +157,7 @@ function App() {
             element={<StudentVisual user={currentUser}/> }
         />
           <Route
-            path="/AddDependencies/:id"
+            path="/AddDependencies"
             element={<AddDependencies user={currentUser} />}
           />
           <Route

@@ -29,7 +29,8 @@ router.route("/testToken").get(UsersCtrl.apiVerifyToken)
 
 router.route("/user").get(UsersCtrl.apiGetUsers)
                      .post(UsersCtrl.apiPostUser)
-                     .delete(UsersCtrl.apiDeleteUserByID)
+                     //.delete(UsersCtrl.apiDeleteUserByID)
+                     .delete(UsersCtrl.apiDeleteUser)
 
 router.route("/requests").post(RequestsCtrl.apiPostRequest)
                          .get(RequestsCtrl.apiGetRequests)

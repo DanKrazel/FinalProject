@@ -190,7 +190,6 @@ const ViewListVisualisation = props => {
                     <th scope="col">#</th>
                     <th scope="col">visualizationID</th>
                     <th scope="col">Sender</th>
-                    <th scope="col">StudentID</th>
                     <th scope="col">Visualization</th>
                     {/* <th scope="col">StudentID</th>
                     <th scope="col">Student name</th>
@@ -204,7 +203,6 @@ const ViewListVisualisation = props => {
               <tr key={imageVisualization._id}>
               <th scope="row">{i+1}</th>
               <td>{imageVisualization._id}</td>
-              <td>{imageVisualization.sender}</td>
               <td>{imageVisualization.sender}</td>
               <td> 
                 <Popup trigger={<img src={imageVisualization.imagePath} style={{width:'100%',maxWidth:'100px'}}></img>} 

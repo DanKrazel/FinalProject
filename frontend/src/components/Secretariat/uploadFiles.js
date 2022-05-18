@@ -231,11 +231,12 @@ const UploadFiles = props => {
       .then(response => {
         setCoursesDeleted(true)
         console.log(response.data);
+        setRefreshKey(oldKey => oldKey +1)
       })
       alert(
         `All courses was deleted`
       );
-      setRefreshKey(oldKey => oldKey +1)
+
     }
     else{
       if(data.file){
@@ -244,11 +245,11 @@ const UploadFiles = props => {
           setSubmitted(!submitted);
           setDataCSV(response.data)
           console.log(response.data);
+          setRefreshKey(oldKey => oldKey +1)
         })
         alert(
           `Selected file - ${data.file.name} was uploaded`
         );
-        setRefreshKey(oldKey => oldKey +1)
         }
       else{
         alert(
@@ -272,22 +273,22 @@ const UploadFiles = props => {
       CourseDetailsDataService.deleteAllCoursesDetails()
       .then(response => {
         console.log(response.data);
+        setRefreshKey(oldKey => oldKey +1);
       })
       alert(
         `All courses was deleted`
       );
-      setRefreshKey(oldKey => oldKey +1)
     }
     else{
       if(data.file){
         CourseDetailsDataService.uploadDetailsCourses(formData)
         .then(response => {
           console.log('response upload details courses', response.data);
+          setRefreshKey(oldKey => oldKey +1)
         })
         alert(
           `Selected file - ${data.file.name} was uploaded`
         );
-        setRefreshKey(oldKey => oldKey +1)
         }
       else{
         alert(
@@ -309,11 +310,11 @@ const UploadFiles = props => {
         StudentDataService.uploadStudents(formData)
         .then(response => {
           console.log(response.data);
+          setRefreshKey(oldKey => oldKey +1)
         })
         alert(
           `Selected file - ${data.file.name} was uploaded`
         );
-        setRefreshKey(oldKey => oldKey +1)
         }
       else{
         alert(
@@ -328,23 +329,23 @@ const UploadFiles = props => {
           RequestDataService.deleteAllRequests()
             .then(response => {
               console.log(response.data);
+              setRefreshKey(oldKey => oldKey +1)
         })
           console.log(response.data);
         })
         alert(
           `CSV file was deleted`
         );
-        setRefreshKey(oldKey => oldKey +1)
     }
 
     const deleteAllCoursesDetails = () => {
       CourseDetailsDataService.deleteAllCoursesDetails()
         .then(response => {
           console.log('deleteAllCourse',response)
+          setRefreshKey(oldKey => oldKey +1)
           alert(
             `CSV file was deleted`
           );
-          setRefreshKey(oldKey => oldKey +1)
         })
         .catch(e => {
           console.log(e);
@@ -555,6 +556,9 @@ const UploadFiles = props => {
           </button>
       )} 
     </div>
+    <Link to="/AddDependencies" className="btn btn-primary">
+            Add dependencies
+    </Link>
 
     </div>
                 

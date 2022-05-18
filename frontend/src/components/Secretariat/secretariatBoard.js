@@ -194,7 +194,7 @@ const SecretariatBoard = props => {
                         <strong>Valid Units: </strong>{student.valideunits}
                       </p>
                       <div className="row">
-                      <Link to={"/Downloadcsv/"+student._id} className="btn btn-primary col-lg-5 mx-1 mb-1">
+                      <Link to={"/DynamicVisual/"+student._id} className="btn btn-primary col-lg-5 mx-1 mb-1">
                         View students
                       </Link>
                       </div>

@@ -88,18 +88,74 @@ export default class userDAO {
     }
   }
 
-  static async deleteUser (userID, username, password, mail) {
+  static async deleteUser (filters) {
     try {
-      const userDoc = { 
-          user_id: userID,
-          username: username,
-          password: password,
-          mail: mail,}
-
-      return await users.deleteOne(userDoc)
+      let query
+      if (filters) {
+        if ("_id" in filters) {
+          query = { "_id": { $eq: filters["_id"] } }
+        } else if ("username" in filters) {
+          console.log("testQuery")
+          query = { "username": { $eq: filters["username"] } }
+        } else if ("password" in filters) {
+          query = { "password": { $eq: filters["password"] } } 
+        }  else if ("mail" in filters) {
+          query = { "mail": { $eq: filters["mail"] } }
+        } else if ("role" in filters) {
+          query = { "role": { $eq: filters["role"] } }
+        }
+      }
+      console.log(query)
+  
+      return await users.deleteOne(query)
     } catch (e) {
-      console.error(`Unable to post user: ${e}`)
-      return { error: e }
+      console.error(`Unable to issue find command, ${e}`)
+    }
+  }
+
+  static async getUsers({
+    filters = null,
+    page = 0,
+    usersPerPage = 20,
+  } = {}) {
+    let query
+    if (filters) {
+      if ("_id" in filters) {
+        query = { "_id": { $eq: filters["_id"] } }
+      } else if ("username" in filters) {
+        query = { "username": { $eq: filters["username"] } }
+      } else if ("password" in filters) {
+        query = { "password": { $eq: filters["password"] } } 
+      } else if ("phone" in filters) {
+        query = { "phone": { $eq: filters["phone"] } }
+      } else if ("mail" in filters) {
+        query = { "mail": { $eq: filters["mail"] } }
+      } else if ("role" in filters) {
+        query = { "role": { $eq: filters["role"] } }
+      }
+    }
+
+    let cursor
+    
+    try {
+      cursor = await users.find(query)
+    } catch (e) {
+      console.error(`Unable to issue find command, ${e}`)
+      return { usersList: [], totalNumUsersList: 0 }
+    }
+
+    const displayCursor = cursor.limit(usersPerPage).skip(usersPerPage * page)
+
+    try {
+      const usersList = await displayCursor.toArray()
+      const totalNumUsers = await users.countDocuments(query)
+
+      return { usersList, totalNumUsers }
+    } catch (e) {
+      console.error(
+        `Unable to convert cursor to array or problem counting documents, ${e}`,
+      )
+      return { usersList: [], totalNumUsers: 0 }
     }
   }
 
@@ -159,6 +215,7 @@ export default class userDAO {
             var token = jwt.sign({id:user._id,username:user.username},JWT_SECRET,{ expiresIn: config.jwtExpiration})
             return {status:'success',
                     id: user._id,
+                    user_id: user.user_id,
                     username: user.username,
                     mail: user.mail,
                     role: user.role,

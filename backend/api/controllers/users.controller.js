@@ -49,6 +49,26 @@ export default class UsersController {
     res.json(response)
   }
 
+  static async apiDeleteUser(req, res, next) {
+    try {
+      let filters = {}
+      if (req.query._id) {
+        filters._id = ObjectId(req.query._id)
+      } else if (req.query.username) {
+        filters.username = req.query.username
+      } else if (req.query.mail) {
+        filters.mail = req.query.mail
+      }
+      console.log(filters)
+      const response = await UsersDAO.deleteUser(filters)
+  
+      res.json(response)
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+
+  }
+
 
   static async apiPostUser(req, res, next) {
     try {
@@ -150,6 +170,7 @@ export default class UsersController {
           //res.json({ status: "success" })
           res.status(200).send({ status: response.status,
                                  id: response.id,
+                                 user_id: response.user_id,
                                  username: response.username,
                                  mail: response.mail,
                                  role: response.role,

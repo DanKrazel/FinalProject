@@ -8,7 +8,6 @@ const Profil = props => {
     const [refreshKey, setRefreshKey] = useState(0);
 
     useEffect(() => {
-      console.log("props.user",props.user)
     }, []);
 
     return (
@@ -18,16 +17,20 @@ const Profil = props => {
             <strong>{currentUser.username}</strong> Profile
           </h3>
         </header>
-      <ul class="list-group">
-        <li class="list-group-item">
+      <ul className="list-group">
+        <li className="list-group-item">
           <strong>Id:</strong>{" "}
-          {currentUser.id}
+          {currentUser.user_id}
         </li>
-        <li class="list-group-item">
+        <li className="list-group-item">
+          <strong>Username:</strong>{" "}
+          {currentUser.username}
+        </li>
+        <li className="list-group-item">
           <strong>Email:</strong>{" "}
           {currentUser.mail}
         </li>
-        <li class="list-group-item">
+        <li className="list-group-item">
           <strong>Roles:</strong>{" "}
           {currentUser.role}
         </li>

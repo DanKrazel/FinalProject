@@ -160,7 +160,7 @@ const Student = props => {
         <button className="k-button" onClick={exportPDFWithComponent}>
           Save PDF to Blockchain
         </button>
-        <button class="position-absolute top-right" onClick={() => navigate(-1)} >
+        <button className="position-absolute top-right" onClick={() => navigate(-1)} >
           Return to previous page
         </button>
       </div>

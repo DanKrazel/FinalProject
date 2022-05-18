@@ -1,21 +1,74 @@
 import request from "supertest";
 // import { expect } from "chai";
-import 'dotenv/config'
+import dotenv from "dotenv"
 //import UsersDAO from "../../dao/usersDAO.js"
 //import UsersCtrl from "../../api/controllers/users.controller.js"
-import MongoClient from "mongodb"
 import mongodb from "mongodb"
 import express from "express"
+import app from "../server.js"
+import student from "../api/routes/students.route.js"
+import axios from "axios";
 
-//import app from "../app.js"
 
 const baseUrl = "localhost:5000/api/v1/students"
+const uri = process.env.STUDREVIEWS_DB_URI
+dotenv.config()
+const MongoClient = mongodb.MongoClient
+
+const instance = axios.create({
+  baseURL: "http://localhost:5000/api/v1/students",
+  headers: {
+    "Content-type": "application/json"
+  }
+});
 
 describe('GET /user', () => {
   it('responds with json', async() => {
-    const res = await request(baseUrl).get('/user');
-    console.log("app", res)
-    expect(res.statusCode).toEqual(200)
+    const response = await request(baseUrl)
+    .get('/user')
+    .set('Accept', 'application/json')
+    //console.log(response)
+    expect(response.headers["content-type"]).toMatch(/json/);
+    expect(response.statusCode).toEqual(200)
+  });
+});
+
+describe('POST /user', () => {
+  let db;
+  let connection;
+  
+  // beforeAll(async () => {
+  //   connection = await MongoClient.connect(
+  //     process.env.STUDREVIEWS_DB_URI,
+  //     {
+  //       useNewUrlParser: true,
+  //       useUnifiedTopology: true,
+  //     });
+  //     console.log('connection',connection)
+  //     db = await connection.db('students');
+
+  // });
+  
+  // afterAll(async () => {
+  //   await connection.close();
+  // });
+
+  it('responds with success', async(done) => {
+    var tempUser = {
+      user_id : "364826677",
+      username : "test",
+      password : "12345",
+      mail : "derts@gmail.com",
+      role: "Admin"
+    }
+    const users = db.collection('users');
+    const response = await request(baseUrl)
+    .post('/signup')
+    .send(tempUser);
+    expect(response.statusCode).toEqual(200)
+    const insertedUser = await users.findOne({username: tempUser.username});
+    expect(insertedUser.username).toEqual(tempUser.username)
+    done()
   });
 });
 

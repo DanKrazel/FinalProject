@@ -67,23 +67,22 @@ const StudentSendProf = props => {
   const boxStyle = { padding: '10px', border: '1px solid black' };
   const [student, setStudent] = useState(initialStudentState);
   //const [refreshKey, setRefreshKey] = useState(0);
-  const [countUnitSemester1, setCountUnitSemester1] = useState(0)
-  const [countUnitBySemester, setCountUnitBySemester] = useState(0)
   const [unitsBySemester, setUnitsBySemester] = useState([])
-  const [idCourse, setIdCourse] = useState()
   const [professor, setProfessor] = useState(initialProfessorState)
-  const [submittedVisualisation, setSubmittedVisualisation] = useState(false)
   const [image, setImage] = useState()
   const [user, setUser] = useState(initialUserState)
   const [imageVisualization, setImageVizualisation] = useState([])
   const [refreshKey, setRefreshKey] = useState(0);
   const componentRef = useRef();
   const ImageInput = React.createRef();
+  const [dependencies, setDependencies] = useState([]);
+
 
 
 
   
   useEffect(() => {
+    retrieveDependencies();
     getStudent(params.studentID);
     getUnitsBySemester(params.studentID);
     updateTotalUnitForEachSemester();
@@ -138,51 +137,20 @@ const StudentSendProf = props => {
   };
 
 
-  const exportAsImage = async (element) => {
-    const canvas = await html2canvas(element);
-    console.log(canvas)
-    const image = canvas.toDataURL("image/png", 1.0);
-    // download the image
-    };
 
-  const container = React.useRef(null);
-  const pdfExportComponent = React.useRef(null);
   
-  const exportPDFWithComponent = () => {
-      if (pdfExportComponent.current) {
-        console.log(pdfExportComponent.current)
-        pdfExportComponent.current.save();
-      }
-    }
+  const retrieveDependencies = () => {
+    DependenciesDataService.getAll()
+      .then(response => {
+        console.log("responseDependencies", response.data);
+        setDependencies(response.data.dependencies);
+        console.log("Dependency", dependencies);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
 
-  const updateTotalUnitForEachSemester = () => {
-    for(let i=0; i<unitsBySemester.length; i++){
-      if(unitsBySemester[i].yearOfLearning == 'א'){
-        if(unitsBySemester[i].semesterOfLearning == 'א'){
-          countUnitSemesters = unitsBySemester[i].units
-        }
-        if(unitsBySemester[i].semesterOfLearning == 'ב'){
-          console.log("update");
-          var data = {
-            yearOfLearning: unitsBySemester[i].yearOfLearning,
-            semesterOfLearning: unitsBySemester[i].semesterOfLearning,
-            units: unitsBySemester[i].units + countUnitSemesters,
-            studentID: params.studentID
-          }
-          UnitsBySemesterDataService.updateUnitsBySemester(data)
-          .then(response => {
-            console.log(response.data);
-            console.log("update");
-          })
-          .catch(e => {
-              console.log(e);
-          });
-        }
-      }
-    }
-    
-  } 
-  
   const sendEmailVisualisationToProfessor = (e) => {
     e.preventDefault();
     
@@ -203,995 +171,155 @@ const StudentSendProf = props => {
 
   const ComponentToPrint = React.forwardRef((props, ref) => (
     <div id="capture" ref={ref} paperSize="auto" margin={40} >
-      {student ? (  
-        <div >
-          <h5>{student.name}</h5>
-          {(() => {
-            if (student.average <60)
-              {
-                            return (
-                                <p>
-                                <div className="col-sm1 text-white bg-secondary w-40 l-20">
-                                  <strong> ת״ז : </strong>{student.student_id}
-                                  <strong> | ממוצע : </strong>{student.average}
-                                  <strong> | נק״ז : </strong>{student.valideunits} 
-                                  <button class=" d-block  ml-auto" onClick={() => navigate(-1)} >         חריגה </button> <br/> 
-                                  </div>        
-                                </p> 
-                            )
-                        } else {
-                            return (
-                              <p>
-                              <div className="col-sm1 text-white bg-secondary w-40 l-20">
-                                <strong> ת״ז : </strong>{student.student_id}
-                                <strong> | ממוצע : </strong>{student.average}
-                                <strong> | נק״ז עובר: </strong>{student.valideunits} 
-                                <strong class=" d-block  ml-auto mr-o " > תקין </strong> 
-                                <br/> 
-                                </div>        
-                              </p> 
-                          )
-                        }
-                })()  
-            }
-         
-          <div className="card text-center " >     
-             שנה א      
-          </div>  
-            <div className="row">
-            <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
-              סמסטר א  
-            <div>
-            {unitsBySemester.map((unitBySemester) => {
-              if(unitBySemester.yearOfLearning == 'א'){
-                if(unitBySemester.semesterOfLearning == 'א'){
-                    return (<div>
-                        נק״ז : {unitBySemester.totalunits } /  {unitBySemester.valideunits }
-                    </div>); 
-                }
-              }
-            })} 
-            </div>
-            </div>  
-            {student.courses.length > 0 ? (
-             student.courses.map((course, index) => {  
-              if (course.yearOfLearning =='א'){
-                if ((course.grade>55 && course.semesterOfLearning=='א' )){
-                  if(course.courseName == 'חדו"א  - 1'){
-                    return (
-                      <div className="col-sm" id={(course.codeCourse).toString()}
-                          key={course.codeCourses} >               
-                      <div  className="card my-3 " ref={box1Ref}>     
-                      <p className='bg-success text-white text-center'>
-                       <h11>
-                         {course.courseName}<br/>
-                         {course.grade}<br/>
-                         {course.units}
-                       </h11>
-                      </p>
-                      </div> 
-                     
-                      </div> 
-                      );
-                    }
-                    return (
-                      <div className="col-sm text-white " id={(course.codeCourse).toString()}
-                  key={course.codeCourses} >                 
-                  <div  className="card my-3 ">     
-                  <p className='bg-success text-white text-center'>
-                       <h11>
-                         {course.courseName}<br/>
-                         {course.grade}<br/>
-                         {course.units}
-                       </h11>
-                     </p>
-                     </div> 
-                     
-                    </div> 
-                );}
-                else if (course.grade<56 && course.semesterOfLearning=='א' ){
-                return (      
-                   <div className="col-sm text-white "  
-                    ref={el => {
-                    // el can be null - see https://reactjs.org/docs/refs-and-the-dom.html#caveats-with-callback-refs
-                      if (!el) return;       
-                      console.log(el.getBoundingClientRect()); // prints 200px
-                    }}
-                    key={index} >      
-                     <div className="card my-3" style={{maxWidth: '18rem'}}>    
-                     <p className='bg-danger text-white text-center'>
-                       <h11>
-                         {course.courseName}<br/>
-                         {course.grade}<br/>
-                         {course.units}
-                       </h11>
-                      </p>
-                     </div>
-                    
-                   </div> 
-                );}
-                else if (course.semesterOfLearning=='א' ){
-                  return ( 
-                    <div className="col-sm text-white "  key={index} >      
-                      <div className="card"  style="width: 18rem;">    
-                      <p className='bg-secondary text-white text-center'>
-                          <h11>
-                            {course.courseName}<br/>
-                            {course.grade}<br/>
-                            {course.units}
-                          </h11>
-                        </p>
-                       </div>
-                    </div>         
-                );}
-              }
-             }) 
-            ) : (
-            <div className="col-sm-4">
-              <p>No courses yet.</p>
-            </div>
-            )}
-          </div>
-          <div className="row">
-          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
-            סמסטר ב 
-            <div>
-            {unitsBySemester.map((unitBySemester) => {
-              if(unitBySemester.yearOfLearning == 'א'){
-                if(unitBySemester.semesterOfLearning == 'ב'){
-                    return (<div>
-                        נק״ז : {unitBySemester.totalunits } /  {unitBySemester.valideunits }
-                    </div>); 
-                }
-              }
-            })} 
-            </div>           
-            </div>    
-            {student.courses.length > 0 ? (
-             student.courses.map((course, index) => {     
-              if (course.yearOfLearning ==='א'){ 
-                if (course.grade>55 && course.semesterOfLearning=='ב'){
-                  if(course.courseName == 'חדוא 2 להנדסת תוכנה'){
-                    return (
-                      <div className="col-sm text-white " 
-                          key={course.codeCourses}>                 
-                      <div  className="card my-3 " id={(course.codeCourse).toString()}>     
-                      <p className='bg-success text-white text-center'>
-                       <h11>
-                         {course.courseName}<br/>
-                         {course.grade}<br/>
-                         {course.units}
-                       </h11>
-                      </p>
-                      </div> 
-                      
-                      {/* {<Xarrow curveness={0} path="grid" _cpx1Offset={-90} _cpy1Offset={58} _cpx2Offset={80} _cpy2Offset={-44}
-                        start={box1Ref} //can be react ref
-                        end={(course.codeCourse).toString()} //or an id
-                      /> } */}
-                      </div> 
+      {student ? (
+            <div >
+              <h5>{student.name}</h5>
+              {(() => {
+                if ((student.average < 60) || (student.years === 'ב' && student.totalunits < 36) || ((student.years === 'ג' && student.totalunits < 75)) || ((student.years === 'ד' && student.totalunits < 115))) {
+                  return (
+                    <p>
+                      <div className="col-sm1 text-white bg-secondary w-40 l-20">
+                        <strong> ת״ז : </strong>{student.student_id}
+                        <strong> | ממוצע : </strong>{student.average}
+                        <strong> | נק״ז : </strong>{student.totalunits}
+                        <strong> | נק״ז : </strong>{student.valideunits}
 
-                      );
-                    }
-               return (
-                 <div className="col-sm text-white" id={(course.codeCourse).toString()}  
-                  
-                //  ref={el => {
-                //   // el can be null - see https://reactjs.org/docs/refs-and-the-dom.html#caveats-with-callback-refs
-                //     if (!el) 
-                //       return;  
-                //     let coordinate = []     
-                //     console.log(el.id); // prints 200px
-                //     if(course.courseName == 'חדוא 2 להנדסת תוכנה'){
-                //       console.log('hedva2',el.id)
-                //       //const arrow = arrowLine(idCourse, el.id+"",{ color: 'blue' });
-                //     //console.log('check',idCourse)
-                //     }
+                      </div>
+                    </p>
+                  )
+                } else {
+                  return (
+                    <p>
+                      <div className="col-sm1 text-white bg-secondary w-40 l-20">
+                        <strong> ת״ז : </strong>{student.student_id}
+                        <strong> | ממוצע : </strong>{student.average}
+                        <strong> | נק״ז עובר: </strong>{student.valideunits}
+                        <strong class=" d-block  ml-auto mr-o " > תקין </strong>
 
-                //     }}
-                  key={index} >    
-                   <div className="card my-3">    
-                   <p className='bg-success text-white text-center'>
-                       <h11>
-                         {course.courseName}<br/>
-                         {course.grade}<br/>
-                         {course.units}
-                         
-                       </h11>
-                     </p>
-                   </div>
-                  
-                 </div> 
-                );}
-                else if (course.grade<56 && course.semesterOfLearning=='ב'){
-                return ( 
-                   <div className="col-sm text-white "  key={index} >     
-                     <div className="card my-3">    
-                     <p className='bg-danger text-white text-center'>
-                       <h11>
-                         {course.courseName}<br/>
-                         {course.grade}<br/>
-                         {course.units}
-                       </h11>
-                     </p>
-                     </div>
-                   </div> 
-                );}
-                else if(course.courseName == 'חדו"א  - 1') {
-                  //console.log('good');
-                  {student.courses.map((course1, index) => { 
-                    if(course1.courseName == 'חדוא 2 להנדסת תוכנה'){
-                      //console.log('good1');
-                      return(
-                        <svg height="210" width="500">
-                          <line x1="0" y1="0" x2="200" y2="200" style="stroke:rgb(255,0,0);stroke-width:2" />
-                        </svg>
-                      );
-                    }
-                  })
-                }
-                
-                }
-                else if (course.semesterOfLearning=='ב'){
-                  return ( 
-                    <div className="col-sm text-white "  key={index} >      
-                      <div className="card my-3">    
-                      <p className='bg-secondary text-white text-center'>
-                       <h11>
-                         {course.courseName}<br/>
-                         {course.grade}<br/>
-                         {course.units}
-                       </h11>
-                     </p>   
+                        <Link to={"/students/" + student._id} className="btn btn-primary col-lg-5 mx-1 mb-1">
+                          View Students
+                        </Link>
+                        <br />
                       </div>
-                    </div>
-                );}
-              }
-            })
-            ) : (
-            <div className="col-sm-4">
-              <p>No courses yet.</p>
-            </div>
-            )}
-          </div>
-          <div className="row">
-          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
-              סמסטר ק
-            <div>
-            {unitsBySemester.map((unitBySemester) => {
-              if(unitBySemester.yearOfLearning == 'א'){
-                if(unitBySemester.semesterOfLearning == 'ק'){
-                    return (<div>
-                        נק״ז : {unitBySemester.totalunits } /  {unitBySemester.valideunits }
-                    </div>); 
+                    </p>
+                  )
                 }
+              })()
               }
-            })} 
-            </div>      
-            </div>  
+              <>
+                {zipped.map((dependency, index) => {
+                  return (
+                    <div >
+                      {
+                        <Xarrow curveness={0} path="grid" strokeWidth={3} headShape={{ svgElem: <HeadSvg />, offsetForward: 1 }}
+                          start={dependency[0].toString()}  //can be react ref
+                          end={dependency[1].toString()} //or an id
+                        />
+                      }
+                    </div>
+                  );
+                })}
+                {years.map((year, index) => {
+                  return (
+                    <>
+                      <div className="row">
+                        {semesters.map((semester, index3) => {
+                          return (
+                            <div className="row">
+                              {coursesDetails.map((course, index2) => {
+                                const f = student.courses.find(({ courseName }) => courseName === course.courseName)
+                                if ((!f) && (course.yearOfLearning == year) && (course.semesterOfLearning == semester)) {
+                                  return (
+                                    <>
+                                      <div className="col-sm text-white "
+                                        key={course.codeCourses}>
+                                        <div className="card my-3 " id={(course.courseName).toString()} >
+                                          <p className='bg-secondary text-white text-center'>
+                                            <h11>
+                                              {course.courseName}<br />
+                                              {course.units}
+                                            </h11>
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </>
 
-          
-                
-            {student.courses.length > 0  ? (
-             student.courses.map((course, index) => {
-              if (course.yearOfLearning =='א'){      
-                if (course.grade>55 && course.semesterOfLearning=='ק'){
-               return (
-                 <div id="no1" className="col-sm text-white "  key={index} >      
-                     <div className="card my-3">    
-                      <p className='bg-success text-white text-center'>
-                          <h11>
-                            {course.courseName}<br/>
-                            {course.grade}<br/>
-                            {course.units}
-                          </h11>
-                        </p>
-                   </div>
-                  
-                 </div> 
-                );}
-                else if (course.grade<56 && course.semesterOfLearning=='ק'){
-                return ( 
-                   <div className="col-sm text-white "  key={index} >     
-                       <div className="card my-3">    
-                      <p className='bg-danger text-white text-center'>
-                          <h11>
-                            {course.courseName}<br/>
-                            {course.grade}<br/>
-                            {course.units}
-                          </h11>
-                        </p>
-                     </div>
-                   </div> 
-                );}
-                else if (course.semesterOfLearning=='ק'){
-                  return ( 
-                    <div className="col-sm text-white "  key={index} >      
-                        <div className="card my-3">    
-                      <p className='bg-secondary text-white text-center'>
-                          <h11>
-                            {course.courseName}<br/>
-                            {course.grade}<br/>
-                            {course.units}
-                          </h11>
-                        </p>   
-                      </div>
-                    </div>
-                );}
-              }
-             })
-            ) : (
-            <div className="col-sm-4">
-              <p>No courses yet.</p>
-            </div>
-            )}
-            
-          </div> 
-        
-        
-          <div className="card text-center " >    
-            שנה ב     
-          </div>  
-          <div className="row">    
-          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
-            סמסטר א 
-            <div>
-            {unitsBySemester.map((unitBySemester) => {
-              if(unitBySemester.yearOfLearning == 'א'){
-                if(unitBySemester.semesterOfLearning == 'ב')
-                  countUnitSemesters = unitBySemester.units
-              }
-              if(unitBySemester.yearOfLearning == 'ב'){
-                if(unitBySemester.semesterOfLearning == 'א'){
-                    return (<div>
-                        נק״ז :{unitBySemester.totalunits } /  {unitBySemester.valideunits }
-                    </div>); 
-                }
-              }
-            })} 
-            </div>   
-          </div>            
-            {student.courses.length > 0 ? (
-             student.courses.map((course, index) => {   
-              if (course.yearOfLearning =='ב'){   
-                if (course.grade>55 && course.semesterOfLearning=='א'){
-                return (
-                 <div className="col-sm text-white "  key={index} >      
-                   <div className="card my-3">    
-                        <p className='bg-success text-white text-center'>
-                          <h11>
-                            {course.courseName}<br/>
-                            {course.grade}<br/>
-                            {course.units}
-                          </h11>
-                        </p>
-                   </div>
-                  
-                 </div> 
-                );}
-                else if (course.grade<56 && course.semesterOfLearning=='א'){
-                return ( 
-                   <div className="col-sm text-white "  key={index} >     
-                       <div className="card my-3">    
-                      <p className='bg-danger text-white text-center'>
-                          <h11>
-                            {course.courseName}<br/>
-                            {course.grade}<br/>
-                            {course.units}
-                          </h11>
-                        </p>
-                     </div>
-                   </div> 
-                );}
-                else if (course.semesterOfLearning=='א'){
-                  return ( 
-                    <div className="col-sm text-white "  key={index} >      
-                        <div className="card my-3">    
-                      <p className='bg-secondary text-white text-center'>
-                          <h11>
-                            {course.courseName}<br/>
-                            {course.grade}<br/>
-                            {course.units}
-                          </h11>
-                        </p>    
-                      </div>
-                    </div>
-                );}
-             }
-            })
-            ) : (
-            <div className="col-sm-4">
-              <p>No courses yet.</p>
-            </div>
-            )}
-          </div>
-          <div className="row">
-          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
-               סמסטר ב
-            <div>
-            {unitsBySemester.map((unitBySemester) => {
-              if(unitBySemester.yearOfLearning == 'ב'){
-                if(unitBySemester.semesterOfLearning == 'ב'){
-                    return (<div>
-                        נק״ז : {unitBySemester.totalunits } /  {unitBySemester.valideunits }
-                    </div>); 
-                }
-              }
-            })} 
-            </div>      
-            </div>   
-            {student.courses.length > 0  ? (
-             student.courses.map((course, index) => {
-              if (course.yearOfLearning =='ב'){      
-                if (course.grade>55 && course.semesterOfLearning=='ב'){
-               return (
-                 <div id="no1" className="col-sm text-white "  key={index} >      
-                     <div className="card my-3">    
-                      <p className='bg-success text-white text-center'>
-                          <h11>
-                            {course.courseName}<br/>
-                            {course.grade}<br/>
-                            {course.units}
-                          </h11>
-                        </p>
-                   </div>
-                  
-                 </div> 
-                );}
-                else if (course.grade<56 && course.semesterOfLearning=='ב'){
-                return ( 
-                   <div className="col-sm text-white "  key={index} >     
-                       <div className="card my-3">    
-                      <p className='bg-danger text-white text-center'>
-                          <h11>
-                            {course.courseName}<br/>
-                            {course.grade}<br/>
-                            {course.units}
-                          </h11>
-                        </p>
-                     </div>
-                   </div> 
-                );}
-                else if (course.semesterOfLearning=='ב'){
-                  return ( 
-                    <div className="col-sm text-white "  key={index} >      
-                        <div className="card my-3">    
-                      <p className='bg-secondary text-white text-center'>
-                          <h11>
-                            {course.courseName}<br/>
-                            {course.grade}<br/>
-                            {course.units}
-                          </h11>
-                        </p>   
-                      </div>
-                    </div>
-                );}
-              }
-             })
-            ) : (
-            <div className="col-sm-4">
-              <p>No courses yet.</p>
-            </div>
-            )}
-            
-          </div> 
-          <div className="row">
-          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
-              סמסטר ק
-            <div>
-            {unitsBySemester.map((unitBySemester) => {
-              if(unitBySemester.yearOfLearning == 'ב'){
-                if(unitBySemester.semesterOfLearning == 'ק'){
-                    return (<div>
-                        נק״ז : {unitBySemester.totalunits } /  {unitBySemester.valideunits }
-                    </div>); 
-                }
-              }
-            })} 
-            </div>      
-            </div>  
 
-          
-                
-            {student.courses.length > 0  ? (
-             student.courses.map((course, index) => {
-              if (course.yearOfLearning =='ב'){      
-                if (course.grade>55 && course.semesterOfLearning=='ק'){
-               return (
-                 <div id="no1" className="col-sm text-white "  key={index} >      
-                     <div className="card my-3">    
-                      <p className='bg-success text-white text-center'>
-                          <h11>
-                            {course.courseName}<br/>
-                            {course.grade}<br/>
-                            {course.units}
-                          </h11>
-                        </p>
-                   </div>
-                  
-                 </div> 
-                );}
-                else if (course.grade<56 && course.semesterOfLearning=='ק'){
-                return ( 
-                   <div className="col-sm text-white "  key={index} >     
-                       <div className="card my-3">    
-                      <p className='bg-danger text-white text-center'>
-                          <h11>
-                            {course.courseName}<br/>
-                            {course.grade}<br/>
-                            {course.units}
-                          </h11>
-                        </p>
-                     </div>
-                   </div> 
-                );}
-                else if (course.semesterOfLearning=='ק'){
-                  return ( 
-                    <div className="col-sm text-white "  key={index} >      
-                        <div className="card my-3">    
-                      <p className='bg-secondary text-white text-center'>
-                          <h11>
-                            {course.courseName}<br/>
-                            {course.grade}<br/>
-                            {course.units}
-                          </h11>
-                        </p>   
-                      </div>
-                    </div>
-                );}
-              }
-             })
-            ) : (
-            <div className="col-sm-4">
-              <p>No courses yet.</p>
-            </div>
-            )}
-            
-          </div> 
-        
-        
-          <div className="card text-center " >    
-            שנה ג           
-          </div>  
-          <div className="row">    
-          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
-            סמסטר א
-            <div>
-            {unitsBySemester.map((unitBySemester) => {
-              if(unitBySemester.yearOfLearning == 'ג'){
-                if(unitBySemester.semesterOfLearning == 'א'){
-                    return (<div>
-                        נק״ז : {unitBySemester.totalunits } /  {unitBySemester.valideunits }
-                    </div>); 
-                }
-              }
-            })} 
-            </div>  
-          </div>
-            {student.courses.length > 0 ? (
-             student.courses.map((course, index) => {   
-              if (course.yearOfLearning =='ג'){   
-                if (course.grade>55 && course.semesterOfLearning=='א'){
-                return (
-                 <div className="col-sm text-white "  key={index} >      
-                     <div className="card my-3">    
-                      <p className='bg-success text-white text-center'>
-                          <h11>
-                            {course.courseName}<br/>
-                            {course.grade}<br/>
-                            {course.units}
-                          </h11>
-                        </p>  
-                   </div>
-                  
-                 </div> 
-                );}
-                else if (course.grade<56 && course.semesterOfLearning=='א'){
-                return ( 
-                   <div className="col-sm text-white "  key={index} >     
-                       <div className="card my-3">    
-                      <p className='bg-danger text-white text-center'>
-                          <h11>
-                            {course.courseName}<br/>
-                            {course.grade}<br/>
-                            {course.units}
-                          </h11>
-                        </p>  
-                     </div>
-                   </div> 
-                );}
-                else if (course.semesterOfLearning=='א'){
-                  return ( 
-                    <div className="col-sm text-white "  key={index} >      
-                        <div className="card my-3">    
-                      <p className='bg-secondary text-white text-center'>
-                          <h11>
-                            {course.courseName}<br/>
-                            {course.grade}<br/>
-                            {course.units}
-                          </h11>
-                        </p>     
-                      </div>
-                    </div>
-                );}
-             }
-            })
-            ) : (
-            <div className="col-sm-4">
-              <p>No courses yet.</p>
-            </div>
-            )}
-          </div>
-          <div className="row">
-          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
-            סמסטר ב   
-            <div>
-            {unitsBySemester.map((unitBySemester) => {
-              if(unitBySemester.yearOfLearning == 'ג'){
-                if(unitBySemester.semesterOfLearning == 'ב'){
-                    return (<div>
-                        נק״ז : {unitBySemester.totalunits } /  {unitBySemester.valideunits }
-                    </div>); 
-                }
-              }
-            })} 
-            </div>
-            </div> 
-            {student.courses.length > 0  ? (
-             student.courses.map((course, index) => {
-              if (course.yearOfLearning =='ג'){      
-                if (course.grade>55 && course.semesterOfLearning=='ב'){
-               return (
-                 <div className="col-sm text-white "  key={index} >      
-                   <div className="card my-3">    
-                   <p className='bg-success text-white text-center  '> 
-                          <h11>
-                            {course.courseName}<br/>
-                            {course.grade}<br/>
-                            {course.units}
-                          </h11>
-                        </p>  
-                   </div>
-                  
-                 </div> 
-                );}
-                else if (course.grade<56 && course.semesterOfLearning=='ב'){
-                return ( 
-                   <div className="col-sm text-white "  key={index} >     
-                     <div className="card my-3">    
-                     <p className='bg-success text-white text-center  '>
-                          <h11>
-                            {course.courseName}<br/>
-                            {course.grade}<br/>
-                            {course.units}
-                          </h11>
-                        </p>  
-                     </div>
-                   </div> 
-                );}
-                else if (course.semesterOfLearning=='ב'){
-                  return ( 
-                    <div className="col-sm text-white "  key={index} >      
-                      <div className="card my-3">    
-                      <p className='bg-success text-white text-center  '>
-                          <h11>
-                            {course.courseName}<br/>
-                            {course.grade}<br/>
-                            {course.units}
-                          </h11>
-                        </p>      
-                      </div>
-                    </div>
-                );}
-              }
-             })
-            ) : (
-            <div className="col-sm-4">
-              <p>No courses yet.</p>
-            </div>
-            )}
-            
-          </div> 
+                                  );
+                                }
+                                else if ((course.yearOfLearning == year) && f && f.semesterOfLearning == semester) {
+                                  if (f.grade > 55) {
+                                    return (
+                                      <div className="col-sm text-white "
+                                        key={course.codeCourses}>
+                                        <div className="card my-3 " id={(f.courseName).toString()}>
+                                          <p className='bg-success text-white text-center'>
+                                            <h11>
+                                              {f.courseName}<br />
+                                              {f.grade}<br />
+                                              {f.units}
+                                            </h11>
+                                          </p>
+                                        </div>
+                                      </div>
+                                    );
+                                  }
+                                  else if (f.grade > 1) {
+                                    return (
+                                      <div className="col-sm text-white "
+                                        key={course.codeCourses}>
+                                        <div className="card my-3 " id={(f.courseName).toString()}>
+                                          <p className='bg-danger text-white text-center'>
+                                            <h11>
+                                              {f.courseName}<br />
+                                              {f.grade}<br />
+                                              {f.units}
+                                            </h11>
+                                          </p>
+                                        </div>
+                                      </div>
+                                    );
+                                  }
+                                  else {
+                                    return (
+                                      <div className="col-sm text-white "
+                                        key={course.codeCourses}>
+                                        <div className="card my-3 " id={(f.courseName).toString()}>
+                                          <p className='bg-success text-white text-center'>
+                                            <h11>
+                                              {f.courseName}<br />
+                                              {f.grade}<br />
+                                              {f.units}
+                                            </h11>
+                                          </p>
+                                        </div>
+                                      </div>
+                                    );
+                                  }
 
-          <div className="row">
-          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
-              סמסטר ק
-            <div>
-            {unitsBySemester.map((unitBySemester) => {
-              if(unitBySemester.yearOfLearning == 'ג'){
-                if(unitBySemester.semesterOfLearning == 'ק'){
-                    return (<div>
-                        נק״ז : {unitBySemester.totalunits } /  {unitBySemester.valideunits }
-                    </div>); 
-                }
-              }
-            })} 
-            </div>      
-            </div> 
-                
-            {student.courses.length > 0  ? (
-             student.courses.map((course, index) => {
-              if (course.yearOfLearning =='ג'){      
-                if (course.grade>55 && course.semesterOfLearning=='ק'){
-               return (
-                 <div id="no1" className="col-sm text-white "  key={index} >      
-                     <div className="card my-3">    
-                      <p className='bg-success text-white text-center'>
-                          <h11>
-                            {course.courseName}<br/>
-                            {course.grade}<br/>
-                            {course.units}
-                          </h11>
-                        </p>
-                   </div>
-                  
-                 </div> 
-                );}
-                else if (course.grade<56 && course.semesterOfLearning=='ק'){
-                return ( 
-                   <div className="col-sm text-white "  key={index} >     
-                       <div className="card my-3">    
-                      <p className='bg-danger text-white text-center'>
-                          <h11>
-                            {course.courseName}<br/>
-                            {course.grade}<br/>
-                            {course.units}
-                          </h11>
-                        </p>
-                     </div>
-                   </div> 
-                );}
-                else if (course.semesterOfLearning=='ק'){
-                  return ( 
-                    <div className="col-sm text-white "  key={index} >      
-                        <div className="card my-3">    
-                      <p className='bg-secondary text-white text-center'>
-                          <h11>
-                            {course.courseName}<br/>
-                            {course.grade}<br/>
-                            {course.units}
-                          </h11>
-                        </p>   
-                      </div>
-                    </div>
-                );}
-              }
-             })
-            ) : (
-            <div className="col-sm-4">
-              <p>No courses yet.</p>
-            </div>
-            )}
-            
-          </div> 
-        
-        
-          <div className="card text-center " >      
-            שנה ד   
-          </div>  
-          <div className="row">    
-          
-          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
-              סמסטר א
-            <div>
-            {unitsBySemester.map((unitBySemester) => {
-              if(unitBySemester.yearOfLearning == 'ד'){
-                if(unitBySemester.semesterOfLearning == 'א'){
-                    return (<div>
-                        נק״ז : {unitBySemester.totalunits } /  {unitBySemester.valideunits }
-                    </div>); 
-                }
-              }
-            })} 
-            </div>     
-          </div>          
-            {student.courses.length > 0 ? (
-             student.courses.map((course, index) => {   
-              if (course.yearOfLearning =='4'){   
-                if (course.grade>55 && course.semesterOfLearning=='א'){
-                return (
-                 <div className="col-sm text-white "  key={index} >      
-                   <div className="card my-3">    
-                   <p className='bg-success text-white text-center  '>
-                          <h11>
-                            {course.courseName}<br/>
-                            {course.grade}<br/>
-                            {course.units}
-                          </h11>
-                        </p>
-                   </div>
-                  
-                 </div> 
-                );}
-                else if (course.grade<56 && course.semesterOfLearning=='א'){
-                return ( 
-                   <div className="col-sm text-white "  key={index} >     
-                     <div className="card my-3">    
-                     <p className='bg-success text-white text-center  '>
-                          <h11>
-                            {course.courseName}<br/>
-                            {course.grade}<br/>
-                            {course.units}
-                          </h11>
-                        </p>
-                     </div>
-                   </div> 
-                );}
-                else if (course.semesterOfLearning=='א'){
-                  return ( 
-                    <div className="col-sm text-white "  key={index} >      
-                      <div className="card my-3">    
-                      <p className='bg-success text-white text-center  '>
-                          <h11>
-                            {course.courseName}<br/>
-                            {course.grade}<br/>
-                            {course.units}
-                          </h11>
-                        </p>    
-                      </div>
-                    </div>
-                );}
-             }
-            })
-            ) : (
-            <div className="col-sm-4">
-              <p>No courses yet.</p>
-            </div>
-            )}
-          </div>
-          <div className="row">
-          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
-            סמסטר ב
-            <div>
-            {unitsBySemester.map((unitBySemester) => {
-              if(unitBySemester.yearOfLearning == 'ד'){
-                if(unitBySemester.semesterOfLearning == 'ב'){
-                    return (<div>
-                        נק״ז : {unitBySemester.totalunits } /  {unitBySemester.valideunits }
-                    </div>); 
-                }
-              }
-            })} 
-            </div>     
-            </div>        
-            {student.courses.length > 0  ? (
-             student.courses.map((course, index) => {
-              if (course.yearOfLearning =='4'){      
-                if (course.grade>55 && course.semesterOfLearning=='ב'){
-               return (
-                 <div className="col-sm text-white "  key={index} >      
-                   <div className="card  my-3" >    
-                   <p className='bg-success text-white text-center  '>
-                          <h11>
-                            {course.courseName}<br/>
-                            {course.grade}<br/>
-                            {course.units}
-                          </h11>
-                        </p>
-                   </div>
-                  
-                 </div> 
-                );}
-                else if (course.grade<56 && course.semesterOfLearning=='ב'){
-                return ( 
-                   <div className="col-sm text-white "  key={index} >     
-                     <div className="card my-3">    
-                     <p className='bg-success text-white text-center  '>
-                          <h11>
-                            {course.courseName}<br/>
-                            {course.grade}<br/>
-                            {course.units}
-                          </h11>
-                        </p>
-                     </div>
-                   </div> 
-                );}
-                else if (course.semesterOfLearning=='ב'){
-                  return ( 
-                    <div className="col-sm text-white "  key={index} >      
-                      <div className="card my-3">    
-                      <p className='bg-success text-white text-center  '>
-                          <h11>
-                            {course.courseName}<br/>
-                            {course.grade}<br/>
-                            {course.units}
-                          </h11>
-                        </p>   
-                      </div>
-                    </div>
-                );}
-              }
-             })
-            ) : (
-            <div className="col-sm-4">
-              <p>No courses yet.</p>
-            </div>
-            )}
-            
-          </div>   
-          <div className="row">
-          <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
-              סמסטר ק
-            <div>
-            {unitsBySemester.map((unitBySemester) => {
-              if(unitBySemester.yearOfLearning == 'ד'){
-                if(unitBySemester.semesterOfLearning == 'ק'){
-                    return (<div>
-                        נק״ז : {unitBySemester.totalunits } /  {unitBySemester.valideunits }
-                    </div>); 
-                }
-              }
-            })} 
-            </div>      
-            </div>  
 
-          
-                
-            {student.courses.length > 0  ? (
-             student.courses.map((course, index) => {
-              if (course.yearOfLearning =='ד'){      
-                if (course.grade>55 && course.semesterOfLearning=='ק'){
-               return (
-                 <div id="no1" className="col-sm text-white "  key={index} >      
-                     <div className="card my-3">    
-                      <p className='bg-success text-white text-center'>
-                          <h11>
-                            {course.courseName}<br/>
-                            {course.grade}<br/>
-                            {course.units}
-                          </h11>
-                        </p>
-                   </div>
-                  
-                 </div> 
-                );}
-                else if (course.grade<56 && course.semesterOfLearning=='ק'){
-                return ( 
-                   <div className="col-sm text-white "  key={index} >     
-                       <div className="card my-3">    
-                      <p className='bg-danger text-white text-center'>
-                          <h11>
-                            {course.courseName}<br/>
-                            {course.grade}<br/>
-                            {course.units}
-                          </h11>
-                        </p>
-                     </div>
-                   </div> 
-                );}
-                else if (course.semesterOfLearning=='ק'){
-                  return ( 
-                    <div className="col-sm text-white "  key={index} >      
-                        <div className="card my-3">    
-                      <p className='bg-secondary text-white text-center'>
-                          <h11>
-                            {course.courseName}<br/>
-                            {course.grade}<br/>
-                            {course.units}
-                          </h11>
-                        </p>   
+                                }
+
+                              })
+
+                              }
+                            </div>
+                          );
+
+                        })}
                       </div>
-                    </div>
-                );}
-              }
-             })
-            ) : (
-            <div className="col-sm-4">
-              <p>No courses yet.</p>
+                    </>
+                  );
+                })}
+              </>
             </div>
-            )}
-            
-          </div> 
-        
-                 
-        </div>        
-        ) : (
-        <div>
-          <br />
-          <p>No student selected.</p>
-        </div>
-      )}
-      </div>
+          ) : (
+            <div>
+              <br />
+              <p>No student selected.</p>
+            </div>
+          )}
+    </div>
   ));
 
   let navigate = useNavigate()
