@@ -157,7 +157,8 @@ const StudentSendProf = props => {
   const retrieveCoursesDetails = () => {
     CourseDetailsDataService.getAll()
       .then(response => {
-        getStudent(params.id);
+        getStudent(params.studentID);
+        console.log("params.id",params.studentID)
         console.log("responseDetails", response.data.coursesDetails)
         setCoursesDetails(response.data.coursesDetails)
         setSemesters(uniqBy(response.data.coursesDetails.map(function (a) { return a.semesterOfLearning; }), JSON.stringify))
