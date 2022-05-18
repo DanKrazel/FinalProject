@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef} from "react";
 import StudentDataService from "../../services/studentService";
 import CourseDataService  from "../../services/courseService";
 import UnitsBySemesterDataService from "../../services/unitsBySemesterService";
+import CourseDetailsDataService from "../../services/courseDetailsService"
 import UserDataService from "../../services/userService"
 import { useParams, useNavigate  } from "react-router-dom";
 /**import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';*/
@@ -18,7 +19,9 @@ import {
   exportComponentAsPNG
 } from "react-component-export-image";
 import html2canvas from "html2canvas"
+import DependenciesDataService from "../../services/dependencieService"
 import ImageVisualizationDataService from "../../services/imageVisualizationService";
+import { ReactComponent as HeadSvg } from "../../assets/arrowHead-resize.svg";
 
 
 
@@ -76,16 +79,18 @@ const StudentSendProf = props => {
   const componentRef = useRef();
   const ImageInput = React.createRef();
   const [dependencies, setDependencies] = useState([]);
+  const [semesters, setSemesters] = useState([])
+  const [years, setYears] = useState([])
+  const [coursesDetails, setCoursesDetails] = useState([])
+
 
 
 
 
   
   useEffect(() => {
-    retrieveDependencies();
-    getStudent(params.studentID);
+    retrieveCoursesDetails();
     getUnitsBySemester(params.studentID);
-    updateTotalUnitForEachSemester();
     findProfessor();
     retrieveImageVisualisation();
   }, [refreshKey]);
@@ -97,14 +102,18 @@ const StudentSendProf = props => {
 
   const getStudent = (id) => {
     StudentDataService.findStudent(id)
-      .then(response => {
-        StudentDataService.getCoursesByStudentName(response.data.name).then(response => {
-          console.log('response.data', response.data)
-          setStudent(response.data);
+      .then(responseStudent => {
+        CourseDataService.getCoursesDetailsByCodeCourse(responseStudent.data.name)
+          .then(responseDetails => {
+            responseStudent.data.courses = responseDetails.data
+            console.log('responseStudent.data', responseStudent.data)
+            console.log(responseDetails.data)
+            setStudent(responseStudent.data);
+            retrieveDependencies();
         })
-        .catch(e => {
-          console.log(e);
-        });
+          .catch(e => {
+            console.log(e);
+          });
       })
       .catch(e => {
         console.log(e);
@@ -112,6 +121,14 @@ const StudentSendProf = props => {
   };
 
 
+  
+  function uniqBy(a, key) {
+    var seen = {};
+    return a.filter(function (item) {
+      var k = key(item);
+      return seen.hasOwnProperty(k) ? false : (seen[k] = true);
+    })
+  }
 
   const getUnitsBySemester = (id) => {
     UnitsBySemesterDataService.findUnitsBySemester(id)
@@ -137,6 +154,19 @@ const StudentSendProf = props => {
   };
 
 
+  const retrieveCoursesDetails = () => {
+    CourseDetailsDataService.getAll()
+      .then(response => {
+        getStudent(params.id);
+        console.log("responseDetails", response.data.coursesDetails)
+        setCoursesDetails(response.data.coursesDetails)
+        setSemesters(uniqBy(response.data.coursesDetails.map(function (a) { return a.semesterOfLearning; }), JSON.stringify))
+        setYears(uniqBy(response.data.coursesDetails.map(function (a) { return a.yearOfLearning; }), JSON.stringify))
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
 
   
   const retrieveDependencies = () => {
@@ -144,7 +174,6 @@ const StudentSendProf = props => {
       .then(response => {
         console.log("responseDependencies", response.data);
         setDependencies(response.data.dependencies);
-        console.log("Dependency", dependencies);
       })
       .catch(e => {
         console.log(e);
@@ -163,7 +192,6 @@ const StudentSendProf = props => {
     emailjs.send('service_hydq9to', 'template_60pyoub', templateParams, 'NcYzW9DFj2j-SUYXW')
       .then((result) => {
           console.log(result.text);
-          setSubmittedVisualisation(true)
       }, (error) => {
           console.log(error.text);
       });
@@ -195,10 +223,6 @@ const StudentSendProf = props => {
                         <strong> | ממוצע : </strong>{student.average}
                         <strong> | נק״ז עובר: </strong>{student.valideunits}
                         <strong class=" d-block  ml-auto mr-o " > תקין </strong>
-
-                        <Link to={"/students/" + student._id} className="btn btn-primary col-lg-5 mx-1 mb-1">
-                          View Students
-                        </Link>
                         <br />
                       </div>
                     </p>
@@ -207,13 +231,13 @@ const StudentSendProf = props => {
               })()
               }
               <>
-                {zipped.map((dependency, index) => {
+                {dependencies.map((dependency, index) => {
                   return (
                     <div >
                       {
                         <Xarrow curveness={0} path="grid" strokeWidth={3} headShape={{ svgElem: <HeadSvg />, offsetForward: 1 }}
-                          start={dependency[0].toString()}  //can be react ref
-                          end={dependency[1].toString()} //or an id
+                          start={dependency.StartCoursesname.toString()}  //can be react ref
+                          end={dependency.EndCoursesname.toString()} //or an id
                         />
                       }
                     </div>
