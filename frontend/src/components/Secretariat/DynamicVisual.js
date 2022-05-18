@@ -12,6 +12,8 @@ import DependenciesDataService from "../../services/dependencieService"
 import CourseDataService from "../../services/courseService"
 import CourseDetailsDataService from "../../services/courseDetailsService"
 import UserDataService from "../../services/userService";
+import html2canvas from "html2canvas"
+
 
 
 const DynamicVisual = props => {
@@ -31,16 +33,15 @@ const DynamicVisual = props => {
   const [student, setStudent] = useState(initialStudentState);
   const [coursesDetails, setCoursesDetails] = useState([])
   const [unitsBySemester, setUnitsBySemester] = useState([])
-  const [semesterss, setSemesterss] = useState([])
+  const [semesters, setSemesters] = useState([])
+  const [years, setYears] = useState([])
   var countUnitSemesters = 0;
   const pdfExportComponent = React.useRef(null);
 
   useEffect(() => {
     retrieveContent();
-    retrieveDependencies();
     retrieveCoursesDetails();
     console.log("useEffect student")
-    getStudent(params.id);
     getUnitsBySemester(params.id);
     updateTotalUnitForEachSemester();
   }, []);
@@ -91,10 +92,13 @@ const DynamicVisual = props => {
   const getStudent = (id) => {
     StudentDataService.findStudent(id)
       .then(responseStudent => {
-        CourseDataService.getCoursesDetailsByCodeCourse(responseStudent.data.name).then(responseDetails => {
-          responseStudent.data.courses = responseDetails.data
-          console.log('responseStudent.data', responseStudent.data)
-          setStudent(responseStudent.data);
+        CourseDataService.getCoursesDetailsByCodeCourse(responseStudent.data.name)
+          .then(responseDetails => {
+            responseStudent.data.courses = responseDetails.data
+            console.log('responseStudent.data', responseStudent.data)
+            console.log(responseDetails.data)
+            setStudent(responseStudent.data);
+            retrieveDependencies();
         })
           .catch(e => {
             console.log(e);
@@ -111,6 +115,8 @@ const DynamicVisual = props => {
         console.log("responseDependencies", response.data);
         setDependencies(response.data.dependencies);
         console.log("Dependency", dependencies);
+        console.log("a",response.data.dependencies.map(function (a) { return a.StartCoursesname; }))
+        console.log("b")
       })
       .catch(e => {
         console.log(e);
@@ -123,12 +129,28 @@ const DynamicVisual = props => {
     }
   }
 
+  const exportImage = (id) => {
+    html2canvas(document.querySelector(id), {allowTaint: true})
+    .then(canvas => {
+      //document.body.appendChild(canvas)
+      var link = document.createElement("a");
+      document.body.appendChild(link);
+      link.download = "exportVisualisation.jpg";
+      link.href = canvas.toDataURL();
+      link.target = '_blank';
+      link.click();
+    })
+  }
+
   const retrieveCoursesDetails = () => {
     CourseDetailsDataService.getAll()
       .then(response => {
+        getStudent(params.id);
         console.log("responseDetails", response.data.coursesDetails)
         setCoursesDetails(response.data.coursesDetails)
-        console.log("semesters response",unique(response.data.coursesDetails.semesters))
+        setSemesters(uniqBy(response.data.coursesDetails.map(function (a) { return a.semesterOfLearning; }), JSON.stringify))
+        setYears(uniqBy(response.data.coursesDetails.map(function (a) { return a.yearOfLearning; }), JSON.stringify))
+        console.log("semesters response",uniqBy(response.data.coursesDetails.map(function (a) { return a.semesterOfLearning; }), JSON.stringify))
       })
       .catch(e => {
         console.log(e);
@@ -147,10 +169,6 @@ const DynamicVisual = props => {
       });
   };
 
-  
-  const unique = (value, index, self) => {
-    return self.indexOf(value) === index
-  }
 
   function uniqBy(a, key) {
     var seen = {};
@@ -160,14 +178,15 @@ const DynamicVisual = props => {
     })
   }
 
-  var startf = useRef(null);
-  var endf = useRef(null);
-  let semesters = uniqBy(coursesDetails.map(function (a) { return a.semesterOfLearning; }), JSON.stringify);
-  let years = uniqBy(coursesDetails.map(function (a) { return a.yearOfLearning; }), JSON.stringify);
-  startf = (dependencies.map(function (a) { return a.StartCoursesname; }));
-  endf = (dependencies.map(function (a) { return a.EndCoursesname; }));
-  let zipped = startf.map((x, i) => [x, endf[i]]);
+  // var startf = useRef(null);
+  // var endf = useRef(null);
+  // let semesters = uniqBy(coursesDetails.map(function (a) { return a.semesterOfLearning; }), JSON.stringify);
+  // let years = uniqBy(coursesDetails.map(function (a) { return a.yearOfLearning; }), JSON.stringify);
+  // startf = (dependencies.map(function (a) { return a.StartCoursesname; }));
+  // endf = (dependencies.map(function (a) { return a.EndCoursesname; }));
+  // let zipped = startf.map((x, i) => [x, endf[i]]);
   let navigate = useNavigate()
+  //console.log("zipped", zipped)
 
 
 
@@ -177,16 +196,19 @@ const DynamicVisual = props => {
     //<form onSubmit={deleteCourseByStudentID(params.id)}>
     <div>
       <div className="example-config">
-        <button className="btn btn-secondary" onClick={exportPDFWithComponent}>
+        <button className="btn btn-secondary" onClick={() => exportImage("#capture")}>
           Export Image
         </button>
         &nbsp;
         <button class="btn btn-secondary" onClick={() => navigate(-1)} >
           Return to previous page
         </button>
+        &nbsp;
+        <Link to={"/students/" + student._id} className="btn btn-secondary">
+            View Students
+        </Link>
       </div>
-      <div>
-        <PDFExport ref={pdfExportComponent} paperSize="auto" margin={40} fileName={`Report for ${new Date().getFullYear()}`} author="KendoReact Team">
+      <div id="capture">
           {student ? (
             <div >
               <h5>{student.name}</h5>
@@ -211,10 +233,6 @@ const DynamicVisual = props => {
                         <strong> | ממוצע : </strong>{student.average}
                         <strong> | נק״ז עובר: </strong>{student.valideunits}
                         <strong class=" d-block  ml-auto mr-o " > תקין </strong>
-
-                        <Link to={"/students/" + student._id} className="btn btn-primary col-lg-5 mx-1 mb-1">
-                          View Students
-                        </Link>
                         <br />
                       </div>
                     </p>
@@ -223,13 +241,13 @@ const DynamicVisual = props => {
               })()
               }
               <>
-                {zipped.map((dependency, index) => {
+                {dependencies.map((dependency, index) => {
                   return (
                     <div >
                       {
                         <Xarrow curveness={0} path="grid" strokeWidth={3} headShape={{ svgElem: <HeadSvg />, offsetForward: 1 }}
-                          start={dependency[0].toString()}  //can be react ref
-                          end={dependency[1].toString()} //or an id
+                          start={dependency.StartCoursesname.toString()}  //can be react ref
+                          end={dependency.EndCoursesname.toString()} //or an id
                         />
                       }
                     </div>
@@ -336,7 +354,6 @@ const DynamicVisual = props => {
             </div>
           )}
 
-        </PDFExport>
       </div>
     </div>
     ):(
