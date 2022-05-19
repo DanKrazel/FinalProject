@@ -337,6 +337,8 @@ export default class CoursesDAO {
   static async uploadCoursesAllStudents (filePath) {
     // CSV file name
       //const fileName = "sample.csv";
+      var flag = 0;
+      var yearOfLearning;
       var count  = 0;     
       console.log(filePath)
       const results = [];
@@ -352,11 +354,16 @@ export default class CoursesDAO {
         })    
         .fromString(csv)
         .then(source => {
+          if(flag == 0){
+            yearOfLearning = source[0]['קוד קורס']
+            flag = 1
+          }
         // Fetching the all data from each row
         for (var j = 0; j < source.length; j++) {
           if(source[j]["קוד קורס"] != "תשפב" && source[j]["קוד קורס"] != "קוד קורס" ){
           var oneRow = {
             codeCourse: source[j]["קוד קורס"],
+            yearOfLearning: yearOfLearning,
             semesterOfLearning: source[j]["סמס"],
             courseName: source[j]["שם קורס"],
             typeOfCourse: source[j]["סוג"],
@@ -369,15 +376,15 @@ export default class CoursesDAO {
           //console.log(oneRow)
           
           arrayToInsert.push(oneRow);
+          }
         }
-      }
         courses.insertMany(arrayToInsert,{ordered:false},(err, result) => {
           if (err){
-            console.log(err);
+            //console.log(err);
             //fs.unlinkSync(filePath);
           }
           if(result){
-              console.log(result)
+              // console.log(result)
               console.log("Import CSV into database successfully.");
           }
          //inserting into the table "courses"    

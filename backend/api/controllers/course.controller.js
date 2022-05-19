@@ -224,7 +224,7 @@ export default class CoursesController {
       const CourseResponse = await CoursesDAO.uploadCoursesAllStudents(
         req.file.path, 
         )
-      console.log("CourseResponse:", CourseResponse)
+      //console.log("CourseResponse:", CourseResponse)
       res.json({ status: "success" })
     } catch (e) {
       console.log(`api, ${e}`)

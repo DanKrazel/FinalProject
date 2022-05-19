@@ -13,6 +13,7 @@ import CourseDataService from "../../services/courseService"
 import CourseDetailsDataService from "../../services/courseDetailsService"
 import UserDataService from "../../services/userService";
 import html2canvas from "html2canvas"
+import Draggable from 'react-draggable';
 
 
 
@@ -245,10 +246,11 @@ const DynamicVisual = props => {
                   return (
                     <div >
                       {
-                        <Xarrow curveness={0} path="grid" strokeWidth={3} headShape={{ svgElem: <HeadSvg />, offsetForward: 1 }}
-                          start={dependency.StartCoursesname.toString()}  //can be react ref
-                          end={dependency.EndCoursesname.toString()} //or an id
+                          <Xarrow curveness={0} path="grid" strokeWidth={3} headShape={{ svgElem: <HeadSvg />, offsetForward: 1 }}
+                            start={dependency.StartCoursesname.toString()}  //can be react ref
+                            end={dependency.EndCoursesname.toString()} //or an id
                         />
+
                       }
                     </div>
                   );
