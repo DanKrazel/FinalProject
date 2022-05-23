@@ -2,8 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import StudentDataService from "../../services/studentService";
 import UnitsBySemesterDataService from "../../services/unitsBySemesterService";
 import { useParams, useNavigate } from "react-router-dom";
-/**import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';*/
-import { PDFExport, savePDF } from "@progress/kendo-react-pdf";
 import { Link } from "react-router-dom";
 import "../../App.css";
 import Xarrow, { useXarrow, Xwrapper } from 'react-xarrows';
@@ -13,7 +11,7 @@ import CourseDataService from "../../services/courseService"
 import CourseDetailsDataService from "../../services/courseDetailsService"
 import UserDataService from "../../services/userService";
 import html2canvas from "html2canvas"
-import Draggable from 'react-draggable';
+import { set } from "react-hook-form";
 
 
 
@@ -37,13 +35,11 @@ const DynamicVisual = props => {
   const [semesters, setSemesters] = useState([])
   const [years, setYears] = useState([])
   var countUnitSemesters = 0;
-  const pdfExportComponent = React.useRef(null);
 
   useEffect(() => {
     retrieveContent();
     retrieveCoursesDetails();
     console.log("useEffect student")
-    getUnitsBySemester(params.id);
     updateTotalUnitForEachSemester();
   }, []);
 
@@ -78,7 +74,6 @@ const DynamicVisual = props => {
     UserDataService.getSecretariatBoard()
       .then(response => {
       console.log("response",response)
-      //setContent(response.data)
       })
       .catch(error => {
         console.log("errooor",error)
@@ -99,6 +94,7 @@ const DynamicVisual = props => {
             console.log('responseStudent.data', responseStudent.data)
             console.log(responseDetails.data)
             setStudent(responseStudent.data);
+         //   setGetunitsSemest(student.courses, semesters, years)   
             retrieveDependencies();
         })
           .catch(e => {
@@ -123,12 +119,93 @@ const DynamicVisual = props => {
         console.log(e);
       });
   };
+  /// for make matrix visual , dont delete
+  function findIndex(matrix,k,arr){
+    console.log(matrix)
+    var index ;
+    for(var i =0 ; i<matrix[0].length;i++){
+      if(matrix[k][i]==arr){
+        index = matrix[k][i];
+      }
+    }
+    console.log(index)
+    return index
+  }
+  function guiveIndex(course, semester, year) {
+    var maxcourse = [];
+    var index =[];
+    for (var i = 0; i < year.length; i++) {
+      for (var j = 0; j < semester.length; j++) {
+        var YearSem=[years[i],semesters[j]]
+        var maxcourseTemps = 0
+        for (var k = 0; k < course.length; k++) {
+          if ((course[k].semesterOfLearning == semester[j]) && (course[k].yearOfLearning == year[i])) {
+            maxcourseTemps++;
+          }
+        }
+        maxcourse.push([[years[i].toString()+ semesters[j].toString()],(maxcourseTemps)])
+      }
+    }
+    console.log(maxcourse)
+      for (var i = 0; i < years.length; i++) {
+        for (var j = 0; j < semesters.length; j++) {
+          for (var k = 0; k < course.length; k++) {
+            if ((course[k].semesterOfLearning == semester[j]) && (course[k].yearOfLearning == year[i])) {
+              const indice = maxcourse[year[i], semester[j]];
+              console.log(indice)
+            }
+          }
 
-  const exportPDFWithComponent = () => {
-    if (pdfExportComponent.current) {
-      pdfExportComponent.current.save();
+
+        }
+      }
+    
+  }
+  function getelement(course,coursesDetails){
+    for (var i=0;i,coursesDetails.length;i++){
+      if (course.courseName == coursesDetails[i].courseName){
+        return coursesDetails[i].courseName
+      }
     }
   }
+  function getelement(course, coursesDetails) {
+    for (var i = 0; i, coursesDetails.length; i++) {
+      if (course['courseName'] == coursesDetails[i]['courseName']) {
+        return coursesDetails[i].courseName
+      }
+    }
+  }
+////////// end dont delete
+
+function setGetunitsSemest(courses,years,semesters){
+    var unites=[];
+    var sub_array = [];
+    var totalunit = 0;
+    years.map((year, index) => {
+      semesters.map((semester, index2) => {
+        var valideunit = 0;
+        for (var i = 0; i < courses.length; i++) {
+          var te = courses[i]
+          var result = coursesDetails.find(course => course.courseName === courses[i].courseName)
+          if (typeof(result) !== 'undefined' ){  
+            if (courses[i].semesterOfLearning == semester && year == result.yearOfLearning && !sub_array.find(course => course == result.courseName)) {
+              sub_array.push(result.courseName);
+              totalunit = totalunit + courses[i].units
+              if (courses[i].grade > 55) { 
+                valideunit = valideunit + courses[i].units
+              }
+            }
+          }
+        }   
+        unites.push([[year, semester], [totalunit, valideunit]])
+        console.log(unites)
+      })      
+    })
+    return unites  
+  }
+///  GetUnits(student.courses)
+
+  //guiveIndex(coursesDetails,semesters,years)
 
   const exportImage = (id) => {
     html2canvas(document.querySelector(id), {allowTaint: true})
@@ -158,17 +235,7 @@ const DynamicVisual = props => {
       });
   };
 
-  const getUnitsBySemester = (id) => {
-    UnitsBySemesterDataService.findUnitsBySemester(id)
-      .then(response => {
-        setUnitsBySemester(response.data.unitsBySemester);
-        console.log(response.data.unitsBySemester);
-        console.log("unitsBySemester", unitsBySemester);
-      })
-      .catch(e => {
-        console.log(e);
-      });
-  };
+
 
 
   function uniqBy(a, key) {
@@ -178,23 +245,11 @@ const DynamicVisual = props => {
       return seen.hasOwnProperty(k) ? false : (seen[k] = true);
     })
   }
-
-  // var startf = useRef(null);
-  // var endf = useRef(null);
-  // let semesters = uniqBy(coursesDetails.map(function (a) { return a.semesterOfLearning; }), JSON.stringify);
-  // let years = uniqBy(coursesDetails.map(function (a) { return a.yearOfLearning; }), JSON.stringify);
-  // startf = (dependencies.map(function (a) { return a.StartCoursesname; }));
-  // endf = (dependencies.map(function (a) { return a.EndCoursesname; }));
-  // let zipped = startf.map((x, i) => [x, endf[i]]);
+  var counter = 0 ; 
   let navigate = useNavigate()
-  //console.log("zipped", zipped)
-
-
-
   return (
     <div>
         {!content ? (
-    //<form onSubmit={deleteCourseByStudentID(params.id)}>
     <div>
       <div className="example-config">
         <button className="btn btn-secondary" onClick={() => exportImage("#capture")}>
@@ -246,22 +301,31 @@ const DynamicVisual = props => {
                   return (
                     <div >
                       {
-                          <Xarrow curveness={0} path="grid" strokeWidth={3} headShape={{ svgElem: <HeadSvg />, offsetForward: 1 }}
-                            start={dependency.StartCoursesname.toString()}  //can be react ref
-                            end={dependency.EndCoursesname.toString()} //or an id
+                        <Xarrow curveness={0} path="grid" strokeWidth={3} headShape={{ svgElem: <HeadSvg />, offsetForward: 1 }}
+                          start={dependency.StartCoursesname.toString()}  //can be react ref
+                          end={dependency.EndCoursesname.toString()} //or an id
                         />
-
                       }
                     </div>
                   );
                 })}
-                {years.map((year, index) => {
+                {
+                years.map((year, index) => {
+                  const GetunitsSemest = setGetunitsSemest(student.courses,years,semesters)
+                  console.log(GetunitsSemest)
                   return (
                     <>
                       <div className="row">
                         {semesters.map((semester, index3) => {
-                          return (
+                          var inccounter = counter 
+                          counter = counter +1 
+                          return (                           
                             <div className="row">
+                              <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
+                                {semester}<br/>   
+                                {GetunitsSemest[inccounter][0]}  <br />   
+                                {GetunitsSemest[inccounter][1][1] + "/ " + GetunitsSemest[inccounter][1][0]}                                
+                              </div>
                               {coursesDetails.map((course, index2) => {
                                 const f = student.courses.find(({ courseName }) => courseName === course.courseName)
                                 if ((!f) && (course.yearOfLearning == year) && (course.semesterOfLearning == semester)) {
@@ -321,7 +385,7 @@ const DynamicVisual = props => {
                                       <div className="col-sm text-white "
                                         key={course.codeCourses}>
                                         <div className="card my-3 " id={(f.courseName).toString()}>
-                                          <p className='bg-success text-white text-center'>
+                                          <p className='bg-secondary text-white text-center'>
                                             <h11>
                                               {f.courseName}<br />
                                               {f.grade}<br />
