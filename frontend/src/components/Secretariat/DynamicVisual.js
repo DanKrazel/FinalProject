@@ -13,8 +13,6 @@ import UserDataService from "../../services/userService";
 import html2canvas from "html2canvas"
 import { set } from "react-hook-form";
 
-
-
 const DynamicVisual = props => {
   const initialStudentState = {
     student_id: null,
@@ -35,7 +33,6 @@ const DynamicVisual = props => {
   const [semesters, setSemesters] = useState([])
   const [years, setYears] = useState([])
   var countUnitSemesters = 0;
-
   useEffect(() => {
     retrieveContent();
     retrieveCoursesDetails();
@@ -161,13 +158,9 @@ const DynamicVisual = props => {
       }
     
   }
-  function getelement(course,coursesDetails){
-    for (var i=0;i,coursesDetails.length;i++){
-      if (course.courseName == coursesDetails[i].courseName){
-        return coursesDetails[i].courseName
-      }
-    }
-  }
+
+
+
   function getelement(course, coursesDetails) {
     for (var i = 0; i, coursesDetails.length; i++) {
       if (course['courseName'] == coursesDetails[i]['courseName']) {
@@ -175,6 +168,7 @@ const DynamicVisual = props => {
       }
     }
   }
+
 ////////// end dont delete
 
 function setGetunitsSemest(courses,years,semesters){

@@ -47,6 +47,11 @@ class StudentDataService {
     resetAverageStudent(data) {
         return instance.put("/resetAverageStudent", data);
     }
+
+   /// setGetunitsSemest(data){
+    //    return instance.put("/GetunitsSemest", data);
+    
+  //  }
     
     
     findUnitsBySemester(query, by = "studentID") {
