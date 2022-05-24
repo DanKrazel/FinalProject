@@ -9,7 +9,7 @@ const SecretariatBoard = props => {
     const [searchID, setSearchID ] = useState("");
     const [searchUnit, setSearchUnit ] = useState("");
     const [searchName, setSearchName ] = useState("");
-    const [names, setNames] = useState(["All Names"]);
+    const [names, setNames] = useState(["כל השמות"]);
     const [content, setContent] = useState(null);
     const [pageNumber, setPageNumber] = useState(0);
     const [numberOfPages, setNumberOfPages] = useState(0);
@@ -70,7 +70,7 @@ const SecretariatBoard = props => {
         StudentDataService.getNames()
         .then(response => {
             console.log(response.data);
-            setNames(["All Names"].concat(response.data));
+            setNames(["כל השמות"].concat(response.data));
             console.log("names",names )
         })
         .catch(e => {
@@ -102,7 +102,7 @@ const SecretariatBoard = props => {
     };
 
     const findByName = () => {
-        if (searchName === "All Names") {
+        if (searchName === "כל השמות") {
             refreshList();
         } else {
             find(searchName, "name")
@@ -121,63 +121,63 @@ const SecretariatBoard = props => {
     <div>
       {!content ? (
         <div>
-          <div className="row pb-1">
-            <div className="input-group col-lg-4">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Search by name"
-                value={searchName}
-                onChange={onChangeSearchNames}
-              />
-              <div className="input-group-append">
-                <button
-                  className="btn btn-outline-secondary"
-                  type="button"
-                  onClick={findByName}
-                >
-                  Search
-                </button>
-              </div>
+        <div className="row pb-1">
+          <div className="input-group col-lg-4">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="חפש לפי שם"
+              value={searchName}
+              onChange={onChangeSearchNames}
+            />
+            <div className="input-group-append">
+              <button
+                className="btn btn-outline-secondary"
+                type="button"
+                onClick={findByName}
+              >
+                חפש
+              </button>
             </div>
-            <div className="input-group col-lg-4">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Search by ID"
-                value={searchID}
-                onChange={onChangeSearchID}
-              />
-              <div className="input-group-append">
-                <button
-                  className="btn btn-outline-secondary"
-                  type="button"
-                  onClick={findByID}
-                >
-                  Search
-                </button>
-              </div>
+          </div>
+          <div className="input-group col-lg-4">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="חפש לפי תעודת זהות"
+              value={searchID}
+              onChange={onChangeSearchID}
+            />
+            <div className="input-group-append">
+              <button
+                className="btn btn-outline-secondary"
+                type="button"
+                onClick={findByID}
+              >
+                חפש
+              </button>
             </div>
-            <div className="input-group col-lg-4">
-    
-              <select onChange={onChangeSearchNames}>
-                 {names.map(names => {
-                   return (
-                     <option value={names}> {names} </option>
-                   )
-                 })}
-              </select>
-              <div className="input-group-append">
-                <button
-                  className="btn btn-outline-secondary"
-                  type="button"
-                  onClick={findByName}
-                >
-                  Search
-                </button>
-              </div>
-    
+          </div>
+          <div className="input-group col-lg-4">
+  
+            <select onChange={onChangeSearchNames}>
+               {names.map(names => {
+                 return (
+                   <option value={names}> {names} </option>
+                 )
+               })}
+            </select>
+            <div className="input-group-append">
+              <button
+                className="btn btn-outline-secondary"
+                type="button"
+                onClick={findByName}
+              >
+                חפש
+              </button>
             </div>
+               
+          </div>
           </div>
           <div className="row">
           {students.length ? (
@@ -195,7 +195,7 @@ const SecretariatBoard = props => {
                       </p>
                       <div className="row">
                       <Link to={"/DynamicVisual/"+student._id} className="btn btn-primary col-lg-5 mx-1 mb-1">
-                        View students
+                        לחץ על סטודנט
                       </Link>
                       </div>
                     </div>

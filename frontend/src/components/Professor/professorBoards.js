@@ -13,7 +13,7 @@ const ProfessorBoard = props => {
     const [students, setStudents] = useState([]);
     const [searchID, setSearchID ] = useState("");
     const [searchName, setSearchName ] = useState("");
-    const [names, setNames] = useState(["All Names"]);
+    const [names, setNames] = useState(["כל השמות"]);
     const [content, setContent] = useState("");
     const [requests, setRequests] = useState([])
     const [currentUser, setCurrentUser] = useState(props.user);
@@ -73,7 +73,7 @@ const ProfessorBoard = props => {
         StudentDataService.getNames()
         .then(response => {
             console.log(response.data);
-            setNames(["All Names"].concat(response.data));
+            setNames(["כל השמות"].concat(response.data));
             console.log("names",names )
         })
         .catch(e => {
@@ -101,7 +101,7 @@ const ProfessorBoard = props => {
     };
 
     const findByName = () => {
-        if (searchName === "All Names") {
+        if (searchName === "כל השמות") {
             refreshList();
         } else {
             find(searchName, "name")
@@ -156,13 +156,13 @@ const ProfessorBoard = props => {
   const renderButtonsSentOrView = (requests,student,i) => {
     let content = <form onSubmit={event => handleSendRequests(event, i)}>
                   <button type="submit" className="btn btn-primary col-lg-5 mx-1 mb-1">
-                    Send a view request to Regina
+                  שלח בקשת צפייה לרגינה 
                   </button> 
                   </form>;
     for(let i = 0; i<requests.length; i++){
       if(requests[i].studentID == student._id ){
           content = <div className="btn btn-success col-lg-5 mx-1 mb-1">
-              Request sent !
+            ! בקשה נשלחה
             </div>
         break;
       }
@@ -183,7 +183,7 @@ const ProfessorBoard = props => {
               <input
                 type="text"
                 className="form-control"
-                placeholder="Search by name"
+                placeholder="חפש לפי שם"
                 value={searchName}
                 onChange={onChangeSearchNames}
               />
@@ -193,7 +193,7 @@ const ProfessorBoard = props => {
                   type="button"
                   onClick={findByName}
                 >
-                  Search
+                  חפש
                 </button>
               </div>
             </div>
@@ -201,7 +201,7 @@ const ProfessorBoard = props => {
               <input
                 type="text"
                 className="form-control"
-                placeholder="Search by ID"
+                placeholder="חפש לפי תעודת זהות"
                 value={searchID}
                 onChange={onChangeSearchID}
               />
@@ -211,7 +211,7 @@ const ProfessorBoard = props => {
                   type="button"
                   onClick={findByID}
                 >
-                  Search
+                  חפש
                 </button>
               </div>
             </div>
@@ -230,7 +230,7 @@ const ProfessorBoard = props => {
                   type="button"
                   onClick={findByName}
                 >
-                  Search
+                  חפש
                 </button>
               </div>
                  
@@ -246,10 +246,10 @@ const ProfessorBoard = props => {
                     <div className="card-body">
                       <h5 className="card-title">{student.names}</h5>
                       <p className="card-text">
-                        <strong>ID: </strong>{student.student_id}<br/>
-                        <strong>Name: </strong>{student.name}<br/>
-                        <strong>Average: </strong>{student.average}<br/>
-                        <strong>Valid Units: </strong>{student.valideunits}
+                      {student.student_id} <strong>:תעודת זהות </strong><br/>
+                      <strong>שם:</strong> {student.name}<br/>
+                      {student.average} <strong>:ממוצא </strong><br/>
+                      {student.valideunits} <strong>:נ.זיכוי </strong>
                       </p>
                       <div className="row">
                       {renderButtonsSentOrView(requests, student, i)}

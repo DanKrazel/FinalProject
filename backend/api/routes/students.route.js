@@ -101,7 +101,7 @@ router.route("/unitsBySemester/:id").delete(UnitsBySemesterCtrl.apiDeleteUnitsBy
                        
 router.route("/uploadPDF").post(upload.single('file'),FilesCtrl.apiNewTestPostFile)
 
-router.route("/uploadPDFCourses").get(FilesCtrl.apiGetContentPDF)
+router.route("/uploadPDFCourses").get(FilesCtrl.apiParsePDF)
 
 
 

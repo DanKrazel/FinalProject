@@ -36,18 +36,21 @@ export default class FilesController {
 
     static async apiParsePDF(req, res) {
       try{
+        var nameCourse = []
         let file = req.body.filePath
         console.log("file",file)
         const FileResponse = await FilesDAO.postDataPDF(file);
         let text = ""
         let column = {}
         for (let i=0; i<FileResponse.text.length; i++) {
-          if(FileResponse.text[i]!= '\n'){
-            text += FileResponse.text[i]
-          }
-          if(FileResponse.text[i] == ')'){
-            text += '\n';
-          }
+          // if(FileResponse.text[i]!= '\n'){
+          //   text += FileResponse.text[i]
+          // }
+          // if(FileResponse.text[i] == ')'){
+          //   text += '\n';
+          // }
+          text += FileResponse.text[i]
+
         }
           FileResponse.text = text
           console.log(FileResponse.text)
@@ -69,7 +72,7 @@ export default class FilesController {
     static async apiGetContentPDF(req, res, next) {
       let file = req.body.filePath
       var rows = {}; 
-      var table = new pdfreader.TableParser()
+      var table = new PdfReader.TableParser()
       const nbCols = 2;
       const cellPadding = 40; // each cell is padded to fit 40 characters
       const columnQuantitizer = (item) => parseFloat(item.x) >= 20;
@@ -95,7 +98,7 @@ export default class FilesController {
         .join(' | ')
           ).join('\n');
 
-          new pdfreader.PdfReader().parseFileItems(file, function(err, item){
+          new PdfReader.parseFileItems(file, function(err, item){
             if (!item ) {
               // end of file, or page
               console.log(renderMatrix(table.getMatrix()));

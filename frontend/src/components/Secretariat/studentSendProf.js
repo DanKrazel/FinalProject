@@ -466,12 +466,12 @@ const StudentSendProf = props => {
 
   const renderButtonsSentOrView = () => {
     let content = <button type="button" ref={ImageInput} onClick={() => handlePostCanvas("#capture")} className="btn btn-secondary">
-    Send student visualisation to {professor.username}
+    {professor.username} שלח צפייה ל 
   </button>  
     for(let i = 0; i<imageVisualization.length; i++){
       if(imageVisualization[i].studentID == student._id ){
           content = <div className="btn btn-success">
-              Visualization sent !
+              ! צפייה נשלח 
             </div>
         break;
       }
@@ -488,13 +488,13 @@ const StudentSendProf = props => {
         <button className="btn btn-secondary " 
         onChange = {onImageChange}
         onClick={() => exportImage("#capture")} >
-         Export Visualisation
+         להוריד תמונה
         </button>
       &nbsp;
       {renderButtonsSentOrView()}
       &nbsp;
       <button class="btn btn-secondary " onClick={() => navigate(-1)} >
-        Return to previous page
+         לחזור לדף הקודם 
       </button>
     </div>
       </div>

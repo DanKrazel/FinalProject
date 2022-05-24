@@ -124,17 +124,17 @@ const ViewRequests = props => {
     <div>
         {!content ? (
         <div>
-        <h1>View request from professor </h1> 
+        <h1>כל הבקשות ממרצים</h1> 
         <table class="table table-striped">
             <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">requestID</th>
-                    <th scope="col">Sender</th>
-                    <th scope="col">StudentID</th>
-                    <th scope="col">Student name</th>
-                    <th scope="col">Send visualisation</th>
-                    <th scope="col">Delete</th>
+                    <th scope="col">מספר בקשה</th>
+                    <th scope="col">שליח</th>
+                    <th scope="col">סטודנט תז</th>
+                    <th scope="col">סטודנט שם</th>
+                    <th scope="col">לשלוח</th>
+                    <th scope="col">למחוק</th>
                 </tr>
             </thead>
         <tbody>
@@ -148,12 +148,12 @@ const ViewRequests = props => {
                     <td>{request.student[0].name}</td>
                     <td>
                         <Link to={"/studentSendProf/"+request.student[0]._id+"/"+request.professor[0]._id} className="btn btn-primary col-8">
-                            Send visualisation of {request.student[0].name} to {request.sender}
+                            Send vizualisation of {request.student[0].name} to {request.sender}
                         </Link>
                     </td>
                     <td>
                         <button className="btn btn-primary" onClick={() => deleteRequest(request._id)}>
-                            Delete request
+                            למחוק בקשה
                         </button>
                     </td>
                 </tr>

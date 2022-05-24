@@ -198,20 +198,20 @@ const DynamicVisual = props => {
     <div>
       <div className="example-config">
         <button className="btn btn-secondary" onClick={() => exportImage("#capture")}>
-          Export Image
+          להוריד תמונה
         </button>
         &nbsp;
         <button class="btn btn-secondary" onClick={() => navigate(-1)} >
-          Return to previous page
+          לחזור לדף הקודם
         </button>
         &nbsp;
-        <Link to={"/students/" + student._id} className="btn btn-secondary">
+        {/* <Link to={"/students/" + student._id} className="btn btn-secondary">
             View Students
-        </Link>
+        </Link> */}
       </div>
-      <div id="capture">
+      <div >
           {student ? (
-            <div >
+            <div id="capture">
               <h5>{student.name}</h5>
               {(() => {
                 if ((student.average < 60) || (student.years === 'ב' && student.totalunits < 36) || ((student.years === 'ג' && student.totalunits < 75)) || ((student.years === 'ד' && student.totalunits < 115))) {

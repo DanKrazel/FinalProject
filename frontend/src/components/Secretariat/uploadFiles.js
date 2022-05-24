@@ -405,7 +405,7 @@ const UploadFiles = props => {
   <div>
   {!content ? (
     <div>
-      <h3>Upload files</h3>
+      <h3>לעלות את הקבצים</h3>
     <div >
     <form onSubmit={handlePostCoursesForStudent} encType='multipart/form-data'>
     <div class="input-group mb-3">
@@ -420,7 +420,7 @@ const UploadFiles = props => {
       />
       { courses.length != 0 ? (
       <button type="submit" className="btn btn-primary" for="myFileCourses">
-        Reset courses file
+        אפס את קובץ הקורסים
       </button>
       ):(
         // <input
@@ -432,7 +432,7 @@ const UploadFiles = props => {
         //   //onChange={navigate(`/students/${params.id}`)}
         // />
         <button type="submit" className="btn btn-primary" for="myFileCourses">
-            Upload courses file
+            לעלות את קובץ הקורסים
         </button>
       )}
     </div>
@@ -462,7 +462,7 @@ const UploadFiles = props => {
       />
       { coursesDetails.length != 0 ? (
       <button type="submit" className="btn btn-primary" for="myFileCourses">
-        Reset courses details file
+        אפס את קובץ פרטי הקורסים
       </button>
       ):(
         // <input
@@ -474,7 +474,7 @@ const UploadFiles = props => {
         //   //onChange={navigate(`/students/${params.id}`)}
         // />
         <button type="submit" className="btn btn-primary" for="myFileCourses">
-            Upload courses details file
+            לעלות את קובץ פרטי הקורסים
         </button>
       )}
     </div>
@@ -501,7 +501,7 @@ const UploadFiles = props => {
       />
     { students.length != 0 ? (
       requests.length != 0 ? (
-      <Popup trigger={<button type="button" className="btn btn-primary" for="myFileStudents"> Reset students file </button>} 
+      <Popup trigger={<button type="button" className="btn btn-primary" for="myFileStudents">אפס את קובץ של הסטודנטים</button>} 
         modal
         nested
         >
@@ -510,7 +510,7 @@ const UploadFiles = props => {
       <button className="close" onClick={close}>
             &times;
       </button>
-      <div className="header"> Warning </div>
+      <div className="header"> אַזהָרָה </div>
       <div className="content">
             {' '}
             Alert ! If you delete all students, requests of visualizations from professors
@@ -525,13 +525,13 @@ const UploadFiles = props => {
                 close();
               }}
             >
-              Return
+              לחזור
             </button>
           <Link to="/view-requests" className="btn btn-primary" style={{margin:"10px 15px"}}>
-            Go to the page view requests
+            לעבור לדף של הבקשות
           </Link>
           <button type="submit" className="btn btn-primary" style={{margin:"10px 15px"}} onClick={deleteAllStudent}>
-            Reset students file
+          אפס את קובץ של הסטודנטים
           </button>
       </div>
       </div>
@@ -539,7 +539,7 @@ const UploadFiles = props => {
       </Popup>
       ):(
         <button type="submit" className="btn btn-primary" onClick={deleteAllStudent}>
-            Reset students file
+            אפס את קובץ של הסטודנטים
         </button>
       )
       ):(
@@ -552,12 +552,12 @@ const UploadFiles = props => {
         //   //onChange={navigate(`/students/${params.id}`)}
         // />
         <button type="submit" className="btn btn-primary" for="myFileStudents" onClick={handlePostStudents}>
-            Upload students file
+            לעלות את קובץ של הסטודנטים
           </button>
       )} 
     </div>
     <Link to="/AddDependencies" className="btn btn-primary">
-            Add dependencies
+            להוסיף תלויות
     </Link>
 
     </div>

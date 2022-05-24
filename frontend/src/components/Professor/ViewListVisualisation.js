@@ -183,14 +183,14 @@ const ViewListVisualisation = props => {
     <div>
         {!content ? (
         <div>
-        <h1>View visualization from Regina</h1> 
+        <h1>צפייות מרגינה</h1> 
         <table class="table table-striped">
             <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">visualizationID</th>
-                    <th scope="col">Sender</th>
-                    <th scope="col">Visualization</th>
+                    <th scope="col">צפייה מספר</th>
+                    <th scope="col">שליח</th>
+                    <th scope="col">צפייה</th>
                     {/* <th scope="col">StudentID</th>
                     <th scope="col">Student name</th>
                     <th scope="col">Visualisation</th>
@@ -224,10 +224,10 @@ const ViewListVisualisation = props => {
                             close();
                               }}
                               >
-                            Return
+                            לחזור
                         </button>
                         <button type="submit" className="btn btn-primary" style={{margin:"10px 15px"}} onClick={() => exportImage("#capture", "Visualisation.jpg")}>
-                            Export visualisation
+                            להוריד את התמונה
                         </button>
                     </div>
                 </div>

@@ -88,16 +88,16 @@ function App() {
           {secretariatBoard && (         
           <div className="navbar-nav me-auto mb-2 mb-lg-0">
                 <Link to="/uploadFiles" className="navbar-brand">
-                  Upload Files
+                  לעלות קבצים
                 </Link>
               <li className="nav-item active">
                 <Link to={"/secretariat"} className="nav-link">
-                  Student List
+                  רשימת סטודנטים
                 </Link>
               </li>
             <li className="nav-item active">
               <Link to={"/view-requests"} className="nav-link">
-                View requests
+                כל הבקשות
               </Link>
             </li>
           </div>
@@ -105,11 +105,11 @@ function App() {
           {professorBoard && (
           <div className="navbar-nav me-auto mb-2 mb-lg-0">
               <Link to={"/professor"} className="navbar-brand">
-                Professor Board
+                דף הבית 
               </Link>
           <li className="nav-item active">
             <Link to={"/ViewListVisualisation"} className="nav-link">
-              View visualization from Regina
+               צפייות מרגינה 
             </Link>
           </li>
         </div>
@@ -118,12 +118,12 @@ function App() {
           <div className="nav navbar-nav navbar-right">
             <li className="nav-item active">
                 <Link to={"/profil"} className="nav-link">
-                  Profil {currentUser.username}
+                   פרופיל   {currentUser.username}
                 </Link>
             </li>
             <li className="nav-item active">
               <a href="/login" onClick={logout} className="nav-link" style={{cursor:'pointer'}}>
-                Logout
+              להתנתק
               </a>
             </li>
           </div>
@@ -131,7 +131,7 @@ function App() {
           <div className="navbar-nav navbar-right">
             <li className="nav-item active">
               <Link to={"/login"} className="nav-link">
-                Login
+                להתחבר
               </Link>       
             </li>
           </div>
