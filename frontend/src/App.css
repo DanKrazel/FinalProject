@@ -60,6 +60,11 @@
   margin-bottom: 0;
 }
 
+.bg-warning {
+  min-height: 6rem;
+  margin-bottom: 0;
+}
+
 .col-sm {
   max-width: 10rem;
 }

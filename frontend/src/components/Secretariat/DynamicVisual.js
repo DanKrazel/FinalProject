@@ -370,7 +370,7 @@ const DynamicVisual = props => {
                               counter = counter + 1
                               return (
                                 <div className="row">
-                                  <div className="col-sm  rounded-round   my-auto  text-center  bg-warning  ">
+                                  <div className="col-sm  rounded-round   my-auto  text-center  bg-primary text-white ">
                                     {semester}<br />
                                     {GetunitsSemest[inccounter][1][1] + "/ " + GetunitsSemest[inccounter][1][0]}
                                   </div>

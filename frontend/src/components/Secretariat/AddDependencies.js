@@ -135,6 +135,9 @@ const AddDependencies = () => {
             .then(response => {
                 console.log(response.data)
                 setRefreshKey(oldKey => oldKey + 1)
+                alert(
+                    `תלויה עלה למערכת`
+                );
             })
             .catch(error => {
                 console.log(error)
