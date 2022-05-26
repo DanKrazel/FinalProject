@@ -23,6 +23,8 @@ const DynamicVisual = props => {
     years: "",
     courses: []
   };
+
+  //לנסות שוב בבקשה ! 
   const params = useParams();
   const [content, setContent] = useState("");
   const [dependencies, setDependencies] = useState([]);
@@ -114,7 +116,6 @@ const DynamicVisual = props => {
 
   function guiveIndex(course, semester, year) {
     var maxcourse = [];
-   
     for (var i = 0; i < year.length; i++) {
       for (var j = 0; j < semester.length; j++) {
         var YearSem = [years[i], semesters[j]]
@@ -127,7 +128,7 @@ const DynamicVisual = props => {
         maxcourse.push([[years[i].toString() + semesters[j].toString()], (maxcourseTemps)])
       }
     }
-    console.log(maxcourse)
+  //  console.log(maxcourse)
     var index = [];
     var semtemp = 0 ;
     for (var i = 0; i < years.length; i++) {
@@ -142,7 +143,7 @@ const DynamicVisual = props => {
         }
       }
     }
-    console.log(index)
+    //console.log(index)
     return index
   }
 
@@ -269,18 +270,18 @@ const DynamicVisual = props => {
                 <>
                   {dependencies.map((dependency, index) => {
                     const indexArrow = guiveIndex(coursesDetails, semesters, years);
-                    console.log(dependency.StartCoursesname, dependency.EndCoursesname)
+                   // console.log(dependency.StartCoursesname, dependency.EndCoursesname)
                     var start = indexArrow.find(course => course[0] === dependency.StartCoursesname.toString())
                     var end = indexArrow.find(course => course[0] === dependency.EndCoursesname.toString())
-                    console.log(start[1][0])
-                    console.log(end[1][0])
-                    console.log(end[1][1])
-                    console.log(start[1][1])
+               //     console.log(start[1][0])
+                 //   console.log(end[1][0])
+               ///     console.log(end[1][1])
+                //    console.log(start[1][1])
                     var rowI = end[1][0] - start[1][0]
                     var colI = end[1][1] - start[1][1]
-                    console.log(rowI, colI)
+                   // console.log(rowI, colI)
                     if (colI==0 && rowI>1 ){
-                     console.log(rowI)
+                   //  console.log(rowI)
                      return (
                        <div >
                          {
@@ -293,7 +294,7 @@ const DynamicVisual = props => {
                      );
                    }
                     else if (colI > 0 && rowI > 1) {
-                      console.log(rowI)
+                   //   console.log(rowI)
                       return (
                         <div >
                           {
@@ -306,7 +307,7 @@ const DynamicVisual = props => {
                       );
                     }
                     else if (colI == 1  && rowI == 1) {
-                      console.log(rowI)
+                   //   console.log(rowI)
                       return (
                         <div >
                           {
@@ -323,7 +324,7 @@ const DynamicVisual = props => {
                       return (
                         <div >
                           {
-                            < Xarrow strokeWidth={3} curveness={0} gridBreak={'%100-0,5'} epath="grid" headShape={{ svgElem: <HeadSvg />, offsetForward: 1 }} startAnchor={'bottom'} endAnchor={'top'}
+                            < Xarrow strokeWidth={3} curveness={0} gridBreak={'%100-0,5'} dashness={{ strokeLen: 10, nonStrokeLen: 15, animation: -2 }} epath="grid" headShape={{ svgElem: <HeadSvg />, offsetForward: 1 }} startAnchor={'bottom'} endAnchor={'top'}
                               start={dependency.StartCoursesname.toString()}  //can be react ref
                               end={dependency.EndCoursesname.toString()} //or an id
                             />
@@ -332,7 +333,7 @@ const DynamicVisual = props => {
                       );
                     }
                     else if ((colI > 1 || colI < -1) && rowI == 1) {
-                      console.log(rowI)
+                   //   console.log(rowI)
                       return (
                         <div >
                           {

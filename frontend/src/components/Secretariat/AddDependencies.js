@@ -4,29 +4,39 @@ import Select from 'react-select';
 import { Link, useParams, useNavigate  } from 'react-router-dom'
 import DependenciesDataService from "../../services/dependencieService"
 import UserDataService from "../../services/userService";
-
+import CourseDetailsDataService from "../../services/courseDetailsService"
+import StudentDataService from "../../services/studentService";
 
 import { StyleSheet, View, Text, Button, TouchableOpacity } from 'react-native';
 
 
 const AddDependencies = () => {
+    const initialStudentState = {
+        student_id: null,
+        name: "",
+        average: "",
+        valideunits: "",
+        totalunits: "",
+        semester: "",
+        years: "",
+        courses: []
+    };
+    const [dependencies, setDependencies] = useState([]);
     const [selectedOption, setSelectedOption] = useState(null);
     const [selectedOption2, setSelectedOption2] = useState(null);
+    const [coursesDetails, setCoursesDetails] = useState([])
+    const [semesters, setSemesters] = useState([])
+    const [years, setYears] = useState([])
     const [refreshKey, setRefreshKey] = useState(0);
     const [content, setContent] = useState("");
 
+    const [student, setStudent] = useState(initialStudentState);
 
     console.log(selectedOption);
     console.log(selectedOption2);
 
     const params = useParams();
     let navigate = useNavigate()
-
-    var arrayCourses = ['חדוא 1 להנדסת תוכנה', 'אלגברה לינארית לתוכנה-ה', 'לוגיקה ונושאים דיסקרטיים I', 'ארכיטקטורת מחשבים II', ,'ארכיטקטורת מחשבים I', 'מבוא למדעי המחשב', 'חדוא 2 להנדסת תוכנה',
-        'פיסיקה להנדסת תוכנה', 'לוגיקה ונושאים דיסקרטיים II', 'תכנות מונחה עצמים', 'מבוא להסתברות וסטטיסטיקה',
-    'יסודות הנדסת תוכנה', 'מבנה נתונים-ה', 'עקרונות שפות תוכנה', 'בדיקות ואיכות בהנדסת תוכנה', 'הנדסת דרישות וניתוח תוכנה', 'אנגלית מדוברת', 'אוטומטים ושפות פורמאליות',
-        'אלגורתמים I', 'תכנות מונחה עצמים מתקדם', 'מבוא לתקשורת מחשבים', 'אנליזה נומרית', 'רשתות תקשורת מחשבים', 'אבטחת נתונים', 'עיבוד תמונה וראייה ממוחשבת', 'בטיחות תוכנה']
-
 
     const styles = StyleSheet.create({
         parent: {
@@ -50,13 +60,41 @@ const AddDependencies = () => {
     }
 })
 
+
   
 
     useEffect(() => {
+        retrieveCoursesDetails();
         retrieveContent();
+
     //console.log(handlePDfCourse())
     }, [refreshKey]);
 
+  /// f
+    function uniqBy(a, key) {
+        var seen = {};
+        return a.filter(function (item) {
+            var k = key(item);
+            return seen.hasOwnProperty(k) ? false : (seen[k] = true);
+        })
+    }
+
+
+    
+    const retrieveCoursesDetails = () => {
+        CourseDetailsDataService.getAll()
+            .then(response => {
+               // getStudent(params.id);
+                console.log("responseDetails", response.data.coursesDetails)
+                setCoursesDetails(response.data.coursesDetails)
+                setSemesters(uniqBy(response.data.coursesDetails.map(function (a) { return a.semesterOfLearning; }), JSON.stringify))
+                setYears(uniqBy(response.data.coursesDetails.map(function (a) { return a.yearOfLearning; }), JSON.stringify))
+                console.log("semesters response", uniqBy(response.data.coursesDetails.map(function (a) { return a.semesterOfLearning; }), JSON.stringify))
+            })
+            .catch(e => {
+                console.log(e);
+            });
+    };
     const retrieveContent = () => {
         UserDataService.getSecretariatBoard()
           .then(response => {
@@ -113,7 +151,7 @@ const AddDependencies = () => {
         return options
     }
     const createPost = (selectedOption, selectedOption2) => {
-        const options = PreorderDepedency(arrayCourses);
+        const options = PreorderDepedency(coursesDetails);
         console.log("createPost - Post");
         console.log(options);
         orderDepedency(options, selectedOption, selectedOption2);
@@ -133,14 +171,25 @@ const AddDependencies = () => {
         //getRequestSent(dataRequest)
         DependenciesDataService.postDependency(dataDependecy)
             .then(response => {
-                console.log(response.data)
-                setRefreshKey(oldKey => oldKey + 1)
+
+                    console.log(response.data)
+                    setRefreshKey(oldKey => oldKey + 1)
+                    alert('טעון')
+
+           
+            
             })
             .catch(error => {
                 console.log(error)
             });
     }
- 
+    function getCol(matrix, col) {
+        var column = [];
+        for (var i = 0; i < matrix.length; i++) {
+            column.push(matrix[i][col]);
+        }
+        return column; // return column data..
+    }
     
     return (
     <div>
@@ -150,18 +199,18 @@ const AddDependencies = () => {
             <Select
                 defaultValue={selectedOption}
                 onChange={setSelectedOption}
-                options={PreorderDepedency(arrayCourses)} />
+                options={PreorderDepedency(getCol(coursesDetails,'courseName'))} />
             <Select
                 defaultValue={selectedOption2}
                 onChange={setSelectedOption2}
-                options={PreorderDepedency(arrayCourses)} />
+                        options={PreorderDepedency(getCol(coursesDetails, 'courseName'))} />
 
         </div><div>
                
                 <div className="row">
-                    <button type="button" class="btn btn-primary  btn-lg btn-block" onClick={() => handleSendDependency(selectedOption, selectedOption2)}>Upload</button>
+                            <button type="button" class="btn btn-primary  btn-lg btn-block" onClick={() => handleSendDependency(selectedOption, selectedOption2)}>  לעלות תלויות </button>
                     <button onClick={() => navigate(-1)} class="btn btn-primary btn-lg btn-block">
-                        Return to previous page
+                       לחזור לדף הקודם
                     </button>     
                 </div>
 
