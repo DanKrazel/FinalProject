@@ -119,17 +119,19 @@ const ViewRequests = props => {
     const sendVisualisation = (id) => {
       navigate(`/Downloadcsv/${id}`)
     }
-
+    var counter  =0;
     return (
+      
     <div>
         {!content ? (
+       
         <div>
         <h1>כל הבקשות ממרצים</h1> 
         <table class="table table-striped">
             <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">מספר בקשה</th>
+       
                     <th scope="col">שליח</th>
                     <th scope="col">סטודנט תז</th>
                     <th scope="col">סטודנט שם</th>
@@ -142,7 +144,7 @@ const ViewRequests = props => {
             return (
                 <tr key={request._id}>
                     <th scope="row">{i+1}</th>
-                    <td>{request._id}</td>
+    
                     <td>{request.sender}</td>
                     <td>{request.student[0].student_id}</td>
                     <td>{request.student[0].name}</td>
