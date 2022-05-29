@@ -47,9 +47,11 @@ const Login = props => {
       setUser(data);
       //props.login(user)
       navigate('/profil', { replace: true })
+      alert('להכנס')
+
     }
     else {
-			alert('Please check your username and password')
+			alert('לבדוק שוב שם וסיסמה בבקשה')
 		}
     
     console.log(response.status)
