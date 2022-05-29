@@ -6,8 +6,6 @@ const ObjectId = mongodb.ObjectId
 export default class CoursesController {
 
   static async apiGetCoursesDetails(req, res, next) {
-    const coursesDetailsPerPage = req.query.coursesDetailsPerPage ? parseInt(req.query.coursesDetailsPerPage, 10) : 20
-    const page = req.query.page ? parseInt(req.query.page, 10) : 0
     let filters = {}
     if (req.query._id) {
       filters._id = req.query._id
@@ -30,15 +28,11 @@ export default class CoursesController {
 
     const { coursesDetailsList, totalNumCoursesDetailsList} = await CoursesDetailsDAO.getCoursesDetails({
       filters,
-      page,
-      coursesDetailsPerPage,
     })
 
     let response = {
       coursesDetails: coursesDetailsList,
-      page: page,
       filters: filters,
-      entries_per_page: coursesDetailsPerPage,
       total_results: totalNumCoursesDetailsList,
     }
     res.json(response)

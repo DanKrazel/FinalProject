@@ -83,8 +83,6 @@ export default class CoursesDAO {
 
   static async getCoursesDetails({
     filters = null,
-    page = 0,
-    coursesDetailsPerPage = 20,
   } = {}) {
     let query
     if (filters) {
@@ -116,10 +114,8 @@ export default class CoursesDAO {
       return { coursesDetailsList: [], totalNumCoursesDetailsList: 0 }
     }
 
-    const displayCursor = cursor.limit(coursesDetailsPerPage).skip(coursesDetailsPerPage * page)
-
     try {
-      const coursesDetailsList = await displayCursor.toArray()
+      const coursesDetailsList = await cursor.toArray()
       const totalNumCoursesDetailsList = await coursesDetails.countDocuments(query)
 
       return { coursesDetailsList, totalNumCoursesDetailsList }
