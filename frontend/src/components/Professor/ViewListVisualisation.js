@@ -124,9 +124,9 @@ const ViewListVisualisation = props => {
           });
       };
 
-      const deleteRequest = (requestID) => {
-        console.log("check", requestID)
-        RequestDataService.deleteRequest(requestID)
+      const deleteImageVisualisation = (id) => {
+        console.log("check", id)
+        ImageVisualizationService.deleteImageVisualisation(id)
           .then(response => {
             console.log(response.data);
             setRefreshKey(oldKey => oldKey +1)
@@ -136,14 +136,6 @@ const ViewListVisualisation = props => {
             console.log(e);
           });
       };
-
-    const sendVisualisation = (id) => {
-      navigate(`/Downloadcsv/${id}`)
-    }
-
-    const convertBase64toImg = (img) => {
-
-    }
 
 //     const printModal = () => {
 //       var modal = document.getElementById('#myModal');
@@ -233,6 +225,11 @@ const ViewListVisualisation = props => {
                 </div>
       )}
       </Popup>
+              </td>
+              <td> 
+                <button type="submit" className="btn btn-primary" style={{margin:"10px 15px"}} onClick={() => deleteImageVisualisation(imageVisualization._id)}>
+                    למחוק
+                </button>
               </td>
             </tr>
               );

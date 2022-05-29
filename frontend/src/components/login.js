@@ -103,7 +103,7 @@ const Login = props => {
       <div>
       <form class="needs-validation"  onSubmit={handleLogin} novalidate>
         <div className="form-group">
-          <label for="validationCustomUsername">Username</label>
+          <label for="validationCustomUsername">שם משתמש</label>
           <input
             type="text"
             class="form-control"
@@ -120,7 +120,7 @@ const Login = props => {
         </div>
 
         <div className="form-group">
-          <label for="validationCustom02">Password</label>
+          <label for="validationCustom02">סיסמה</label>
           <input
             type="password"
             className="form-control"
@@ -137,7 +137,7 @@ const Login = props => {
         </div>
 
         <button type="submit" className="btn btn-success" >
-          Login
+          להתחבר
         </button>
         </form>
       </div>

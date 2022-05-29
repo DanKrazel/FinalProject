@@ -24,8 +24,8 @@ class ImageVisualizationDataService {
         return http.put("/user-edit", data);
     }
 
-    deleteRequest(requestID) {
-        return http.delete(`/requests?id=${requestID}`);
+    deleteImageVisualisation(id) {
+        return http.delete(`/imageVisualization?id=${id}`);
     }
 
     getRequestSent(data) {

@@ -98,7 +98,7 @@ function App() {
         )}
         {adminBoard && (
           <div className="nav navbar-nav navbar-right">
-            <Link to="/" className="nav-link">
+            <Link to="/admin" className="nav-link">
               Admin Board
             </Link>
             <li className="nav-item active">
@@ -145,9 +145,9 @@ function App() {
 
       <div className="container mt-3">
         <Routes>
-          <Route
-            path="/"
-            element={<StudentsList />} />
+          <Route 
+            path="/" 
+            element={<Profil user={currentUser}/>} />
           <Route
             path="/students/:id"
             element={<Student user={currentUser} />}
