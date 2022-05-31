@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --forceExit",
-    "build": "cd frontend && npm run build",
+    "build": "cd .. && cd frontend && npm run build",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false && cd .. && cd frontend && npm install && npm run build",
     "start": "node index.js"
   },
