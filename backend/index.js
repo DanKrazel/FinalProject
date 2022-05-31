@@ -10,6 +10,9 @@ import RequestsDAO from "./dao/requestsDAO.js"
 import DependenciesDAO from "./dao/dependenciesDAO.js"
 import CoursesDetailsDAO from "./dao/coursesDetailsDAO.js"
 import ImageVisualizationDAO from "./dao/ImageVisualizationDAO.js"
+import path from "path"
+import express from "express"
+
 
 
 dotenv.config()
@@ -18,6 +21,8 @@ const MongoClient = mongodb.MongoClient
 const port = process.env.PORT || 8000
 let database = process.env.MONGO_URI;
 const JWT_SECRET = process.env.JWT;
+
+
 
 
 MongoClient.connect(
@@ -46,6 +51,8 @@ MongoClient.connect(
       console.log(`listening on port ${port}`)
     })
   })
+
+
 
 
 
