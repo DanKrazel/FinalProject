@@ -18,7 +18,7 @@ import express from "express"
 dotenv.config()
 const MongoClient = mongodb.MongoClient
 
-const port = process.env.PORT || 8000
+const port = process.env.PORT || 5000
 let database = process.env.MONGO_URI;
 const JWT_SECRET = process.env.JWT;
 
