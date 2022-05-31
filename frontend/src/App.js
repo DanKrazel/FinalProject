@@ -67,6 +67,9 @@ function App() {
 
   }
 
+  const getHome = () => {
+
+  }
 
 
   return (
@@ -145,9 +148,15 @@ function App() {
 
       <div className="container mt-3">
         <Routes>
+          {currentUser ? (
           <Route 
             path="/" 
             element={<Profil user={currentUser}/>} />
+            ):(          
+            <Route 
+              path="/" 
+              element={<Login/>} />
+            )}
           <Route
             path="/students/:id"
             element={<Student user={currentUser} />}
