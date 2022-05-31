@@ -24,7 +24,7 @@ app.use("/uploads", express.static("./uploads"));
 const __dirname = path.resolve();
 if(process.env.NODE_ENV === 'production'){
 // Step 1:
-    app.use(express.static(path.join(__dirname, "../frontend/build")));
+    app.use(express.static(path.resolve(__dirname, "../frontend/build")));
 // Step 2:
     app.get("*", function (req, res) {
         res.sendFile(path.resolve(__dirname, "../frontend/build", "index.html"));
