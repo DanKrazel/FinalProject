@@ -5,8 +5,11 @@ import jwt from "jsonwebtoken"
 import bodyparser from "body-parser"
 import cookieParser from "cookie-parser"
 import path from "path"
+import { fileURLToPath } from 'url';
 
+const __filename = fileURLToPath(import.meta.url);
 
+const __dirname = path.dirname(__filename);
 const app = express()
 app.use(bodyparser.json({limit: '50mb'}));
 app.use(bodyparser.urlencoded({limit: '50mb', extended:true}));
@@ -19,10 +22,10 @@ app.use("/uploads", express.static("./uploads"));
 
 
 // Step 1:
-app.use(express.static(path.resolve(__dirname, "./frontend/build")));
+app.use(express.static(path.resolve(__dirname, "../frontend/build")));
 // Step 2:
 app.get("*", function (request, response) {
-  response.sendFile(path.resolve(__dirname, "./frontend/build", "index.html"));
+  response.sendFile(path.resolve(__dirname, "../frontend/build", "index.html"));
 });
 
 export default app;
