@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "node backend/index.js",
+    "start": "cd backend && npm start",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false && cd frontend && npm install && npm run build"
     },
   "dependencies": {
