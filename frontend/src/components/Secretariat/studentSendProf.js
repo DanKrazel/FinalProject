@@ -13,11 +13,6 @@ import styles from "../../index.css"
 //import getCoordinate from "./../getCoordinate.js";
 import Xarrow from "react-xarrows";
 import emailjs from '@emailjs/browser';
-import {
-  exportComponentAsJPEG,
-  exportComponentAsPDF,
-  exportComponentAsPNG
-} from "react-component-export-image";
 import html2canvas from "html2canvas"
 import DependenciesDataService from "../../services/dependencieService"
 import ImageVisualizationDataService from "../../services/imageVisualizationService";
