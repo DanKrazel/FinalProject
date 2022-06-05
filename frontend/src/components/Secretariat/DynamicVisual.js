@@ -83,6 +83,7 @@ const DynamicVisual = props => {
           error.toString())
       });
   }
+  
   const getStudent = (id) => {
     StudentDataService.findStudent(id)
       .then(responseStudent => {
@@ -102,14 +103,12 @@ const DynamicVisual = props => {
         console.log(e);
       });
   };
+
   const retrieveDependencies = () => {
     DependenciesDataService.getAll()
       .then(response => {
         console.log("responseDependencies", response.data);
         setDependencies(response.data.dependencies);
-        console.log("Dependency", dependencies);
-        console.log("a", response.data.dependencies.map(function (a) { return a.StartCoursesname; }))
-        console.log("b")
       })
       .catch(e => {
         console.log(e);
@@ -200,6 +199,7 @@ const DynamicVisual = props => {
       .then(response => {
         getStudent(params.id);
         console.log("responseDetails", response.data.coursesDetails)
+        console.log("years response", uniqBy(response.data.coursesDetails.map(function (a) { return a.yearOfLearning; }), JSON.stringify))
         setCoursesDetails(response.data.coursesDetails)
         setSemesters(uniqBy(response.data.coursesDetails.map(function (a) { return a.semesterOfLearning; }), JSON.stringify))
         setYears(uniqBy(response.data.coursesDetails.map(function (a) { return a.yearOfLearning; }), JSON.stringify))
@@ -227,6 +227,7 @@ const DynamicVisual = props => {
       return seen.hasOwnProperty(k) ? false : (seen[k] = true);
     })
   }
+  
   var counter = 0;
   let navigate = useNavigate()
   return (
