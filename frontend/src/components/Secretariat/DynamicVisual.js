@@ -12,6 +12,7 @@ import UserDataService from "../../services/userService";
 import html2canvas from "html2canvas"
 import courseDetailsService from "../../services/courseDetailsService";
 import courseService from "../../services/courseService";
+
 const DynamicVisual = props => {
   const initialStudentState = {
     student_id: null,
@@ -34,12 +35,14 @@ const DynamicVisual = props => {
   const [semesters, setSemesters] = useState([])
   const [years, setYears] = useState([])
   var countUnitSemesters = 0;
+
   useEffect(() => {
     retrieveContent();
     retrieveCoursesDetails();
     console.log("useEffect student")
     updateTotalUnitForEachSemester();
   }, []);
+
   const updateTotalUnitForEachSemester = () => {
     for (let i = 0; i < unitsBySemester.length; i++) {
       if (unitsBySemester[i].yearOfLearning == 'א') {
@@ -114,7 +117,7 @@ const DynamicVisual = props => {
   };
   /// for make matrix visual , dont delete
 
-  function guiveIndex(course, semester, year) {
+  function giveIndex(course, semester, year) {
     var maxcourse = [];
     for (var i = 0; i < year.length; i++) {
       for (var j = 0; j < semester.length; j++) {
@@ -174,19 +177,24 @@ const DynamicVisual = props => {
     return unites
   }
   ///  GetUnits(student.courses)
-  //guiveIndex(coursesDetails,semesters,years)
+  //giveIndex(coursesDetails,semesters,years)
   const exportImage = (id) => {
-    html2canvas(document.querySelector(id), { allowTaint: true })
+    html2canvas(document.querySelector(id),{logging: true,
+      useCORS: true,
+      imageTimeout:0,
+      allowTaint: true })
       .then(canvas => {
         //document.body.appendChild(canvas)
         var link = document.createElement("a");
         document.body.appendChild(link);
+        document.body.appendChild(canvas);
         link.download = "exportVisualisation.jpg";
         link.href = canvas.toDataURL();
         link.target = '_blank';
         link.click();
       })
   }
+
   const retrieveCoursesDetails = () => {
     CourseDetailsDataService.getAll()
       .then(response => {
@@ -201,6 +209,7 @@ const DynamicVisual = props => {
         console.log(e);
       });
   };
+
   function getCoursesMax(course) {
     var f = course
     for (var i = 0; i < student.courses.length; i++) {
@@ -210,6 +219,7 @@ const DynamicVisual = props => {
     }
     return f
   }
+
   function uniqBy(a, key) {
     var seen = {};
     return a.filter(function (item) {
@@ -269,7 +279,7 @@ const DynamicVisual = props => {
                 }
                 <>
                   {dependencies.map((dependency, index) => {
-                    const indexArrow = guiveIndex(coursesDetails, semesters, years);
+                    const indexArrow = giveIndex(coursesDetails, semesters, years);
                    // console.log(dependency.StartCoursesname, dependency.EndCoursesname)
                     var start = indexArrow.find(course => course[0] === dependency.StartCoursesname.toString())
                     var end = indexArrow.find(course => course[0] === dependency.EndCoursesname.toString())
@@ -283,7 +293,7 @@ const DynamicVisual = props => {
                     if (colI==0 && rowI>1 ){
                    //  console.log(rowI)
                      return (
-                       <div >
+                       <div key={dependency._id}>
                          {
                            <Xarrow path={"grid"} gridBreak={'5'} endAnchor={'left'} startAnchor={'left'} strokeWidth={3} headShape={{ svgElem: <HeadSvg />, offsetForward: 1 }} tailShape={{ offsetForward: 1 }} _extendSVGcanvas={500}
                              start={dependency.StartCoursesname.toString()}  //can be react ref
@@ -296,7 +306,7 @@ const DynamicVisual = props => {
                     else if (colI > 0 && rowI > 1) {
                    //   console.log(rowI)
                       return (
-                        <div >
+                        <div key={dependency._id}>
                           {
                             < Xarrow strokeWidth={3} curveness={0} gridBreak={'5'} path="grid" headShape={{ svgElem: <HeadSvg />, offsetForward: 1 }} startAnchor={'right'} endAnchor={'top'}
                               start={dependency.StartCoursesname.toString()}  //can be react ref
@@ -309,7 +319,7 @@ const DynamicVisual = props => {
                     else if (colI == 1  && rowI == 1) {
                    //   console.log(rowI)
                       return (
-                        <div >
+                        <div key={dependency._id}>
                           {
                             < Xarrow path={"grid"} strokeWidth={3} gridBreak={'10'} endAnchor={'left'} startAnchor={'right'} showTail headShape={{ svgElem: <HeadSvg />, offsetForward: 1 }} tailShape={{ offsetForward: 1 }} _extendSVGcanvas={500}
                               start={dependency.StartCoursesname.toString()}  //can be react ref
@@ -322,7 +332,7 @@ const DynamicVisual = props => {
                     else if ((colI > 1 || colI < -1)  && rowI > 1) {
                       console.log(rowI)
                       return (
-                        <div >
+                        <div key={dependency._id}>
                           {
                             < Xarrow strokeWidth={3} curveness={0} gridBreak={'%100-0,5'} dashness={{ strokeLen: 10, nonStrokeLen: 15, animation: -2 }} epath="grid" headShape={{ svgElem: <HeadSvg />, offsetForward: 1 }} startAnchor={'bottom'} endAnchor={'top'}
                               start={dependency.StartCoursesname.toString()}  //can be react ref
@@ -335,7 +345,7 @@ const DynamicVisual = props => {
                     else if ((colI > 1 || colI < -1) && rowI == 1) {
                    //   console.log(rowI)
                       return (
-                        <div >
+                        <div key={dependency._id}>
                           {
                             < Xarrow strokeWidth={3} curveness={0} gridBreak={'5'} path="grid" headShape={{ svgElem: <HeadSvg />, offsetForward: 1 }} startAnchor={'bottom'} endAnchor={'top'}
                               start={dependency.StartCoursesname.toString()}  //can be react ref
@@ -348,7 +358,7 @@ const DynamicVisual = props => {
                   
                    else{
                      return (
-                       <div >
+                       <div key={dependency._id}>
                          {
                            <Xarrow curveness={0} path="grid" strokeWidth={3} headShape={{ svgElem: <HeadSvg />, offsetForward: 1 }}
                              start={dependency.StartCoursesname.toString()}  //can be react ref

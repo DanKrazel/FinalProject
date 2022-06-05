@@ -42,6 +42,9 @@ const StudentSendProf = props => {
     name: "",
     average: "",
     valideunits: "",
+    totalunits: "",
+    semester: "",
+    years: "",
     courses: []
   };
 
@@ -181,79 +184,220 @@ const StudentSendProf = props => {
       });
   };
 
-  const sendEmailVisualisationToProfessor = (e) => {
-    e.preventDefault();
-    
-    var templateParams = {
-        to_name: professor.username,
-        from_name: "Regina",
-        message: ""
-    };
+  function giveIndex(course, semester, year) {
+    var maxcourse = [];
+    for (var i = 0; i < year.length; i++) {
+      for (var j = 0; j < semester.length; j++) {
+        var YearSem = [years[i], semesters[j]]
+        var maxcourseTemps = 0
+        for (var k = 0; k < course.length; k++) {
+          if ((course[k].semesterOfLearning == semester[j]) && (course[k].yearOfLearning == year[i])) {
+            maxcourseTemps++;
+          }
+        }
+        maxcourse.push([[years[i].toString() + semesters[j].toString()], (maxcourseTemps)])
+      }
+    }
+  //  console.log(maxcourse)
+    var index = [];
+    var semtemp = 0 ;
+    for (var i = 0; i < years.length; i++) {
+      for (var j = 0; j < semesters.length; j++) {
+        var counter = 0;
+        semtemp = semtemp + 1
+        for (var k = 0; k < course.length; k++) {
+          if ((course[k].semesterOfLearning == semester[j]) && (course[k].yearOfLearning == year[i])) {
+            index.push([course[k].courseName, [semtemp,counter]])
+            counter = counter + 1            
+          }
+        }
+      }
+    }
+    //console.log(index)
+    return index
+  }
 
-    emailjs.send('service_hydq9to', 'template_60pyoub', templateParams, 'NcYzW9DFj2j-SUYXW')
-      .then((result) => {
-          console.log(result.text);
-      }, (error) => {
-          console.log(error.text);
-      });
-  };
+  function setGetunitsSemest(courses, years, semesters) {
+    var unites = [];
+    var sub_array = [];
+    var totalunit = 0;
+    years.map((year, index) => {
+      semesters.map((semester, index2) => {
+        var valideunit = 0;
+        for (var i = 0; i < courses.length; i++) {
+          var te = courses[i]
+          var result = coursesDetails.find(course => course.courseName === courses[i].courseName)
+          if (typeof (result) !== 'undefined') {
+            if (courses[i].semesterOfLearning == semester && year == result.yearOfLearning && !sub_array.find(course => course == result.courseName)) {
+              sub_array.push(result.courseName);
+              totalunit = totalunit + courses[i].units
+              if (courses[i].grade > 55) {
+                valideunit = valideunit + courses[i].units
+              }
+            }
+          }
+        }
+        unites.push([[year, semester], [totalunit, valideunit]])
+      })
+    })
+    return unites
+  }
+
+  function getCoursesMax(course) {
+    var f = course
+    for (var i = 0; i < student.courses.length; i++) {
+      if (course.courseName == student.courses[i].courseName && course.grade < student.courses[i].grade) {
+        f = student.courses[i]
+      }
+    }
+    return f
+  }
+
+  var counter = 0;
 
   const ComponentToPrint = React.forwardRef((props, ref) => (
     <div id="capture" ref={ref} paperSize="auto" margin={40} >
       {student ? (
-            <div >
-              <h5>{student.name}</h5>
-              {(() => {
-                if ((student.average < 60) || (student.years === 'ב' && student.totalunits < 36) || ((student.years === 'ג' && student.totalunits < 75)) || ((student.years === 'ד' && student.totalunits < 115))) {
-                  return (
-                    <p>
-                      <div className="col-sm1 text-white bg-secondary w-40 l-20">
-                        <strong> ת״ז : </strong>{student.student_id}
-                        <strong> | ממוצע : </strong>{student.average}
-                        <strong> | נק״ז : </strong>{student.totalunits}
-                        <strong> | נק״ז : </strong>{student.valideunits}
-
-                      </div>
-                    </p>
-                  )
-                } else {
-                  return (
-                    <p>
-                      <div className="col-sm1 text-white bg-secondary w-40 l-20">
-                        <strong> ת״ז : </strong>{student.student_id}
-                        <strong> | ממוצע : </strong>{student.average}
-                        <strong> | נק״ז עובר: </strong>{student.valideunits}
-                        <strong class=" d-block  ml-auto mr-o " > תקין </strong>
-                        <br />
-                      </div>
-                    </p>
-                  )
-                }
-              })()
+          <div>
+            <h5>{student.name}</h5>
+            {(() => {
+              if ((student.average < 60) || (student.years === 'ב' && student.totalunits < 36) || ((student.years === 'ג' && student.totalunits < 75)) || ((student.years === 'ד' && student.totalunits < 115))) {
+                return (
+                  <p>
+                    <div className="col-sm1 text-white bg-secondary w-40 l-20">
+                      <strong> ת״ז : </strong>{student.student_id}
+                      <strong> | ממוצע : </strong>{student.average}
+                      <strong> | נק״ז : </strong>{student.totalunits}
+                      <strong> | נק״ז : </strong>{student.valideunits}
+                    </div>
+                  </p>
+                )
+              } else {
+                return (
+                  <p>
+                    <div className="col-sm1 text-white bg-secondary w-40 l-20">
+                      <strong> ת״ז : </strong>{student.student_id}
+                      <strong> | ממוצע : </strong>{student.average}
+                      <strong> | נק״ז עובר: </strong>{student.valideunits}
+                      <strong class=" d-block  ml-auto mr-o " > תקין </strong>
+                      <br />
+                    </div>
+                  </p>
+                )
               }
-              <>
-                {dependencies.map((dependency, index) => {
+            })()
+            }
+            <>
+              {dependencies.map((dependency, index) => {
+                const indexArrow = giveIndex(coursesDetails, semesters, years);
+               // console.log(dependency.StartCoursesname, dependency.EndCoursesname)
+                var start = indexArrow.find(course => course[0] === dependency.StartCoursesname.toString())
+                var end = indexArrow.find(course => course[0] === dependency.EndCoursesname.toString())
+           //     console.log(start[1][0])
+             //   console.log(end[1][0])
+           ///     console.log(end[1][1])
+            //    console.log(start[1][1])
+                var rowI = end[1][0] - start[1][0]
+                var colI = end[1][1] - start[1][1]
+               // console.log(rowI, colI)
+                if (colI==0 && rowI>1 ){
+               //  console.log(rowI)
+                 return (
+                   <div key={dependency._id}>
+                     {
+                       <Xarrow path={"grid"} gridBreak={'5'} endAnchor={'left'} startAnchor={'left'} strokeWidth={3} headShape={{ svgElem: <HeadSvg />, offsetForward: 1 }} tailShape={{ offsetForward: 1 }} _extendSVGcanvas={500}
+                         start={dependency.StartCoursesname.toString()}  //can be react ref
+                         end={dependency.EndCoursesname.toString()} //or an id
+                       />
+                     }
+                   </div>
+                 );
+               }
+                else if (colI > 0 && rowI > 1) {
+               //   console.log(rowI)
                   return (
-                    <div >
+                    <div key={dependency._id}>
                       {
-                        <Xarrow curveness={0} path="grid" strokeWidth={3} headShape={{ svgElem: <HeadSvg />, offsetForward: 1 }}
+                        < Xarrow strokeWidth={3} curveness={0} gridBreak={'5'} path="grid" headShape={{ svgElem: <HeadSvg />, offsetForward: 1 }} startAnchor={'right'} endAnchor={'top'}
                           start={dependency.StartCoursesname.toString()}  //can be react ref
                           end={dependency.EndCoursesname.toString()} //or an id
                         />
                       }
                     </div>
                   );
-                })}
-                {years.map((year, index) => {
+                }
+                else if (colI == 1  && rowI == 1) {
+               //   console.log(rowI)
+                  return (
+                    <div key={dependency._id}>
+                      {
+                        < Xarrow path={"grid"} strokeWidth={3} gridBreak={'10'} endAnchor={'left'} startAnchor={'right'} showTail headShape={{ svgElem: <HeadSvg />, offsetForward: 1 }} tailShape={{ offsetForward: 1 }} _extendSVGcanvas={500}
+                          start={dependency.StartCoursesname.toString()}  //can be react ref
+                          end={dependency.EndCoursesname.toString()} //or an id
+                        />
+                      }
+                    </div>
+                  );
+                }
+                else if ((colI > 1 || colI < -1)  && rowI > 1) {
+                  console.log(rowI)
+                  return (
+                    <div key={dependency._id}>
+                      {
+                        < Xarrow strokeWidth={3} curveness={0} gridBreak={'%100-0,5'} dashness={{ strokeLen: 10, nonStrokeLen: 15, animation: -2 }} epath="grid" headShape={{ svgElem: <HeadSvg />, offsetForward: 1 }} startAnchor={'bottom'} endAnchor={'top'}
+                          start={dependency.StartCoursesname.toString()}  //can be react ref
+                          end={dependency.EndCoursesname.toString()} //or an id
+                        />
+                      }
+                    </div>
+                  );
+                }
+                else if ((colI > 1 || colI < -1) && rowI == 1) {
+               //   console.log(rowI)
+                  return (
+                    <div key={dependency._id}>
+                      {
+                        < Xarrow strokeWidth={3} curveness={0} gridBreak={'5'} path="grid" headShape={{ svgElem: <HeadSvg />, offsetForward: 1 }} startAnchor={'bottom'} endAnchor={'top'}
+                          start={dependency.StartCoursesname.toString()}  //can be react ref
+                          end={dependency.EndCoursesname.toString()} //or an id
+                        />
+                      }
+                    </div>
+                  );
+                }
+              
+               else{
+                 return (
+                   <div key={dependency._id}>
+                     {
+                       <Xarrow curveness={0} path="grid" strokeWidth={3} headShape={{ svgElem: <HeadSvg />, offsetForward: 1 }}
+                         start={dependency.StartCoursesname.toString()}  //can be react ref
+                         end={dependency.EndCoursesname.toString()} //or an id
+                       />
+                     }
+                   </div>
+                 );
+               }
+              
+              })}
+              {
+                years.map((year, index) => {
+                  const GetunitsSemest = setGetunitsSemest(student.courses, years, semesters)
                   return (
                     <>
                       <div className="row">
                         {semesters.map((semester, index3) => {
+                          var inccounter = counter
+                          counter = counter + 1
                           return (
                             <div className="row">
+                              <div className="col-sm  rounded-round   my-auto  text-center  bg-primary text-white ">
+                                {semester}<br />
+                                {GetunitsSemest[inccounter][1][1] + "/ " + GetunitsSemest[inccounter][1][0]}
+                              </div>
                               {coursesDetails.map((course, index2) => {
-                                const f = student.courses.find(({ courseName }) => courseName === course.courseName)
-                                if ((!f) && (course.yearOfLearning == year) && (course.semesterOfLearning == semester)) {
+                                const g = student.courses.find(({ courseName }) => courseName === course.courseName)
+                                if ((!g) && (course.yearOfLearning == year) && (course.semesterOfLearning == semester)) {
                                   return (
                                     <>
                                       <div className="col-sm text-white "
@@ -268,11 +412,10 @@ const StudentSendProf = props => {
                                         </div>
                                       </div>
                                     </>
-
-
                                   );
                                 }
-                                else if ((course.yearOfLearning == year) && f && f.semesterOfLearning == semester) {
+                                else if ((course.yearOfLearning == year) && g && course.semesterOfLearning == semester) {
+                                  const f = getCoursesMax(g)
                                   if (f.grade > 55) {
                                     return (
                                       <div className="col-sm text-white "
@@ -289,7 +432,7 @@ const StudentSendProf = props => {
                                       </div>
                                     );
                                   }
-                                  else if (f.grade > 1) {
+                                  else if (f.grade > 1 && f.grade < 55) {
                                     return (
                                       <div className="col-sm text-white "
                                         key={course.codeCourses}>
@@ -310,7 +453,7 @@ const StudentSendProf = props => {
                                       <div className="col-sm text-white "
                                         key={course.codeCourses}>
                                         <div className="card my-3 " id={(f.courseName).toString()}>
-                                          <p className='bg-success text-white text-center'>
+                                          <p className='bg-warning text-white text-center'>
                                             <h11>
                                               {f.courseName}<br />
                                               {f.grade}<br />
@@ -321,23 +464,18 @@ const StudentSendProf = props => {
                                       </div>
                                     );
                                   }
-
-
                                 }
-
                               })
-
                               }
                             </div>
                           );
-
                         })}
                       </div>
                     </>
                   );
                 })}
-              </>
-            </div>
+            </>
+          </div>
           ) : (
             <div>
               <br />

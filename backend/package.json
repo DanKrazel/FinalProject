@@ -8,7 +8,8 @@
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --forceExit",
     "build": "cd .. && cd frontend && npm run build",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false && cd .. && cd frontend && npm install && npm run build",
-    "start": "node index.js"
+    "start": "node index.js",
+    "deploy": "serverless deploy"
   },
   "jest": {
     "transform": {
@@ -23,6 +24,7 @@
     "@babel/runtime": "^7.17.9",
     "@progress/kendo-licensing": "^1.2.1",
     "@progress/kendo-react-pdf": "^4.13.0",
+    "aws-cli": "^0.0.2",
     "chai": "^4.3.6",
     "cors": "^2.8.5",
     "csv-parser": "^3.0.0",
@@ -47,6 +49,7 @@
     "pdfkit": "^0.13.0",
     "pdfreader": "^1.4.0",
     "react-responsive-cards-table": "^0.3.0",
+    "serverless-http": "^3.0.1",
     "supertest": "^6.2.3",
     "ts-jest": "^27.1.4",
     "uuid": "^8.3.2"
