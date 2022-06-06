@@ -160,28 +160,30 @@ const AddDependencies = () => {
 
     var count =0;
     const handleSendDependency = (setSelectedOption, setSelectedOption2) => {
-        console.log(setSelectedOption['label']);
-        console.log(setSelectedOption2['label']);
-        console.log("testdependecy")
-        var dataDependecy = {
-            StartCoursesname: setSelectedOption['label'],
-            EndCoursesname: setSelectedOption2['label'],
-        }
-        console.log(dataDependecy);
-        //getRequestSent(dataRequest)
-        DependenciesDataService.postDependency(dataDependecy)
-            .then(response => {
-
+        if(setSelectedOption && setSelectedOption2){
+            console.log("label1",setSelectedOption['label']);
+            console.log("label2",setSelectedOption2['label']);
+            console.log("testdependecy")
+            var dataDependecy = {
+                StartCoursesname: setSelectedOption['label'],
+                EndCoursesname: setSelectedOption2['label'],
+            }
+            console.log(dataDependecy);
+            //getRequestSent(dataRequest)
+            DependenciesDataService.postDependency(dataDependecy)
+                .then(response => {
                     console.log(response.data)
                     setRefreshKey(oldKey => oldKey + 1)
                     alert('טעון')
-
-           
             
             })
             .catch(error => {
                 console.log(error)
             });
+        }
+        else{
+            alert("You have to choose two dependencies !")
+        }
     }
     function getCol(matrix, col) {
         var column = [];

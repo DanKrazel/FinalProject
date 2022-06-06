@@ -3,7 +3,6 @@ import jwt from"jsonwebtoken"
 import bcrypt from "bcryptjs"
 import 'dotenv/config'
 import mongodb from "mongodb"
-import emailjs from '@emailjs/browser';
 import config from "../../config/auth.config.js"
 
 

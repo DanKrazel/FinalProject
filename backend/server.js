@@ -1,7 +1,6 @@
 import express from "express"
 import cors from "cors"
 import student from "./api/routes/students.route.js"
-import jwt from "jsonwebtoken"
 import bodyparser from "body-parser"
 import cookieParser from "cookie-parser"
 import path from "path"

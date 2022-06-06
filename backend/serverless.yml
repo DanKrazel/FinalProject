@@ -1,24 +1,29 @@
-org: specialpython
-console: true
 service: backend
+disabledDeprecations: "*"
+configValidationMode: error
 frameworkVersion: "3"
 
 provider:
   name: aws
-  runtime: nodejs12.x
-  memorySize: 2048
+  runtime: nodejs14.x
   stage: dev
-  timeout: 15
   region: us-east-1
-  lambdaHashingVersion: 20201221
+  memorySize: 256
+
+plugins:
+  - serverless-offline
 
 functions:
-  api:
-    handler: handler.api
+  hello:
+    handler: handler.hello
     events:
-      - http: ANY /{proxy+}
-      - http: ANY /
-    environnement:
+      - httpApi:
+          path: /
+          method: ANY
+      - httpApi:
+          path: /{proxy+}
+          method: ANY
+    environment:
       STUDREVIEWS_DB_URI: mongodb+srv://SCEbeersheva:12345@cluster0.ursrw.mongodb.net/students?retryWrites=true&w=majority
       STUDREVIEWS_NS: students
       JWT: 33033a5e13fe45e6964bd1c6ed0023c7717cc62fb535c8e6d8f049c77819631d
