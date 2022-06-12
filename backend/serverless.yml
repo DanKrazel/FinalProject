@@ -12,6 +12,10 @@ provider:
 
 plugins:
   - serverless-offline
+  - serverless-bundle
+
+package:
+  individually: true
 
 functions:
   hello:

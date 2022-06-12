@@ -19,21 +19,64 @@ export default class RequestsDAO {
   }
 
   static async getImageVisualization({filters = null, page = 0,imageVisualizationPerPage = 20} = {}) {
-    let query
+    let query = {}
+    console.log("filters",filters)
     if (filters) {
-       if ("sender" in filters) {
-        query = { "sender": { $eq: filters["sender"] } }
+      if ("_id" in filters) {
+        query = { "_id": filters["_id"] }
+      } else if ("sender" in filters) {
+        query = { "sender": filters["sender"] }
       } else if ("receiver" in filters) {
-        query = { "receiver": { $eq: filters["receiver"] } } 
+        query = { "receiver": filters["receiver"] } 
       } else if ("studentID" in filters) {
-        query = { "studentID": { $eq: filters["studentID"] } }
+        query = { "studentID": filters["studentID"] }
+      } else if ("student_id" in filters) {
+        query = { 
+          "student": {
+            "student_id": filters["student_id"] 
+          }
         }
+      }
     }
 
     let cursor
-    
+    console.log("query",query)
+    const pipeline = [
+      {
+          $match: query,
+      },
+      {
+        $lookup: {
+            from: "students",
+            let: {
+                id: "$studentID",
+            },
+            pipeline: [
+                {
+                    $match: {
+                        $expr: {
+                            $eq: ["$_id", "$$id"],
+                        },
+                    },
+                },
+                {
+                    $sort: {
+                        date: -1,
+                    },
+                },
+            ],
+            as: "student",
+        },
+      },
+      {
+          $addFields: {
+              student: "$student",
+          },
+      },
+        ]
     try {
-      cursor = await imageVisualization.find(query)
+      //cursor = await imageVisualization.find(query)
+      cursor = await imageVisualization.aggregate(pipeline)
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
       return { imageVisualizationList: [], totalNumImageVisualizationList: 0 }
@@ -55,44 +98,6 @@ export default class RequestsDAO {
   }
 
   static async postImageVisualization (sender, receiver, filePath, studentID) {
-    // filePath = filePath.substring(23)
-    // filePath = filePath.replace(" ", "+")
-    // let data = filePath;
-    // let buff = new Buffer(data, 'base64');
-    // let text = buff.toString('ascii');    
-    // var myImage = new Image();
-    // myImage.src = filePath;
-    
-    //filePath = filePath - start - base
-    //console.log(filePath)
-
-    // define('UPLOAD_DIR', 'images/');  
-    // $img = $_POST['imgBase64'];  
-    // $img = str_replace('data:image/png;base64,', '', $img);  
-    // $img = str_replace(' ', '+', $img);  
-    // $data = base64_decode($img);  
-    // $file = UPLOAD_DIR . uniqid() . '.png';  
-    // $success = file_put_contents($file, $data);  
-    // print $success ? $file : 'Unable to save the file.'; 
-    
-
-  
-    // filePath = filePath.substring(23)
-    // filePath = filePath.replace('data:image/jpeg;base64,', '')
-    // filePath = filePath.replace(" ", "+")
-    // let bufferObj = Buffer.from(filePath, "base64");
-    // let decodedString = bufferObj.toString("utf8");
-    // console.log("The decoded string:", bufferObj);
-    
-    // fs.writeFile("uploads/image.jpg", bufferObj, (err) => {
-    //   if (err)
-    //     console.log(err);
-    //   else {
-    //     console.log("File written successfully\n");
-    //     console.log("The written has the following contents:");
-    //     //console.log(fs.readFileSync("books.txt", "utf8"));
-    //   }
-    // });
     
     try {
       const imagesVisualizationDoc = { 
@@ -176,50 +181,6 @@ export default class RequestsDAO {
     } catch (e) {
       console.error(`Unable to delete requests: ${e}`)
       return { error: e }
-    }
-  }
-
-  static async retrieveStudentInfo() {
-    try {
-      const pipeline = [
-        {
-            $match: {
-                //  studentID: new ObjectId(id),
-            },
-        },
-        {
-          $lookup: {
-              from: "students",
-              let: {
-                  id: "$studentID",
-              },
-              pipeline: [
-                  {
-                      $match: {
-                          $expr: {
-                              $eq: ["$_id", "$$id"],
-                          },
-                      },
-                  },
-                  {
-                      $sort: {
-                          date: -1,
-                      },
-                  },
-              ],
-              as: "student",
-          },
-        },
-        {
-            $addFields: {
-                student: "$student",
-            },
-        },
-          ]
-      return await imageVisualization.aggregate(pipeline).toArray()
-    } catch (e) {
-      console.error(`Something went wrong in imageVisualization: ${e}`)
-      throw e
     }
   }
 

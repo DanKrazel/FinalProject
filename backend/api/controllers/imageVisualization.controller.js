@@ -13,12 +13,16 @@ export default class imageVisualizationController {
     const page = req.query.page ? parseInt(req.query.page, 10) : 0
 
     let filters = {}
-    if (req.query.sender) {
+    if (req.query._id) {
+      filters._id = ObjectId(req.query._id)
+    } else if (req.query.sender) {
       filters.sender = req.query.sender
     } else if (req.query.receiver) {
       filters.receiver = req.query.receiver
     } else if (req.query.imagePath) {
         filters.imagePath = (req.query.imagePath)
+    } else if (req.query.student_id) {
+        filters.student_id = (req.query.student_id)
     } else if (req.query.studentID) {
       filters.studentID = ObjectId(req.query.studentID)
     } 
@@ -30,11 +34,11 @@ export default class imageVisualizationController {
     })
 
     let response = {
-    imageVisualization: imageVisualizationList,
+      imageVisualization: imageVisualizationList,
       page: page,
       filters: filters,
       entries_per_page: imageVisualizationPerPage,
-      total_results: imageVisualizationList,
+      total_results: totalNumImageVisualizationList,
     }
     res.json(response)
   }
@@ -95,28 +99,6 @@ export default class imageVisualizationController {
   }
   
 
-  // static async apiUpdateRequest(req, res, next) {
-  //   try {
-  //     const userID = req.body.user_id
-  //     const username = req.body.username
-  //     const password = req.body.password
-  //     const phone = req.body.phone
-  //     const mail = req.body.mail
-  //     const UsersResponse = await RequestsDAO.updateRequests(
-  //       userID,
-  //       username,
-  //       password,
-  //       phone,
-  //       mail,
-  //     )
-  //     if(UsersResponse) {
-  //       res.json({ status: "success" })
-  //     }
-  //   } catch (e) {
-  //     res.status(500).json({ error: e.message })
-  //   }
-  // }
-
   static async apiDeleteImageVisualizationByID(req, res, next) {
     try {
       const imageVisualizationID = req.query.id
@@ -151,22 +133,6 @@ export default class imageVisualizationController {
       res.json({ status: "success" })
     } catch (e) {
       res.status(500).json({ error: e.message })
-    }
-  }
-
-  static async apiRetrieveStudentinfo(req, res, next){
-    try {
-      // let studentID = req.body.studentID
-      // console.log('id',studentID)
-      let imageVisualization = await ImageVisualizationDAO.retrieveStudentInfo()
-      if (!imageVisualization) {
-        res.status(404).json({ error: "Not found" })
-        return
-      }
-      res.json(imageVisualization)
-    } catch (e) {
-      console.log(`api, ${e}`)
-      res.status(500).json({ error: e })
     }
   }
 

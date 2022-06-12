@@ -21,6 +21,9 @@ const ViewListVisualisation = props => {
    const [students, setStudents] = useState([]);
    const [imageVisualization, setImageVizualisation] = useState([])
    const [refreshKey, setRefreshKey] = useState(0);
+   const [searchID, setSearchID ] = useState("");
+   const [searchName, setSearchName ] = useState("");
+   const [names, setNames] = useState(["כל השמות"]);
 
    let navigate = useNavigate()
     
@@ -137,56 +140,73 @@ const ViewListVisualisation = props => {
           });
       };
 
-//     const printModal = () => {
-//       var modal = document.getElementById('#myModal');
-
-// // Get the image and insert it inside the modal - use its "alt" text as a caption
-//       var img = document.getElementById("#image");
-//       var modalImg = document.getElementById(imgNum);
-//       var captionText = document.getElementById(captionID);
-//       img.onclick = function(){
-//       modal.style.display = "block";
-//       modalImg.src = this.src;
-//       captionText.innerHTML = this.alt;
-//     } 
-// // Get the <span> element that closes the modal
-//     var span = document.getElementsByClassName(closeID)[0];
-// // When the user clicks on <span> (x), close the modal
-//     span.onclick = function() { 
-//       modal.style.display = "none";
-//     }
-//     }
-
   
-  const exportImage = (id,nameFile) => {
-    html2canvas(document.querySelector(id), {allowTaint: true})
-    .then(canvas => {
-      //document.body.appendChild(canvas)
-      var link = document.createElement("a");
-      document.body.appendChild(link);
-      link.download = nameFile;
-      link.href = canvas.toDataURL();
-      link.target = '_blank';
-      link.click();
+    const exportImage = (id,nameFile) => {
+      html2canvas(document.querySelector(id), {allowTaint: true})
+      .then(canvas => {
+        //document.body.appendChild(canvas)
+        var link = document.createElement("a");
+        document.body.appendChild(link);
+        link.download = nameFile;
+        link.href = canvas.toDataURL();
+        link.target = '_blank';
+        link.click();
     })
-}
+  }
+
+    const find = (query, by) => {
+      ImageVisualizationService.find(query, by)
+      .then(response => {
+        console.log(response.data);
+        setStudents(response.data.students);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+    };
+
+    const findByID = () => {
+      find(searchID, "studentID")
+    };
+
+
+    const onChangeSearchID = e => {
+      const searchID = e.target.value;
+      setSearchID(searchID);
+    };
 
     return (
     <div>
         {!content ? (
         <div>
         <h1>צפייות מרגינה</h1> 
+        <div className="input-group col-lg-4">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="חפש לפי תעודת זהות של הסטודנט"
+              value={searchID}
+              onChange={onChangeSearchID}
+            />
+            <div className="input-group-append">
+              <button
+                className="btn btn-outline-secondary"
+                type="button"
+                onClick={findByID}
+              >
+                חפש
+              </button>
+            </div>
+               
+          </div>
         <table class="table table-striped">
             <thead>
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">צפייה מספר</th>
                     <th scope="col">שליח</th>
+                    <th scope="col">תז של הסטודנט</th>
                     <th scope="col">צפייה</th>
-                    {/* <th scope="col">StudentID</th>
-                    <th scope="col">Student name</th>
-                    <th scope="col">Visualisation</th>
-                    <th scope="col">Delete</th> */}
                 </tr>
             </thead>
         <tbody>
@@ -196,6 +216,7 @@ const ViewListVisualisation = props => {
               <th scope="row">{i+1}</th>
               <td>{imageVisualization._id}</td>
               <td>{imageVisualization.sender}</td>
+              <td>{imageVisualization.student[0].student_id}</td>
               <td> 
                 <Popup trigger={<img src={imageVisualization.imagePath} style={{width:'100%',maxWidth:'100px'}}></img>} 
                   modal

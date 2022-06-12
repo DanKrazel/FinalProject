@@ -39,6 +39,7 @@ class ImageVisualizationDataService {
     deleteAllRequests(){
         return http.delete('/deleteAllRequests')
     }
+
 }
      
     export default new ImageVisualizationDataService();

@@ -39,7 +39,6 @@ router.route("/requests").post(RequestsCtrl.apiPostRequest)
 router.route("/imageVisualization").post(upload.single('file'),ImageVisualizationCtrl.apiPostImageVisualization)
                                    .get(ImageVisualizationCtrl.apiGetImageVisualization)
                                    .delete(ImageVisualizationCtrl.apiDeleteImageVisualizationByID)
-router.route("/retrieveStudentInfo").get(ImageVisualizationCtrl.apiRetrieveStudentinfo)
 
 //router.route("/requests/:id").delete(RequestsCtrl.apiDeleteRequestBystudentID)
 router.route("/requests/:id").delete(RequestsCtrl.apiDeleteRequestBystudentID)
