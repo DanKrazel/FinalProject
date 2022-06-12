@@ -5,7 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import "../../App.css";
 import Xarrow, { useXarrow, Xwrapper } from 'react-xarrows';
 import { ReactComponent as HeadSvg } from "../../assets/arrowHead-resize.svg";
-import DependenciesDataService from "../../services/dependencieService"
+import DependenciesDataService from "../../services/dependenciesService"
 import CourseDataService from "../../services/courseService"
 import CourseDetailsDataService from "../../services/courseDetailsService"
 import UserDataService from "../../services/userService";
@@ -185,8 +185,6 @@ const DynamicVisual = props => {
       .then(canvas => {
         //document.body.appendChild(canvas)
         var link = document.createElement("a");
-        document.body.appendChild(link);
-        document.body.appendChild(canvas);
         link.download = "exportVisualisation.jpg";
         link.href = canvas.toDataURL();
         link.target = '_blank';

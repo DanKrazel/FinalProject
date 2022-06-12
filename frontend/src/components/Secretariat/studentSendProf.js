@@ -14,7 +14,7 @@ import styles from "../../index.css"
 import Xarrow from "react-xarrows";
 import emailjs from '@emailjs/browser';
 import html2canvas from "html2canvas"
-import DependenciesDataService from "../../services/dependencieService"
+import DependenciesDataService from "../../services/dependenciesService"
 import ImageVisualizationDataService from "../../services/imageVisualizationService";
 import { ReactComponent as HeadSvg } from "../../assets/arrowHead-resize.svg";
 

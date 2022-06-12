@@ -559,6 +559,10 @@ const UploadFiles = props => {
     <Link to="/AddDependencies" className="btn btn-primary">
             להוסיף תלויות
     </Link>
+    &nbsp;
+    <Link to="/ManageDependencies" className="btn btn-primary">
+            לנהל את התלויות
+    </Link>
 
     </div>
                 

@@ -2,7 +2,7 @@ import React from 'react';
 import { useRef, useState, useEffect } from 'react';
 import Select from 'react-select';
 import { Link, useParams, useNavigate  } from 'react-router-dom'
-import DependenciesDataService from "../../services/dependencieService"
+import DependenciesDataService from "../../services/dependenciesService"
 import UserDataService from "../../services/userService";
 import CourseDetailsDataService from "../../services/courseDetailsService"
 import StudentDataService from "../../services/studentService";

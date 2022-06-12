@@ -49,6 +49,7 @@ router.route("/deleteAllRequests").delete(RequestsCtrl.apiDeleteAllRequests)
 
 router.route("/dependencies").get(DependenciesCtrl.apiGetDependencies)
                              .post(DependenciesCtrl.apiPostDependencies)
+                             .delete(DependenciesCtrl.apiDeleteDependencies)
 
 router.route("/login").post(UsersCtrl.apiLogin)
 router.route("/signup").post(UsersCtrl.apiCheckDuplicateUsernameOrMail, 

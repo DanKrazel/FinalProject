@@ -74,10 +74,23 @@ export default class DependenciesDAO {
                 "StartCoursesname": { $eq: StartCoursesname },
                 "EndCoursesname": { $eq: EndCoursesname },
             }
-            return await dependecy.findOne(query)
+            return await dependencies.findOne(query)
         } catch (error) {
             console.error(`Unable to find request: ${e}`)
             return { error: e }
         }
     }
+
+    static async deleteDependencies (id) {
+        try {
+          const deleteResponse = {
+            _id: ObjectId(id),
+          }
+    
+          return await dependencies.deleteOne(deleteResponse)
+        } catch (e) {
+          console.error(`Unable to delete user: ${e}`)
+          return { error: e }
+        }
+      }
 }

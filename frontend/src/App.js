@@ -20,6 +20,7 @@ import UploadCSVForProfessor from "./components/Secretariat/uploadCSVForProfesso
 import StudentSendProf from "./components/Secretariat/studentSendProf";
 import UploadFiles from "./components/Secretariat/uploadFiles"
 import ViewListVisualisation from "./components/Professor/ViewListVisualisation"
+import ManageDependencies from "./components/Secretariat/manageDependencies"
 import dotenv from "dotenv"
 
 import jwt from "jsonwebtoken"
@@ -224,6 +225,10 @@ function App() {
           <Route
             path="/ViewListVisualisation"
             element={<ViewListVisualisation user={currentUser} />}
+          />
+          <Route
+            path="/ManageDependencies"
+            element={<ManageDependencies user={currentUser} />}
           />
         </Routes>
       </div>

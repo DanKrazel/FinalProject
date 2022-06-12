@@ -53,4 +53,19 @@ export default class DependenciesController {
         }
     }
 
+    static async apiDeleteDependencies(req, res, next) {
+        try {
+          const id = req.query.id
+          console.log(id)
+    
+          const DeleteResponse = await DependenciesDAO.deleteDependencies(
+            id
+          )
+          console.log(DeleteResponse)
+          res.json({ status: "success" })
+        } catch (e) {
+          res.status(500).json({ error: e.message })
+        }
+      }
+
 }
