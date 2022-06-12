@@ -240,90 +240,11 @@ export default class CoursesDAO {
           console.log("Miss field on csv file, check your file")
         }
       }
-      console.log(arrayToInsert[0]["courseName"]);
-      var arrayToInserttemp = [];
-      var i = 0 ;
-      while(i!=arrayToInsert.length){
-        for (var j = 0; j < arrayToInsert.length; j++) {
-          if((arrayToInsert[j]["courseName"]=='חדו"א  - 1')&&(arrayToInsert[j]["yearOfLearning"]=="א")&&(arrayToInsert[j]["semesterOfLearning"]=="א")){
-            arrayToInserttemp.push(arrayToInsert[j]);
-            arrayToInsert.splice(j, 1);
-            i=i++;
-            break;
-
-          }
-        } 
-        
-        for (var j = 0; j < arrayToInsert.length; j++) {
-          if(arrayToInsert[j]["courseName"]=="ארכיטקטורת מחשבים I"){
-            arrayToInserttemp.push(arrayToInsert[j]);
-            arrayToInsert.splice(j, 1);
-            i=i++;
-            break;   
-          }
-        }
-        for (var j = 0; j < arrayToInsert.length; j++) {
-          if((arrayToInsert[j]["courseName"]=="אלגברה לינארית לתוכנה-ה")&&(arrayToInsert[j]["yearOfLearning"]=="א")&&(arrayToInsert[j]["semesterOfLearning"]=="א")){
-
-            arrayToInserttemp.push(arrayToInsert[j]);
-            arrayToInsert.splice(j, 1);
-            i=i++;
-            break;
-          }
-        } 
-        for (var j = 0; j < arrayToInsert.length; j++) {
-          if(arrayToInsert[j]["courseName"]=="מבוא למדעי המחשב"){
-            arrayToInserttemp.push(arrayToInsert[j]);
-            arrayToInsert.splice(j, 1);
-            i=i++;
-            break;   
-          }
-        }
-        for (var j = 0; j < arrayToInsert.length; j++) {
-          if(arrayToInsert[j]["courseName"]=="חדוא 2 להנדסת תוכנה"){
-            arrayToInserttemp.push(arrayToInsert[j]);
-            arrayToInsert.splice(j, 1);
-            i=i++;
-            break;   
-          }
-        }
-        for (var j = 0; j < arrayToInsert.length; j++) {
-          if(arrayToInsert[j]["courseName"]=="לוגיקה ונושאים דיסקרטיים"){
-            arrayToInserttemp.push(arrayToInsert[j]);
-            arrayToInsert.splice(j, 1);
-            i=i++;
-            break;   
-          }
-        }
-        for (var j = 0; j < arrayToInsert.length; j++) {
-          if(arrayToInsert[j]["courseName"]=="ארכיטקטורת מחשבים  II"){
-            arrayToInserttemp.push(arrayToInsert[j]);
-            arrayToInsert.splice(j, 1);
-            i=i++;
-            break;   
-          }
-        }
-        for (var j = 0; j < arrayToInsert.length; j++) {
-          if(arrayToInsert[j]["courseName"]=="תכנות מונחה עצמים"){
-            arrayToInserttemp.push(arrayToInsert[j]);
-            arrayToInsert.splice(j, 1);
-            break;   
-          }
-        } 
-        break;
-      } 
-      console.log(arrayToInsert.length);
-      console.log(arrayToInsert);
-      for (var k=0; k < arrayToInsert.length; k++) { 
-          arrayToInserttemp.push(arrayToInsert[k]);
-          //students.updateOne({units:units+courseUnits})
-          //StudentsDAO.updateUnitsStudent(studentID, source[i]["נזיכוי"])
-      }
-      
+      console.log(arrayToInsert[0]["courseName"]);     
       fs.unlinkSync(fileName);
-      console.log("arrayToInserttemp : ")
+      console.log("arrayToInsert : ")
       //console.log(arrayToInsert)
-      courses.insertMany(arrayToInserttemp, (err, result) => {
+        courses.insertMany(arrayToInsert, (err, result) => {
         if (err)
           console.log(err);
         if(result){
