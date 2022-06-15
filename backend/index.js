@@ -47,9 +47,9 @@ const clientPromise = client.connect()
   await DependenciesDAO.injectDB(client)
   await CoursesDetailsDAO.injectDB(client)
   await ImageVisualizationDAO.injectDB(client)
-  // app.listen(port, () => {
-  //   console.log(`listening on port ${port}`)
-  // })
+  app.listen(port, () => {
+    console.log(`listening on port ${port}`)
+  })
 })
 
 export default clientPromise;
