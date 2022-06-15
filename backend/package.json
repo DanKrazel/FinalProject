@@ -49,6 +49,7 @@
     "multer-gridfs-storage": "^5.0.2",
     "nodemon": "^2.0.16",
     "path": "^0.12.7",
+    "pdf2json": "^2.0.1",
     "pdfkit": "^0.13.0",
     "pdfreader": "^1.4.0",
     "serverless-http": "^3.0.1",
