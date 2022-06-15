@@ -3,8 +3,6 @@ import CoursesDAO from "../../dao/coursesDAO.js"
 import fs from "fs"
 import upload from "../../middleware/upload.js"
 import mongodb from "mongodb"
-import csv from "fast-csv"
-import pdfParse from "pdf-parse"
 import {PdfReader} from "pdfreader"
 
 

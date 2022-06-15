@@ -1,5 +1,5 @@
 import mongodb from "mongodb"
-import pdfParse from "pdf-parse"
+//import pdfParse from "pdf-parse"
 
 
 
@@ -245,7 +245,8 @@ for (var j = i; j < data.length; j++) {
 
   static async postDataPDF (file) {
     //check documents https://mozilla.github.io/pdf.js/
-    const fileParsed = await pdfParse(file)
+    //const fileParsed = await pdfParse(file)
+    const fileParsed = await "test"
     return fileParsed;
 }
 

@@ -313,8 +313,10 @@ var WidgetAnnotation = (function WidgetAnnotationClosure() {
     var dict = params.dict;
     var data = this.data;
 
-    data.fieldValue = stringToPDFString(
-      Util.getInheritableProperty(dict, 'V') || '');
+    var rawValue = Util.getInheritableProperty(dict, 'V') || '';
+    var value = (rawValue.name ? rawValue.name : rawValue) || '';
+    data.fieldValue = stringToPDFString(value);
+             
     data.alternativeText = stringToPDFString(dict.get('TU') || '');
     
     data.alternativeID = stringToPDFString(dict.get('TM') || '');
@@ -370,10 +372,10 @@ var WidgetAnnotation = (function WidgetAnnotationClosure() {
   var parent = Annotation.prototype;
   Util.inherit(WidgetAnnotation, Annotation, {
     isViewable: function WidgetAnnotation_isViewable() {
-      if (this.data.fieldType === 'Sig') {
-        TODO('unimplemented annotation type: Widget signature');
-        return false;
-      }
+//      if (this.data.fieldType === 'Sig') {
+//        TODO('unimplemented annotation type: Widget signature');
+//        return false;
+//      }
 
       return parent.isViewable.call(this);
     }

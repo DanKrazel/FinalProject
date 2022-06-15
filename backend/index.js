@@ -22,35 +22,65 @@ const port = process.env.PORT || 5000
 let database = process.env.MONGO_URI;
 const JWT_SECRET = process.env.JWT;
 
-
-
-
-MongoClient.connect(
+let client = new MongoClient(
   process.env.STUDREVIEWS_DB_URI,
   {
     maxPoolSize: 50,
     wtimeoutMS: 2500,
-    useNewUrlParser: true }
-  )
-  .catch(err => {
-    console.error(err.stack)
-    process.exit(1)
+    useNewUrlParser: true 
   })
-  .then(async client => {
-    await StudentsDAO.injectDB(client)
-    await UsersDAO.injectDB(client)
-    await CoursesDAO.injectDB(client)
-    await FilesDAO.injectDB(client)
-    await UnitsBySemesterDAO.injectDB(client)
-    await RequestsDAO.injectDB(client)
-    await RequestsDAO.injectDB(client)
-    await DependenciesDAO.injectDB(client)
-    await CoursesDetailsDAO.injectDB(client)
-    await ImageVisualizationDAO.injectDB(client)
-    app.listen(port, () => {
-      console.log(`listening on port ${port}`)
-    })
-  })
+
+
+const clientPromise = client.connect()
+.catch(err => {
+  console.error(err.stack)
+  process.exit(1)
+})
+.then(async client => {
+  await StudentsDAO.injectDB(client)
+  await UsersDAO.injectDB(client)
+  await CoursesDAO.injectDB(client)
+  await FilesDAO.injectDB(client)
+  await UnitsBySemesterDAO.injectDB(client)
+  await RequestsDAO.injectDB(client)
+  await RequestsDAO.injectDB(client)
+  await DependenciesDAO.injectDB(client)
+  await CoursesDetailsDAO.injectDB(client)
+  await ImageVisualizationDAO.injectDB(client)
+  // app.listen(port, () => {
+  //   console.log(`listening on port ${port}`)
+  // })
+})
+
+export default clientPromise;
+
+
+// MongoClient.connect(
+//   process.env.STUDREVIEWS_DB_URI,
+//   {
+//     maxPoolSize: 50,
+//     wtimeoutMS: 2500,
+//     useNewUrlParser: true }
+//   )
+//   .catch(err => {
+//     console.error(err.stack)
+//     process.exit(1)
+//   })
+//   .then(async client => {
+//     await StudentsDAO.injectDB(client)
+//     await UsersDAO.injectDB(client)
+//     await CoursesDAO.injectDB(client)
+//     await FilesDAO.injectDB(client)
+//     await UnitsBySemesterDAO.injectDB(client)
+//     await RequestsDAO.injectDB(client)
+//     await RequestsDAO.injectDB(client)
+//     await DependenciesDAO.injectDB(client)
+//     await CoursesDetailsDAO.injectDB(client)
+//     await ImageVisualizationDAO.injectDB(client)
+//     app.listen(port, () => {
+//       console.log(`listening on port ${port}`)
+//     })
+//   })
 
 
 

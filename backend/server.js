@@ -6,7 +6,6 @@ import cookieParser from "cookie-parser"
 import path from "path"
 import dotenv from "dotenv"
 import { fileURLToPath } from 'url';
-//import serverless from "serverless-http"
 
 //const __filename = fileURLToPath(import.meta.url);
 dotenv.config()
@@ -34,7 +33,6 @@ if(process.env.NODE_ENV === 'production'){
         res.send("API is running Successfully")
     });
 }
-
 
 
 export default app;

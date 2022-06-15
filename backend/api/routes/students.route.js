@@ -14,7 +14,12 @@ import upload from "../../middleware/upload.js"
 
 const router = express.Router()
 
-
+router.route("/hello").get(async function (req, res) {
+    res.json({
+        result: 'Hello, World!',
+    });
+    return;
+});
 router.route("/").get(StudentsCtrl.apiGetStudents)
                  .post(StudentsCtrl.apiPostStudent)
 router.route("/getStudentByID").get(StudentsCtrl.apiGetStudentByID)
@@ -99,9 +104,9 @@ router.route("/unitsBySemester").get(UnitsBySemesterCtrl.apiGetUnitsBySemester)
                                 .put(UnitsBySemesterCtrl.apiUpdateUnitsSemesters)
 router.route("/unitsBySemester/:id").delete(UnitsBySemesterCtrl.apiDeleteUnitsBySemesterStudentID)
                        
-router.route("/uploadPDF").post(upload.single('file'),FilesCtrl.apiNewTestPostFile)
+// router.route("/uploadPDF").post(upload.single('file'),FilesCtrl.apiNewTestPostFile)
 
-router.route("/uploadPDFCourses").get(FilesCtrl.apiParsePDF)
+// router.route("/uploadPDFCourses").get(FilesCtrl.apiParsePDF)
 
 
 

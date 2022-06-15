@@ -124,14 +124,17 @@ var Page = (function PageClosure() {
         this.resourcesPromise = this.pdfManager.ensure(this, 'resources');
       }
       var promise = new Promise();
-      this.resourcesPromise.then(function resourceSuccess() {
-        var objectLoader = new ObjectLoader(this.resources.map,
-                                            keys,
-                                            this.xref);
-        objectLoader.load().then(function objectLoaderSuccess() {
-          promise.resolve();
-        });
-      }.bind(this));
+      if (!this.resources) //empty page
+        promise.resolve();
+      else    
+        this.resourcesPromise.then(function resourceSuccess() {
+            var objectLoader = new ObjectLoader(this.resources.map,
+                                                keys,
+                                                this.xref);
+            objectLoader.load().then(function objectLoaderSuccess() {
+            promise.resolve();
+            });
+        }.bind(this));
       return promise;
     },
     getOperatorList: function Page_getOperatorList(handler) {
@@ -170,13 +173,17 @@ var Page = (function PageClosure() {
 
 
         var opList = new OperatorList(handler, self.pageIndex);
-
-        handler.send('StartRenderPage', {
-          transparency: partialEvaluator.hasBlendModes(self.resources),
-          pageIndex: self.pageIndex
-        });
-        partialEvaluator.getOperatorList(contentStream, self.resources, opList);
-        pageListPromise.resolve(opList);
+        try {
+            handler.send('StartRenderPage', {
+            transparency: partialEvaluator.hasBlendModes(self.resources),
+            pageIndex: self.pageIndex
+            });
+            partialEvaluator.getOperatorList(contentStream, self.resources, opList);
+            pageListPromise.resolve(opList);
+        }
+        catch(e) {
+            pageListPromise.reject(e);
+        }
       });
 
       var annotationsPromise = pdfManager.ensure(this, 'annotations');

@@ -2,7 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:5000",
+  "proxy": "https://bkgzk96vej.execute-api.us-east-1.amazonaws.com/dev",
   "dependencies": {
     "@progress/kendo-react-pdf": "^4.13.0",
     "@progress/kendo-react-treelist": "^4.13.0",
