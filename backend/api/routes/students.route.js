@@ -30,6 +30,8 @@ router.route("/updateUnitStudent").put(StudentsCtrl.apiUpdateUnitStudent)
 router.route("/uploadStudents").post(upload.single('file'),StudentsCtrl.apiUploadStudentFromCSV)
 router.route("/deleteAllStudents").delete(StudentsCtrl.apiDeleteAllStudent)
 router.route("/testToken").get(UsersCtrl.apiVerifyToken)
+router.route("/names").get(StudentsCtrl.apiGetStudentName)
+
 
 router.route("/user").get(UsersCtrl.apiGetUsers)
                      .post(UsersCtrl.apiPostUser)
@@ -73,7 +75,6 @@ router.route("/professor").get(UsersCtrl.apiVerifyToken,
 
 router.route("/refreshToken").post(UsersCtrl.apiRefreshToken)
                            
-router.route("/names").get(StudentsCtrl.apiGetStudentName)
 router.route("/getCoursesStudent/:id").get(StudentsCtrl.apiGetCoursesStudentByID)
 router.route("/deleteAllCourses").delete(CoursesCtrl.apiDeleteAllCourses)
 router.route("/getCoursesByStudentName").get(StudentsCtrl.apiGetCoursesByStudentName)                             

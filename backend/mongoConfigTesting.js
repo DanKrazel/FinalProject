@@ -12,6 +12,7 @@ import CoursesDetailsDAO from "./dao/coursesDetailsDAO.js"
 import ImageVisualizationDAO from "./dao/ImageVisualizationDAO.js"
 import path from "path"
 import express from "express"
+import { MongoMemoryServer } from "mongodb"
 
 
 
@@ -19,38 +20,39 @@ dotenv.config()
 const MongoClient = mongodb.MongoClient
 
 const port = process.env.PORT || 5000
-let database = process.env.MONGO_URI;
-const JWT_SECRET = process.env.JWT;
 
-let client = new MongoClient(
+
+let client = new MongoMemoryServer(
   process.env.STUDREVIEWS_DB_URI,
   {
     maxPoolSize: 50,
     wtimeoutMS: 2500,
     useNewUrlParser: true 
   })
-const clientPromise = await client.connect();
-try {
-  await StudentsDAO.injectDB(clientPromise)
-  await UsersDAO.injectDB(clientPromise)
-  await CoursesDAO.injectDB(clientPromise)
-  await FilesDAO.injectDB(clientPromise)
-  await UnitsBySemesterDAO.injectDB(clientPromise)
-  await RequestsDAO.injectDB(clientPromise)
-  await RequestsDAO.injectDB(clientPromise)
-  await DependenciesDAO.injectDB(clientPromise)
-  await CoursesDetailsDAO.injectDB(clientPromise)
-  await ImageVisualizationDAO.injectDB(clientPromise)
+
+
+const initializeMongoServer = client.connect()
+.catch(err => {
+  console.error(err.stack)
+  process.exit(1)
+})
+.then(async client => {
+  await StudentsDAO.injectDB(client)
+  await UsersDAO.injectDB(client)
+  await CoursesDAO.injectDB(client)
+  await FilesDAO.injectDB(client)
+  await UnitsBySemesterDAO.injectDB(client)
+  await RequestsDAO.injectDB(client)
+  await RequestsDAO.injectDB(client)
+  await DependenciesDAO.injectDB(client)
+  await CoursesDetailsDAO.injectDB(client)
+  await ImageVisualizationDAO.injectDB(client)
   app.listen(port, () => {
     console.log(`listening on port ${port}`)
   })
-} catch (err) {
-  console.error(err.stack)
-  process.exit(1)
-}
+})
 
-
-export default clientPromise;
+export default initializeMongoServer;
 
 
 // MongoClient.connect(
